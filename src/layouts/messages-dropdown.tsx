@@ -1,0 +1,210 @@
+'use client';
+
+import Link from 'next/link';
+import { RefObject, useState } from 'react';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import cn from '@/utils/class-names';
+import { Popover } from '@/components/ui/popover';
+import { Text } from '@/components/ui/text';
+import { Avatar } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { routes } from '@/config/routes';
+import { useMedia } from '@/hooks/use-media';
+import SimpleBar from '@/components/ui/simplebar';
+import { PiCheck } from 'react-icons/pi';
+
+dayjs.extend(relativeTime);
+
+const data = [
+  {
+    id: 1,
+    message: `سلام! خوشحالم که با شما چت می‌کنم. راستش، این چت برام جالبه. بفرمایید، چه خبر؟`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-01.webp',
+    ],
+    name: 'سعید حسینی',
+    unRead: true,
+    sendTime: '2023-06-01T09:35:31.820Z',
+  },
+  {
+    id: 2,
+    message: `اوه... بیا به چیز دیگری برویم. می‌خواهید در مورد چه موضوعی صحبت کنیم؟`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-04.webp',
+    ],
+    name: 'مریم اکبری',
+    unRead: true,
+    sendTime: '2023-05-30T09:35:31.820Z',
+  },
+  {
+    id: 3,
+    message: `شما: من هیچ تماس تلفنی درباره این دریافت نکردم. البته، اصلا نمی‌خواستم هم!`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-12.webp',
+    ],
+    name: 'محمد اکبری',
+    unRead: false,
+    sendTime: '2023-06-01T09:35:31.820Z',
+  },
+  {
+    id: 4,
+    message: `شما: اما شما باید هر کلمه ممکن را تایپ کنید. متنی بلند و جالب...`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-07.webp',
+    ],
+    name: 'فاطمه محمدی',
+    unRead: false,
+    sendTime: '2023-05-21T09:35:31.820Z',
+  },
+  {
+    id: 5,
+    message: `همه افراز و نشیب‌های کاری دارند. برنامه‌نویسی یک هنر است. چطور می‌توانم به شما کمک کنم؟`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-14.webp',
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-13.webp',
+    ],
+    name: 'طراحی و فرانت‌اند',
+    unRead: true,
+    sendTime: '2023-06-01T09:35:31.820Z',
+  },
+  {
+    id: 6,
+    message: `حالا همه چیز در پروژه Laravel ما چطور پیش می‌رود؟ بیایید برنامه رو از اول شروع کنیم.`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-01.webp',
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-05.webp',
+    ],
+    name: 'لاراول',
+    unRead: true,
+    sendTime: '2023-05-15T09:35:31.820Z',
+  },
+  {
+    id: 7,
+    name: 'ووردپرس',
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-08.webp',
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-09.webp',
+    ],
+    unRead: false,
+    sendTime: '2023-05-16T09:35:31.820Z',
+  },
+  {
+    id: 8,
+    message: `شما: این که واقعاً باهوش و خنده‌دار است! دارید روی چه پروژه‌ای کار می‌کنید؟`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp',
+    ],
+    name: 'جنی دو',
+    unRead: false,
+    sendTime: '2023-05-01T09:35:31.820Z',
+  },
+  {
+    id: 9,
+    message: `شما می‌توانید ربات ELIZA را امتحان کنید، این یک نرم‌افزار قدیمی و جالب بود. آیا شنیده‌اید؟`,
+    avatar: [
+      'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-03.webp',
+    ],
+    name: 'محمد محمدی',
+    unRead: true,
+    sendTime: '2023-04-01T09:35:31.820Z',
+  },
+];
+function MessagesList({
+  setIsOpen,
+}: {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  return (
+    <div className="w-[320px] text-left rtl:text-right sm:w-[360px] 2xl:w-[420px]">
+      <div className="mb-2 flex items-center justify-between ps-6">
+        <Text tag="h5">پیام ها</Text>
+        <Link
+          href={routes.support.inbox}
+          onClick={() => setIsOpen(false)}
+          className="hover:underline"
+        >
+          مشاهده همه
+        </Link>
+      </div>
+      <SimpleBar className="max-h-[406px]">
+        <div className="grid grid-cols-1 ps-4">
+          {data.map((item) => (
+            <div
+              key={item.name + item.id}
+              className="group grid cursor-pointer grid-cols-[auto_minmax(0,1fr)] gap-2.5 rounded-md px-2 py-2.5 pe-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-50"
+            >
+              <div className={cn('relative', item.avatar.length > 1 && 'me-1')}>
+                <Avatar
+                  src={item.avatar[0]}
+                  name={item.name}
+                  className={cn(
+                    item.avatar.length > 1 &&
+                      'relative -end-1 -top-0.5 !h-9 !w-9'
+                  )}
+                />
+                {item.avatar.length > 1 && (
+                  <Avatar
+                    src={item.avatar[1]}
+                    name={item.name}
+                    className="absolute -bottom-1 end-1.5 !h-9 !w-9 border-2 border-gray-0 dark:border-gray-100"
+                  />
+                )}
+              </div>
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center">
+                <div className="w-full">
+                  <Text tag="h6" className="mb-0.5 text-sm font-semibold">
+                    {item.name}
+                  </Text>
+                  <div className="flex">
+                    <Text className="w-10/12 truncate pe-7 text-xs text-gray-500">
+                      {item.message}
+                    </Text>
+                    <span className="ms-auto whitespace-nowrap pe-8 text-xs text-gray-500">
+                      {/* {dayjs(item.sendTime).fromNow(true)} */}4 ماه
+                    </span>
+                  </div>
+                </div>
+                <div className="ms-auto flex-shrink-0">
+                  {item.unRead ? (
+                    <Badge
+                      renderAsDot
+                      size="lg"
+                      color="primary"
+                      className="scale-90"
+                    />
+                  ) : (
+                    <span className="inline-block rounded-full bg-gray-100 p-0.5 dark:bg-gray-50">
+                      <PiCheck className="h-auto w-[9px]" />
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </SimpleBar>
+    </div>
+  );
+}
+
+export default function MessagesDropdown({
+  children,
+}: {
+  children: JSX.Element & { ref?: RefObject<any> };
+}) {
+  const isMobile = useMedia('(max-width: 480px)', false);
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Popover
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      content={() => <MessagesList setIsOpen={setIsOpen} />}
+      shadow="sm"
+      placement={isMobile ? 'bottom' : 'bottom-end'}
+      className="z-50 pb-6 pe-6 ps-0 pt-5 dark:bg-gray-100 [&>svg]:hidden [&>svg]:dark:fill-gray-100 sm:[&>svg]:inline-flex"
+    >
+      {children}
+    </Popover>
+  );
+}

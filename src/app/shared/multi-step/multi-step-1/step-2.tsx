@@ -1,0 +1,127 @@
+'use client';
+
+import { z } from 'zod';
+import { useEffect } from 'react';
+import { useAtom, useSetAtom } from 'jotai';
+import { toast } from 'react-hot-toast';
+import { atomWithStorage } from 'jotai/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { AdvancedRadio, RadioGroup } from '@/components/ui/advanced-radio';
+import HouseIcon from '@/components/icons/house';
+import ApartmentIcon from '@/components/icons/apartment';
+import BarnIcon from '@/components/icons/barn';
+import SkyscraperIcon from '@/components/icons/skyscraper';
+import TentIcon from '@/components/icons/tent';
+import CabinIcon from '@/components/icons/cabin';
+import CastleIcon from '@/components/icons/castle';
+import CaveIcon from '@/components/icons/cave';
+import ContainerHouseIcon from '@/components/icons/container-house';
+import MobileHomeIcon from '@/components/icons/mobile-home';
+import HouseBoatIcon from '@/components/icons/house-boat';
+import FarmHouseIcon from '@/components/icons/farm-house';
+import FormSummary from '@/app/shared/multi-step/multi-step-1/form-summary';
+import {
+  formDataAtom,
+  useStepperOne,
+} from '@/app/shared/multi-step/multi-step-1';
+
+const properties: { name: string; label: string; icon: React.ReactNode }[] = [
+  { name: 'house', label: 'خانه', icon: <HouseIcon /> },
+  { name: 'apartment', label: 'آپارتمان', icon: <ApartmentIcon /> },
+  { name: 'barn', label: 'انبار', icon: <BarnIcon /> },
+  { name: 'tower', label: 'برج', icon: <SkyscraperIcon /> },
+  { name: 'tent', label: 'چادر', icon: <TentIcon /> },
+  { name: 'cabin', label: 'کلبه', icon: <CabinIcon /> },
+  { name: 'castle', label: 'قلعه', icon: <CastleIcon /> },
+  { name: 'cave', label: 'غار', icon: <CaveIcon /> },
+  { name: 'container', label: 'کانتینر', icon: <ContainerHouseIcon /> },
+  { name: 'mobile-home', label: 'خانه‌ی تلفنی', icon: <MobileHomeIcon /> },
+  { name: 'hotel', label: 'هتل', icon: <HouseIcon /> },
+  { name: 'house-boat', label: 'قایق خانه', icon: <HouseBoatIcon /> },
+  { name: 'tiny-home', label: 'خانه کوچک', icon: <HouseIcon /> },
+  { name: 'tree-house', label: 'خانه درختی', icon: <HouseIcon /> },
+  { name: 'farm-house', label: 'خانه مزرعه', icon: <FarmHouseIcon /> },
+];
+export const propertyTypeSchema = z.object({
+  propertyType: z.string().min(1, 'نوع ملک مورد الزامی میباشد'),
+});
+
+type PropertyTypeSchema = z.infer<typeof propertyTypeSchema>;
+
+export default function StepTwo() {
+  const { step, gotoNextStep } = useStepperOne();
+  const [formData, setFormData] = useAtom(formDataAtom);
+
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<PropertyTypeSchema>({
+    resolver: zodResolver(propertyTypeSchema),
+    defaultValues: {
+      propertyType: formData.propertyType,
+    },
+  });
+
+  useEffect(() => {
+    if (errors.propertyType) {
+      toast.error(errors.propertyType.message as string);
+    }
+  }, [errors]);
+
+  const onSubmit: SubmitHandler<PropertyTypeSchema> = (data) => {
+    console.log('data', data);
+    setFormData((prev) => ({
+      ...prev,
+      propertyType: data.propertyType,
+    }));
+    gotoNextStep();
+  };
+
+  return (
+    <>
+      <div className="col-span-full flex flex-col justify-center @5xl:col-span-5">
+        <FormSummary
+          className="@7xl:me-10 "
+          title="کدام یک از این‌ها بهترین توصیفی برای مکان شماست؟?"
+          description="ملک شما منحصر به فرد است و دارای بیراهه‌های بی‌شمار در دیوارهایش می‌باشد. ما بسیار مشتاق هستیم بیشتر درباره آن بدانیم تا بتوانیم به شما کمک کنیم ویژگی‌های برتر آن را به خریداران یا مستأجران بالقوه نشان دهیم."
+        />
+      </div>
+
+      <div className="col-span-full flex items-center justify-center @5xl:col-span-7">
+        <form
+          id={`rhf-${step.toString()}`}
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex-grow rounded-lg bg-white p-5 @4xl:p-7 dark:bg-gray-0"
+        >
+          <>
+            <Controller
+              name="propertyType"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <RadioGroup
+                  value={value}
+                  setValue={onChange}
+                  className="col-span-full grid grid-cols-2 gap-4 @3xl:grid-cols-3 @4xl:gap-6 @6xl:grid-cols-3"
+                >
+                  {properties.map((property) => (
+                    <AdvancedRadio
+                      key={property.name}
+                      value={property.name}
+                      className="grid gap-4 rounded-xl border border-gray-200 p-6 text-gray-600 hover:cursor-pointer hover:border-gray-700"
+                      inputClassName="[&:checked:enabled~span]:ring-1 [&:checked:enabled~span]:ring-offset-0 [&:checked:enabled~span]:ring-gray-700 [&:checked:enabled~span]:border-gray-700"
+                    >
+                      <span className="h-8 w-8">{property.icon}</span>
+                      <span className="font-semibold">{property.label}</span>
+                    </AdvancedRadio>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+          </>
+        </form>
+      </div>
+    </>
+  );
+}
