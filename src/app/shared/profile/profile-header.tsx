@@ -1,12 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import {useContext, useReducer, useState} from 'react';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { PiChatCircleText, PiUsers } from 'react-icons/pi';
+import {AuthContext} from "@/context/AuthContext";
 
 export default function ProfileHeader() {
+  // @ts-ignore
+  const { state, dispatch } = useContext(AuthContext)
+  const user = state.user;
   const [follow, setFollow] = useState(false);
   return (
     <>
@@ -33,25 +37,25 @@ export default function ProfileHeader() {
               tag="h1"
               className="text-lg font-bold capitalize leading-normal text-gray-900 @3xl:!text-xl 3xl:text-2xl"
             >
-              صادق قاسم نژاد
+              {user?.firstName + " " + user?.lastName}
             </Text>
             <Text className="text-xs text-gray-500 @3xl:text-sm 3xl:text-base">
-              sadegh.gh@
+              {user?.email}
             </Text>
-            <ul className="mt-3 flex flex-wrap items-center gap-2 text-sm @3xl:mt-4 @3xl:gap-5 @3xl:text-base 3xl:text-lg">
-              <li className="flex items-center">
-                <span className="font-semibold text-gray-900">2.53k</span>
-                <span className="ms-1.5 text-sm text-gray-500">
-                  دنبال کننده
-                </span>
-              </li>
-              <li className="flex items-center">
-                <span className="font-semibold text-gray-900">438</span>
-                <span className="ms-1.5 text-sm text-gray-500">
-                  دنبال شونده
-                </span>
-              </li>
-            </ul>
+            {/*<ul className="mt-3 flex flex-wrap items-center gap-2 text-sm @3xl:mt-4 @3xl:gap-5 @3xl:text-base 3xl:text-lg">*/}
+            {/*  <li className="flex items-center">*/}
+            {/*    <span className="font-semibold text-gray-900">2.53k</span>*/}
+            {/*    <span className="ms-1.5 text-sm text-gray-500">*/}
+            {/*      دنبال کننده*/}
+            {/*    </span>*/}
+            {/*  </li>*/}
+            {/*  <li className="flex items-center">*/}
+            {/*    <span className="font-semibold text-gray-900">438</span>*/}
+            {/*    <span className="ms-1.5 text-sm text-gray-500">*/}
+            {/*      دنبال شونده*/}
+            {/*    </span>*/}
+            {/*  </li>*/}
+            {/*</ul>*/}
           </div>
         </div>
         <div className="grid grid-cols-2 pt-3 @3xl:pt-4">

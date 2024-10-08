@@ -7,12 +7,12 @@ const pageHeader = {
   title: 'تنطیمات حساب کاربری',
   breadcrumb: [
     {
-      href: routes.eCommerce.dashboard,
-      name: 'ایکامرس',
+      href: routes.info.dashboard,
+      name: 'مدیریت اطلاعات',
     },
     {
-      href: routes.forms.profileSettings,
-      name: 'فرم',
+      href: routes.info.profile,
+      name: 'حساب کاربری',
     },
     {
       name: 'تنطیمات حساب کاربری',

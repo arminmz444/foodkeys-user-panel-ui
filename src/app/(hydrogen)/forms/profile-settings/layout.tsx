@@ -10,11 +10,12 @@ const pageHeader = {
       name: 'خانه',
     },
     {
-      href: routes.forms.profileSettings,
-      name: 'فرم',
+      href: routes.info.dashboard,
+      name: 'مدیریت اطلاعات',
     },
     {
-      name: 'تنطیمات حساب کاربری',
+      href: routes.info.profile,
+      name: 'حساب کاربری',
     },
   ],
 };

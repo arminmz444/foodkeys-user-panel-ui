@@ -24,6 +24,7 @@ import cn from '@/utils/class-names';
 import Link from 'next/link';
 import { routes } from '@/config/routes';
 import toast from 'react-hot-toast';
+import PersonalInfoView from "@/app/shared/account-settings/personal-info";
 const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
   ssr: false,
 });
@@ -139,234 +140,235 @@ export default function ProfileSettingsView({
                       tag="span"
                       className="dark:bg-gray-100 dark:text-white dark:focus:bg-gray-100"
                     >
-                      مشاهده پروفایل
+                      تغییر عکس پروفایل
                     </Button>
                   </Link>
                 </div>
               </ProfileHeader>
 
-              <div className="mx-auto w-full max-w-screen-2xl">
-                <HorizontalFormBlockWrapper
-                  title="نام"
-                  titleClassName="text-base font-medium"
-                >
-                  <Input
-                    className="col-span-full"
-                    // prefix="https://redq.io/"
-                    placeholder="نام"
-                    prefixClassName="relative pe-2.5 before:w-[1px] before:h-[38px] before:absolute before:bg-gray-300 before:-top-[9px] before:right-0"
-                    {...register('first_name')}
-                    error={errors.first_name?.message}
-                  />
-                </HorizontalFormBlockWrapper>
+              {/*<div className="mx-auto w-full max-w-screen-2xl">*/}
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title="نام"*/}
+              {/*    titleClassName="text-base font-medium"*/}
+              {/*  >*/}
+              {/*    <Input*/}
+              {/*      className="col-span-full"*/}
+              {/*      // prefix="https://redq.io/"*/}
+              {/*      placeholder="نام"*/}
+              {/*      prefixClassName="relative pe-2.5 before:w-[1px] before:h-[38px] before:absolute before:bg-gray-300 before:-top-[9px] before:right-0"*/}
+              {/*      {...register('first_name')}*/}
+              {/*      error={errors.first_name?.message}*/}
+              {/*    />*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
 
-                <HorizontalFormBlockWrapper
-                  title="وبسایت"
-                  titleClassName="text-base font-medium"
-                >
-                  <Input
-                    type="url"
-                    className="col-span-full"
-                    prefix="https://"
-                    prefixClassName="relative pe-2.5 before:w-[1px] before:h-[38px] before:absolute before:bg-gray-300 before:-top-[9px] before:right-0"
-                    placeholder="وبسایت"
-                    {...register('website')}
-                    error={errors.first_name?.message}
-                  />
-                </HorizontalFormBlockWrapper>
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title="وبسایت"*/}
+              {/*    titleClassName="text-base font-medium"*/}
+              {/*  >*/}
+              {/*    <Input*/}
+              {/*      type="url"*/}
+              {/*      className="col-span-full"*/}
+              {/*      prefix="https://"*/}
+              {/*      prefixClassName="relative pe-2.5 before:w-[1px] before:h-[38px] before:absolute before:bg-gray-300 before:-top-[9px] before:right-0"*/}
+              {/*      placeholder="وبسایت"*/}
+              {/*      {...register('website')}*/}
+              {/*      error={errors.first_name?.message}*/}
+              {/*    />*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
 
-                <HorizontalFormBlockWrapper
-                  title={
-                    <>
-                      عکس شما <PiQuestion className="h4 w-4 text-gray-500" />
-                    </>
-                  }
-                  titleClassName="flex gap-2 items-center"
-                  description="عکس پروفایل شما را نشان میدهد."
-                >
-                  <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">
-                    <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full">
-                      <Image
-                        src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatar.png"
-                        className="aspect-square object-cover"
-                        priority
-                        alt="Profile avatar"
-                        sizes="(max-width: 768px) 100vw"
-                        fill
-                      />
-                    </div>
-                    <Button type="button" variant="outline">
-                      تغییر
-                    </Button>
-                  </div>
-                </HorizontalFormBlockWrapper>
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title={*/}
+              {/*      <>*/}
+              {/*        عکس شما <PiQuestion className="h4 w-4 text-gray-500" />*/}
+              {/*      </>*/}
+              {/*    }*/}
+              {/*    titleClassName="flex gap-2 items-center"*/}
+              {/*    description="عکس پروفایل شما را نشان میدهد."*/}
+              {/*  >*/}
+              {/*    <div className="col-span-2 flex flex-col items-center gap-4 @xl:flex-row">*/}
+              {/*      <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full">*/}
+              {/*        <Image*/}
+              {/*          src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatar.png"*/}
+              {/*          className="aspect-square object-cover"*/}
+              {/*          priority*/}
+              {/*          alt="Profile avatar"*/}
+              {/*          sizes="(max-width: 768px) 100vw"*/}
+              {/*          fill*/}
+              {/*        />*/}
+              {/*      </div>*/}
+              {/*      <Button type="button" variant="outline">*/}
+              {/*        تغییر*/}
+              {/*      </Button>*/}
+              {/*    </div>*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
 
-                <HorizontalFormBlockWrapper
-                  title="بیوگرافی شما"
-                  titleClassName="text-base font-medium"
-                >
-                  <div className="@3xl:col-span-2">
-                    <Controller
-                      control={control}
-                      name="description"
-                      render={({ field: { onChange, value } }) => (
-                        <QuillEditor
-                          value={value}
-                          onChange={onChange}
-                          className="placeholder:text-right [&>.ql-container_.ql-editor]:min-h-[100px] [&>.ql-toolbar]:3xl:overflow-x-auto"
-                        />
-                      )}
-                    />
-                  </div>
-                </HorizontalFormBlockWrapper>
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title="بیوگرافی شما"*/}
+              {/*    titleClassName="text-base font-medium"*/}
+              {/*  >*/}
+              {/*    <div className="@3xl:col-span-2">*/}
+              {/*      <Controller*/}
+              {/*        control={control}*/}
+              {/*        name="description"*/}
+              {/*        render={({ field: { onChange, value } }) => (*/}
+              {/*          <QuillEditor*/}
+              {/*            value={value}*/}
+              {/*            onChange={onChange}*/}
+              {/*            className="placeholder:text-right [&>.ql-container_.ql-editor]:min-h-[100px] [&>.ql-toolbar]:3xl:overflow-x-auto"*/}
+              {/*          />*/}
+              {/*        )}*/}
+              {/*      />*/}
+              {/*    </div>*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
 
-                <HorizontalFormBlockWrapper
-                  title="عنوان شغلی"
-                  titleClassName="text-base font-medium"
-                >
-                  <div className="col-span-full">
-                    <Controller
-                      control={control}
-                      name="role"
-                      render={({ field: { value, onChange } }) => (
-                        <SelectBox
-                          placeholder={role[0].name}
-                          options={role}
-                          onChange={onChange}
-                          value={value}
-                          getOptionValue={(option) => option.value}
-                          displayValue={(selected) =>
-                            role?.find((r) => r.value === selected)?.name ?? ''
-                          }
-                          error={errors?.role?.message as string}
-                        />
-                      )}
-                    />
-                    <Checkbox
-                      label="نمایش عنوان شغلی در پروفایل"
-                      className="mt-3"
-                    />
-                  </div>
-                </HorizontalFormBlockWrapper>
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title="عنوان شغلی"*/}
+              {/*    titleClassName="text-base font-medium"*/}
+              {/*  >*/}
+              {/*    <div className="col-span-full">*/}
+              {/*      <Controller*/}
+              {/*        control={control}*/}
+              {/*        name="role"*/}
+              {/*        render={({ field: { value, onChange } }) => (*/}
+              {/*          <SelectBox*/}
+              {/*            placeholder={role[0].name}*/}
+              {/*            options={role}*/}
+              {/*            onChange={onChange}*/}
+              {/*            value={value}*/}
+              {/*            getOptionValue={(option) => option.value}*/}
+              {/*            displayValue={(selected) =>*/}
+              {/*              role?.find((r) => r.value === selected)?.name ?? ''*/}
+              {/*            }*/}
+              {/*            error={errors?.role?.message as string}*/}
+              {/*          />*/}
+              {/*        )}*/}
+              {/*      />*/}
+              {/*      <Checkbox*/}
+              {/*        label="نمایش عنوان شغلی در پروفایل"*/}
+              {/*        className="mt-3"*/}
+              {/*      />*/}
+              {/*    </div>*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
 
-                <HorizontalFormBlockWrapper
-                  title="آدرس ایمیل"
-                  description="آدرس ایمیل"
-                  descriptionClassName="max-w-[263px]"
-                  titleClassName="text-base font-medium"
-                >
-                  <Input
-                    prefix={
-                      <PiEnvelopeSimple className="h-6 w-6 text-gray-500" />
-                    }
-                    type="email"
-                    className="col-span-full"
-                    placeholder="georgia.young@example.com"
-                    {...register('email')}
-                    error={errors.email?.message}
-                  />
-                </HorizontalFormBlockWrapper>
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title="آدرس ایمیل"*/}
+              {/*    description="آدرس ایمیل"*/}
+              {/*    descriptionClassName="max-w-[263px]"*/}
+              {/*    titleClassName="text-base font-medium"*/}
+              {/*  >*/}
+              {/*    <Input*/}
+              {/*      prefix={*/}
+              {/*        <PiEnvelopeSimple className="h-6 w-6 text-gray-500" />*/}
+              {/*      }*/}
+              {/*      type="email"*/}
+              {/*      className="col-span-full"*/}
+              {/*      placeholder="georgia.young@example.com"*/}
+              {/*      {...register('email')}*/}
+              {/*      error={errors.email?.message}*/}
+              {/*    />*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
 
-                <HorizontalFormBlockWrapper
-                  title="پورتفولیو"
-                  description="چند تا از نمونه کار هاتو به اشتراک بذار"
-                  className="border-0"
-                  titleClassName="text-base font-medium"
-                >
-                  <div className="@3xl:col-span-2">
-                    <div
-                      className={cn(
-                        'mb-5 grid gap-5',
-                        projectPreview.length === 2
-                          ? 'grid-cols-2'
-                          : 'grid-cols-3'
-                      )}
-                    >
-                      {projectPreview?.map((item, index: number) => (
-                        <div
-                          key={item.name}
-                          className={cn(
-                            'group relative min-h-[80px] w-full overflow-hidden rounded-md first:min-h-[300px] xs:min-h-[144px] xs:first:min-h-[424px]',
-                            projectPreview.length !== 2 && 'first:col-span-3'
-                          )}
-                        >
-                          <div className="absolute left-0 top-0 z-50 h-full w-full bg-black bg-opacity-40 opacity-0 backdrop-blur-md  transition-all group-hover:opacity-100 dark:bg-opacity-20"></div>
-                          <Image
-                            src={item.thumbnail}
-                            className="aspect-[193/144] object-cover"
-                            priority
-                            alt="Profile avatar"
-                            sizes="(max-width: 768px) 100vw"
-                            fill
-                          />
-                          <ActionIcon
-                            onClick={() => handlePreviewImageDelete(index)}
-                            size="sm"
-                            variant="flat"
-                            color="danger"
-                            className="invisible absolute right-5 top-5 z-50 ms-auto flex-shrink-0 bg-gray-0 p-0 opacity-0 transition-all hover:enabled:bg-white group-hover:visible group-hover:opacity-100"
-                          >
-                            <PiTrashBold className="w-6" />
-                          </ActionIcon>
-                        </div>
-                      ))}
-                      {images?.map((file: File, index: number) => (
-                        <div
-                          key={file.name}
-                          className="group relative min-h-[80px] w-full overflow-hidden rounded-md  xs:min-h-[144px]"
-                        >
-                          <div className="absolute left-0 top-0 z-50 h-full w-full bg-black bg-opacity-40 opacity-0 backdrop-blur-md  transition-all group-hover:opacity-100 dark:bg-opacity-20"></div>
-                          <Image
-                            src={URL.createObjectURL(file)}
-                            className="aspect-[193/144] object-cover"
-                            priority
-                            alt="Profile avatar"
-                            sizes="(max-width: 768px) 100vw"
-                            fill
-                          />
-                          <ActionIcon
-                            onClick={() => handleImageDelete(index)}
-                            size="sm"
-                            variant="flat"
-                            color="danger"
-                            className="invisible absolute right-5 top-5 z-50 ms-auto flex-shrink-0 bg-gray-0 p-0 opacity-0 transition-all hover:enabled:bg-white group-hover:visible group-hover:opacity-100"
-                          >
-                            <PiTrashBold className="w-6" />
-                          </ActionIcon>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="my-5">
-                      <Upload
-                        label={''}
-                        ref={imageRef}
-                        accept="img"
-                        multiple
-                        onChange={handleImageUpload}
-                        iconClassName="w-28 h-auto"
-                        className="mb-5 min-h-[200px] justify-center border-dashed bg-gray-50"
-                      />
-                    </div>
-                  </div>
-                </HorizontalFormBlockWrapper>
-              </div>
+              {/*  <HorizontalFormBlockWrapper*/}
+              {/*    title="پورتفولیو"*/}
+              {/*    description="چند تا از نمونه کار هاتو به اشتراک بذار"*/}
+              {/*    className="border-0"*/}
+              {/*    titleClassName="text-base font-medium"*/}
+              {/*  >*/}
+              {/*    <div className="@3xl:col-span-2">*/}
+              {/*      <div*/}
+              {/*        className={cn(*/}
+              {/*          'mb-5 grid gap-5',*/}
+              {/*          projectPreview.length === 2*/}
+              {/*            ? 'grid-cols-2'*/}
+              {/*            : 'grid-cols-3'*/}
+              {/*        )}*/}
+              {/*      >*/}
+              {/*        {projectPreview?.map((item, index: number) => (*/}
+              {/*          <div*/}
+              {/*            key={item.name}*/}
+              {/*            className={cn(*/}
+              {/*              'group relative min-h-[80px] w-full overflow-hidden rounded-md first:min-h-[300px] xs:min-h-[144px] xs:first:min-h-[424px]',*/}
+              {/*              projectPreview.length !== 2 && 'first:col-span-3'*/}
+              {/*            )}*/}
+              {/*          >*/}
+              {/*            <div className="absolute left-0 top-0 z-50 h-full w-full bg-black bg-opacity-40 opacity-0 backdrop-blur-md  transition-all group-hover:opacity-100 dark:bg-opacity-20"></div>*/}
+              {/*            <Image*/}
+              {/*              src={item.thumbnail}*/}
+              {/*              className="aspect-[193/144] object-cover"*/}
+              {/*              priority*/}
+              {/*              alt="Profile avatar"*/}
+              {/*              sizes="(max-width: 768px) 100vw"*/}
+              {/*              fill*/}
+              {/*            />*/}
+              {/*            <ActionIcon*/}
+              {/*              onClick={() => handlePreviewImageDelete(index)}*/}
+              {/*              size="sm"*/}
+              {/*              variant="flat"*/}
+              {/*              color="danger"*/}
+              {/*              className="invisible absolute right-5 top-5 z-50 ms-auto flex-shrink-0 bg-gray-0 p-0 opacity-0 transition-all hover:enabled:bg-white group-hover:visible group-hover:opacity-100"*/}
+              {/*            >*/}
+              {/*              <PiTrashBold className="w-6" />*/}
+              {/*            </ActionIcon>*/}
+              {/*          </div>*/}
+              {/*        ))}*/}
+              {/*        {images?.map((file: File, index: number) => (*/}
+              {/*          <div*/}
+              {/*            key={file.name}*/}
+              {/*            className="group relative min-h-[80px] w-full overflow-hidden rounded-md  xs:min-h-[144px]"*/}
+              {/*          >*/}
+              {/*            <div className="absolute left-0 top-0 z-50 h-full w-full bg-black bg-opacity-40 opacity-0 backdrop-blur-md  transition-all group-hover:opacity-100 dark:bg-opacity-20"></div>*/}
+              {/*            <Image*/}
+              {/*              src={URL.createObjectURL(file)}*/}
+              {/*              className="aspect-[193/144] object-cover"*/}
+              {/*              priority*/}
+              {/*              alt="Profile avatar"*/}
+              {/*              sizes="(max-width: 768px) 100vw"*/}
+              {/*              fill*/}
+              {/*            />*/}
+              {/*            <ActionIcon*/}
+              {/*              onClick={() => handleImageDelete(index)}*/}
+              {/*              size="sm"*/}
+              {/*              variant="flat"*/}
+              {/*              color="danger"*/}
+              {/*              className="invisible absolute right-5 top-5 z-50 ms-auto flex-shrink-0 bg-gray-0 p-0 opacity-0 transition-all hover:enabled:bg-white group-hover:visible group-hover:opacity-100"*/}
+              {/*            >*/}
+              {/*              <PiTrashBold className="w-6" />*/}
+              {/*            </ActionIcon>*/}
+              {/*          </div>*/}
+              {/*        ))}*/}
+              {/*      </div>*/}
+              {/*      <div className="my-5">*/}
+              {/*        <Upload*/}
+              {/*          label={''}*/}
+              {/*          ref={imageRef}*/}
+              {/*          accept="img"*/}
+              {/*          multiple*/}
+              {/*          onChange={handleImageUpload}*/}
+              {/*          iconClassName="w-28 h-auto"*/}
+              {/*          className="mb-5 min-h-[200px] justify-center border-dashed bg-gray-50"*/}
+              {/*        />*/}
+              {/*      </div>*/}
+              {/*    </div>*/}
+              {/*  </HorizontalFormBlockWrapper>*/}
+              {/*</div>*/}
 
-              <div className="border-gary-300 sticky bottom-0 z-40 -mx-6 -mb-7 flex items-center justify-end gap-3 border-t bg-gray-0/10 px-10 py-5 backdrop-blur @lg:gap-4 @xl:grid @xl:auto-cols-max @xl:grid-flow-col 3xl:-mx-8 4xl:-mx-10">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full @xl:w-auto"
-                >
-                  لغو
-                </Button>
-                <Button
-                  type="submit"
-                  isLoading={isLoading}
-                  className="w-full @xl:w-auto dark:bg-gray-100 dark:text-white dark:focus:bg-gray-100"
-                >
-                  ذخیره
-                </Button>
-              </div>
+              {/*<div className="border-gary-300 sticky bottom-0 z-40 -mx-6 -mb-7 flex items-center justify-end gap-3 border-t bg-gray-0/10 px-10 py-5 backdrop-blur @lg:gap-4 @xl:grid @xl:auto-cols-max @xl:grid-flow-col 3xl:-mx-8 4xl:-mx-10">*/}
+              {/*  <Button*/}
+              {/*    type="button"*/}
+              {/*    variant="outline"*/}
+              {/*    className="w-full @xl:w-auto"*/}
+              {/*  >*/}
+              {/*    لغو*/}
+              {/*  </Button>*/}
+              {/*  <Button*/}
+              {/*    type="submit"*/}
+              {/*    isLoading={isLoading}*/}
+              {/*    className="w-full @xl:w-auto dark:bg-gray-100 dark:text-white dark:focus:bg-gray-100"*/}
+              {/*  >*/}
+              {/*    ذخیره*/}
+              {/*  </Button>*/}
+              {/*</div>*/}
+              <PersonalInfoView />
             </>
           );
         }}

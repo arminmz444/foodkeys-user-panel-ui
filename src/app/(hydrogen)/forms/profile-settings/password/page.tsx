@@ -8,14 +8,14 @@ const pageHeader = {
   breadcrumb: [
     {
       href: routes.eCommerce.dashboard,
-      name: 'ایکامرس',
+      name: 'مدیریت اطلاعات',
     },
     {
       href: routes.forms.profileSettings,
-      name: 'فرم',
+      name: 'حساب کاربری',
     },
     {
-      name: 'تنطیمات حساب کاربری',
+      name: 'رمز عبور',
     },
   ],
 };
@@ -24,7 +24,7 @@ export default function ProfileSettingsFormPage() {
   return (
     <PasswordSettingsView
       settings={{
-        currentPassword: '9876543210',
+        currentPassword: '',
         newPassword: '',
         confirmedPassword: '',
       }}
