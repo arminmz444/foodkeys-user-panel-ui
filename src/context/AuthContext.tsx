@@ -199,7 +199,7 @@ export const AuthProvider = ({ children }) => {
     // @ts-ignore
     return (
         // @ts-ignore
-        <AuthContext.Provider value={{ state, login, loginOtp, requestOtp, changePassword, logout }}>
+        <AuthContext.Provider value={{ state, login, loginOtp, requestOtp, changePassword, logout, dispatch }}>
             {children}
         </AuthContext.Provider>
     );
