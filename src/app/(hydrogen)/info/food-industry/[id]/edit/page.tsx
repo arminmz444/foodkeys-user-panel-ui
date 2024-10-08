@@ -79,6 +79,10 @@ export default function EditCompanyPage({
     breadcrumb: [
       {
         href: routes.info.dashboard,
+        name: 'مدیریت اطلاعات',
+      },
+      {
+        href: routes.info.foodIndustryList,
         name: 'بانک صنعت غذا',
       },
       {
@@ -89,9 +93,9 @@ export default function EditCompanyPage({
         href: routes.info.foodIndustryEdit(Number(params.id)),
         name: 'ویرایش اطلاعات شرکت',
       },
-      {
-        name: params.id,
-      },
+      // {
+      //   name: params.id,
+      // },
     ],
   };
   return (

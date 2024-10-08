@@ -3,7 +3,7 @@ import { routes } from '@/config/routes';
 import { Button } from '@/components/ui/button';
 import { PiPlusBold } from 'react-icons/pi';
 import PageHeader from '@/app/shared/page-header';
-import CreateProduct from '@/app/shared/ecommerce/product/create';
+import CreateProduct from '@/app/shared/info/food-industry/company/create';
 
 const pageHeader = {
   title: 'ساخت محصول',
