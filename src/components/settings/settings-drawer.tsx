@@ -197,7 +197,7 @@ export default function SettingsDrawer({
             colorPresetName={colorPresetName}
             setColorPresetName={setColorPresetName}
           />
-          <AppDirection direction={direction} setDirection={setDirection} />
+          {/*<AppDirection direction={direction} setDirection={setDirection} />*/}
           <ColorOptions
             setColorPresets={setColorPresets}
             colorPresetName={colorPresetName}
@@ -205,20 +205,20 @@ export default function SettingsDrawer({
           />
         </div>
       </SimpleBar>
-      <a
-        href="https://themeforest.net/item/isomorphic-react-redux-admin-dashboard/20262330?ref=redqteam"
-        target="_blank"
-        className="grid grid-cols-1 px-6"
-      >
-        <Button
-          size="lg"
-          tag="span"
-          color="primary"
-          className="font-iransans text-sm font-medium uppercase dark:bg-gray-50"
-        >
-          همین الان خرید کنید
-        </Button>
-      </a>
+      {/*<a*/}
+      {/*  href="https://themeforest.net/item/isomorphic-react-redux-admin-dashboard/20262330?ref=redqteam"*/}
+      {/*  target="_blank"*/}
+      {/*  className="grid grid-cols-1 px-6"*/}
+      {/*>*/}
+      {/*  /!*<Button*!/*/}
+      {/*  /!*  size="lg"*!/*/}
+      {/*  /!*  tag="span"*!/*/}
+      {/*  /!*  color="primary"*!/*/}
+      {/*  /!*  className="font-iransans text-sm font-medium uppercase dark:bg-gray-50"*!/*/}
+      {/*  /!*>*!/*/}
+      {/*  /!*  همین الان خرید کنید*!/*/}
+      {/*  /!*</Button>*!/*/}
+      {/*</a>*/}
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { formatDate } from '@/utils/format-date';
 
 export function getRelativeTime(date: Date): string {
+  console.log(date)
   if (!date) return '';
   date = new Date(date);
   const now = new Date();

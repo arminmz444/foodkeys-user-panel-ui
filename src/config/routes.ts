@@ -54,6 +54,41 @@ export const routes = {
     checkout: '/company/checkout',
     trackingId: (id: string) => `/company/tracking/${id}`,
   },
+  finance: {
+    dashboard: '/finance',
+    wallet: '/finance/wallet',
+    paymentList: '/finance/payment',
+    paymentDetails: (id: string) => `/finance/payment/${id}`,
+    invoiceList: '/finance/invoice',
+    invoiceDetails: (id: string) => `/finance/invoice/${id}`,
+    invoiceEdit: (id: string) => `/finance/invoice/${id}/edit`,
+    invoiceCreate: '/finance/invoice/create',
+    // list: '/finance/list',
+    // view: (id: string) => `/finance/list/${id}`,
+  },
+  wallet: {
+    main: '/finance/wallet'
+  },
+  payment: {
+    list: '/finance/payment',
+    view: (id: string) => `/finance/payment/${id}`,
+  },
+  // invoice: {
+  //   list: '/finance/invoice/list',
+  //   view: (id: string) => `/finance/invoice/list/${id}`,
+  // },
+  invoice: {
+    home: '/finance/invoice',
+    create: '/finance/invoice/create',
+    details: (id: string) => `/finance/invoice/${id}`,
+    edit: (id: string) => `/finance/invoice/${id}/edit`,
+  },
+  offer: {
+    dashboard: '/offer',
+    list: '/offer/list',
+    view: (id: string) => `/offer/list/${id}`,
+    buy: (id: string) => `/offer/buy/${id}`,
+  },
   support: {
     dashboard: '/support',
     inbox: '/support/inbox',
@@ -83,12 +118,6 @@ export const routes = {
     manager: '/file-manager',
     upload: '/file-manager/upload',
     create: '/file-manager/create',
-  },
-  invoice: {
-    home: '/invoice',
-    create: '/invoice/create',
-    details: (id: string) => `/invoice/${id}`,
-    edit: (id: string) => `/invoice/${id}/edit`,
   },
   widgets: {
     cards: '/widgets/cards',
