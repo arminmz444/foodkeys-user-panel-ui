@@ -26,6 +26,8 @@ import {
 } from '@/data/support-inbox';
 import { LineGroup, Skeleton } from '@/components/ui/skeleton';
 import SimpleBar from '@/components/ui/simplebar';
+import useAxiosPrivate from "@/hooks/use-axios-private";
+import toast from "react-hot-toast";
 
 interface MessageItemProps {
   message: MessageType;
@@ -110,9 +112,9 @@ export function MessageItem({ className, message }: MessageItemProps) {
         <div className="flex items-center justify-between lg:flex-col lg:items-start 2xl:flex-row 2xl:items-center">
           <Text tag="h4" className="flex items-center">
             <span className="text-sm font-semibold dark:text-gray-700">
-              {message.title}
+              {message.subject}
             </span>
-            {message.hasAttachments && (
+            {message.hasAttachment && (
               <PiPaperclipLight className="mr-2 h-4 w-4 text-gray-500" />
             )}
             {!message.markedAsRead && (
@@ -120,7 +122,8 @@ export function MessageItem({ className, message }: MessageItemProps) {
             )}
           </Text>
           <span className="text-xs text-gray-500">
-            {getRelativeTime(new Date(message.date))}
+            {/*{getRelativeTime(new Date(message.createdAt))}*/}
+            {message.createdAtStr}
           </span>
         </div>
         <p className="mt-1 line-clamp-3 text-sm text-gray-500">
@@ -166,12 +169,39 @@ interface InboxListProps {
 type SortByType = keyof typeof sortOptions;
 
 export default function MessageList({ className }: InboxListProps) {
+  const _axios = useAxiosPrivate();
   const [data, setData] = useAtom(dataAtom);
   // const resetData = useResetAtom(dataAtom);
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortByType>(sortOptions.desc);
   const [status, setStatus] = useState<SupportStatusType>(supportStatuses.Open);
   const [selectAll, setSelectAll] = useState(false);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await _axios.get(`/ticket/`, {
+          params: {
+            page: currentPage,
+            size: pageSize,
+          },
+        });
+        if (response.data.status === 'SUCCESS') {
+          setData(response.data.data);
+          setTotalItems(response.data.pagination.totalElements);
+        }
+      } catch (error) {
+        console.error('Error fetching ticket data:', error);
+        toast.error("خطا در دریافت تیکت‌ها")
+      }
+    };
+
+    fetchTickets();
+  }, [_axios, currentPage, pageSize]);
 
   useEffect(() => {
     const updatedItems = messages.filter(
