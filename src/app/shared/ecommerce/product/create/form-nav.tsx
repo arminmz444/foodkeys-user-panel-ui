@@ -4,7 +4,8 @@ import SimpleBar from '@/components/ui/simplebar';
 
 export const formParts = {
   summary: 'summary',
-  overview: 'overview',
+  intro: 'intro',
+  history: 'history',
   products: 'products',
   contact: 'contact',
   factory: 'factory',
@@ -22,13 +23,13 @@ export const formParts = {
 };
 
 export const menuItems = [
-  // {
-  //   label: 'خلاصه',
-  //   value: formParts.summary,
-  // },
   {
-    label: 'اطلاعات کلی شرکت',
-    value: formParts.overview,
+    label: 'معرفی شرکت',
+    value: formParts.intro,
+  },
+  {
+    label: 'تاریخچه',
+    value: formParts.history,
   },
   {
     label: 'اطلاعات تماس کارخانه',
@@ -39,7 +40,7 @@ export const menuItems = [
     value: formParts.office,
   },
   {
-    label: 'اطلاعات شبکه های اجتماعی و اینترنت',
+    label: 'شبکه های اجتماعی و اینترنت',
     value: formParts.social,
   },
   {

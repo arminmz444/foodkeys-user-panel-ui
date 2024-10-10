@@ -18,6 +18,25 @@ export const routes = {
     checkout: '/ecommerce/checkout',
     trackingId: (id: string) => `/ecommerce/tracking/${id}`,
   },
+  foodIndustry: {
+    dashboard: '/food-industry',
+    products: '/food-industry/products',
+    createProduct: '/food-industry/products/create',
+    productDetails: (id: string) => `/food-industry/products/${id}`,
+    ediProduct: (id: string) => `/food-industry/products/${id}/edit`,
+    categories: '/food-industry/categories',
+    createCategory: '/food-industry/categories/create',
+    editCategory: (id: string) => `/food-industry/categories/${id}/edit`,
+    orders: '/food-industry/orders',
+    createOrder: '/food-industry/orders/create',
+    orderDetails: (id: string) => `/food-industry/orders/${id}`,
+    editOrder: (id: string) => `/food-industry/orders/${id}/edit`,
+    reviews: '/food-industry/reviews',
+    shop: '/food-industry/shop',
+    cart: '/food-industry/cart',
+    checkout: '/food-industry/checkout',
+    trackingId: (id: string) => `/food-industry/tracking/${id}`,
+  },
   info: {
     dashboard: '/info',
     foodIndustryList: '/info/food-industry',
@@ -28,7 +47,8 @@ export const routes = {
     agricultureIndustryList: '/info/agriculture-industry',
     agricultureIndustryAdd: '/info/agriculture-industry/add',
     agricultureIndustryView: (id: number) => `/info/agriculture-industry/${id}`,
-    agricultureIndustryEdit: (id: number) => `/info/agriculture-industry/${id}/edit`,
+    agricultureIndustryEdit: (id: number) =>
+      `/info/agriculture-industry/${id}/edit`,
     serviceIndustry: '/info/service-industry',
     media: '/info/media',
     machineryIndustry: '/info/machinery-industry',
@@ -67,7 +87,7 @@ export const routes = {
     // view: (id: string) => `/finance/list/${id}`,
   },
   wallet: {
-    main: '/finance/wallet'
+    main: '/finance/wallet',
   },
   payment: {
     list: '/finance/payment',
@@ -102,7 +122,7 @@ export const routes = {
     createTemplate: '/support/templates/create',
     viewTemplate: (id: string) => `/support/templates/${id}`,
     editTemplate: (id: string) => `/support/templates/${id}/edit`,
-    ticket: '/support/ticket'
+    ticket: '/support/ticket',
   },
   logistics: {
     dashboard: '/logistics',

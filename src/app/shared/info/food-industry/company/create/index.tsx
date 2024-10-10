@@ -25,13 +25,15 @@ import DeliveryEvent from '@/app/shared/info/food-industry/company/create/delive
 import ProductVariants from '@/app/shared/info/food-industry/company/create/product-variants';
 import ProductTaxonomies from '@/app/shared/info/food-industry/company/create/product-tags';
 import FormFooter from '@/components/form-footer';
-import CompanyFactory from "@/app/shared/info/food-industry/company/create/company-factory";
-import CompanyOffice from "@/app/shared/info/food-industry/company/create/company-office";
-import CompanySocial from "@/app/shared/info/food-industry/company/create/company-social";
-import CompanyComplementary from "@/app/shared/info/food-industry/company/create/company-complementary";
+import CompanyFactory from '@/app/shared/info/food-industry/company/create/company-factory';
+import CompanyOffice from '@/app/shared/info/food-industry/company/create/company-office';
+import CompanySocial from '@/app/shared/info/food-industry/company/create/company-social';
+import CompanyComplementary from '@/app/shared/info/food-industry/company/create/company-complementary';
+import CompanyHistory from './company-history';
 
 const MAP_STEP_TO_COMPONENT = {
-  [formParts.overview]: CompanySummary,
+  [formParts.intro]: CompanySummary,
+  [formParts.history]: CompanyHistory,
   [formParts.factory]: CompanyFactory,
   [formParts.office]: CompanyOffice,
   [formParts.social]: CompanySocial,
@@ -65,7 +67,9 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
       setLoading(false);
       console.log('product_data', data);
       toast.success(
-        <Text tag="b">{id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود</Text>
+        <Text tag="b">
+          {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
+        </Text>
       );
       methods.reset();
     }, 600);
@@ -92,7 +96,7 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
 
           <FormFooter
             isLoading={isLoading}
-            submitBtnText={id ? 'بروز رسانی محصول' : 'ساخت محصول'}
+            submitBtnText={id ? 'بروز رسانی محصول' : 'ثبت شرکت'}
           />
         </form>
       </FormProvider>

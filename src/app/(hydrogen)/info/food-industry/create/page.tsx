@@ -6,15 +6,15 @@ import PageHeader from '@/app/shared/page-header';
 import CreateProduct from '@/app/shared/info/food-industry/company/create';
 
 const pageHeader = {
-  title: 'ساخت محصول',
+  title: 'ثبت شرکت جدید',
   breadcrumb: [
     {
       href: routes.eCommerce.dashboard,
-      name: 'ایکامرس',
+      name: 'بانک صنعت غذا',
     },
     {
       href: routes.eCommerce.products,
-      name: 'محصولات',
+      name: 'شرکت ها',
     },
     {
       name: 'ایجاد',
