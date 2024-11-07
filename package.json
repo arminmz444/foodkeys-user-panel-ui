@@ -66,6 +66,7 @@
     "react-quill": "^2.0.0",
     "react-scroll": "^1.8.9",
     "react-svg-worldmap": "2.0.0-alpha.16",
+    "react-to-print": "^3.0.2",
     "react-use": "^17.4.0",
     "recharts": "^2.8.0",
     "rizzui": "^0.6.0",

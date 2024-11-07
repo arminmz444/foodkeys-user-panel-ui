@@ -1,12 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import logoImg from '@public/logo-primary.svg';
+import logoImg from '@public/fkLogo.png';
 import logoImgText from '@public/logo-primary-text.svg';
 import Image from 'next/image';
 import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
-import { PiAppleLogo, PiArrowLeftBold, PiArrowRightBold } from 'react-icons/pi';
+import {
+  PiAppleLogo,
+  PiArrowLeftBold,
+  PiArrowRightBold,
+  PiPasswordBold,
+  PiPasswordFill,
+} from 'react-icons/pi';
 import { FcGoogle } from 'react-icons/fc';
 import OrSeparation from './or-separation';
 import toast from 'react-hot-toast';
@@ -44,10 +50,12 @@ export default function AuthWrapperOne({
     <>
       <Link
         href={'/login'}
-        className="sticky start-0 top-0 z-20 flex items-center justify-center bg-blue p-3.5 text-sm font-medium text-white md:p-4 lg:hidden"
+        className="sticky start-0 top-0 z-20 flex items-center justify-center bg-[#129974] p-3.5 text-sm font-medium text-white md:p-4 lg:hidden"
       >
         <PiArrowRightBold />
-        <Text className="font-iransans font-iransans ms-1">ورود از طریق رمز عبور</Text>
+        <Text className="font-iransans font-iransans ms-1">
+          ورود از طریق رمز عبور
+        </Text>
       </Link>
 
       <div className="min-h-screen justify-between gap-x-8 px-4 py-8 pt-5 md:pt-6 lg:flex lg:p-6 xl:gap-x-10 xl:p-7 2xl:p-10 2xl:pt-5 [&>div]:min-h-[calc(100vh-80px)]">
@@ -63,14 +71,21 @@ export default function AuthWrapperOne({
             <div className="mb-7 px-6 pt-3 text-center md:pt-0 lg:px-0 lg:text-start xl:mb-8 2xl:mb-10">
               <Link
                 href={'/'}
-                className="mb-6 inline-flex max-w-[168px] xl:mb-8"
+                className="mb-6 inline-flex items-center justify-center xl:mb-8"
               >
-                <Image src={logoImg} alt="Isomorphic" />
                 <Image
+                  className="h-12 w-12"
+                  src={logoImg}
+                  alt="مرجع صنایع غذایی و کشاورزی ایران"
+                />
+                <h4 className="ps-2.5 font-black  dark:invert">
+                  مرجع صنایع غذایی و کشاورزی ایران{' '}
+                </h4>
+                {/* <Image
                   src={logoImgText}
                   alt="Isomorphic"
                   className="ps-2.5 dark:invert"
-                />
+                /> */}
               </Link>
               <Text
                 tag="h2"
@@ -90,9 +105,10 @@ export default function AuthWrapperOne({
                       // it should be signIn('apple')
                       handleSignIn()
                     }
-                    className="h-11 w-full"
+                    className=":bg-orange-light h-11 w-full bg-[#129974]"
+                    color="success"
                   >
-                    <PiAppleLogo className="me-2 h-4 w-4 shrink-0" />
+                    <PiPasswordFill className="me-2 h-4 w-4 shrink-0" />
                     <span className="truncate">ورود با کد یکبار مصرف</span>
                   </Button>
                   <Button
@@ -114,9 +130,9 @@ export default function AuthWrapperOne({
             {children}
           </div>
         </div>
-        <div className="hidden w-7/12 items-center justify-center rounded-[20px] bg-gray-50 px-6 dark:bg-gray-100/40 lg:flex xl:justify-start 2xl:px-16">
+        <div className="relative hidden w-4/12 items-center justify-center rounded-[20px] bg-[#129974] px-6 dark:bg-gray-100/40 lg:flex xl:justify-start 2xl:px-16">
           <div className="pb-8 pt-10 text-center xl:pt-16 2xl:block 2xl:w-[1063px]">
-            <div className="mx-auto mb-10 max-w-sm pt-2 2xl:max-w-lg">
+            {/* <div className="mx-auto mb-10 max-w-sm pt-2 2xl:max-w-lg">
               <Text
                 tag="h2"
                 className="mb-5 font-semibold !leading-normal lg:text-[26px] 2xl:px-10 2xl:text-[32px]"
@@ -126,7 +142,7 @@ export default function AuthWrapperOne({
               <Text className="leading-[1.85] text-gray-700 md:leading-loose 2xl:px-6">
                 {bannerDescription}
               </Text>
-            </div>
+            </div> */}
             {pageImage}
           </div>
         </div>

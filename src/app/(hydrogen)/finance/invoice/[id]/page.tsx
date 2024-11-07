@@ -5,6 +5,8 @@ import { routes } from '@/config/routes';
 import InvoiceDetails from '@/app/shared/invoice/invoice-details';
 import PageHeader from '@/app/shared/page-header';
 import { PiDownloadSimpleBold, PiPrinterBold } from 'react-icons/pi';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 const pageHeader = {
   title: 'جزییات فاکتور',
@@ -24,15 +26,24 @@ const pageHeader = {
 };
 
 export default function InvoiceDetailsPage({ params }: any) {
+  const invoiceRef = useRef<HTMLDivElement>();
+  const reactToPrintFn = useReactToPrint({ invoiceRef });
+
   function handlePrint() {
     console.log('write print logic');
   }
   return (
     <>
-      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
+      <PageHeader
+        title={pageHeader.title}
+        breadcrumb={pageHeader.breadcrumb}
+        className="print:hidden"
+      >
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
           <Button
-            onClick={() => handlePrint()}
+            onClick={() => {
+              window.print();
+            }}
             variant="outline"
             className="w-full @lg:w-auto"
           >
@@ -46,7 +57,7 @@ export default function InvoiceDetailsPage({ params }: any) {
         </div>
       </PageHeader>
 
-      <InvoiceDetails />
+      <InvoiceDetails ref={invoiceRef} />
     </>
   );
 }

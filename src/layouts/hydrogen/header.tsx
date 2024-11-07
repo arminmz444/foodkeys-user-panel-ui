@@ -69,7 +69,7 @@ function HeaderMenuRight() {
   }, []);
 
   return (
-    <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 xs:gap-3 xl:gap-4">
+    <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
       {/*<MessagesDropdown>*/}
       {/*  <ActionIcon*/}
       {/*    aria-label="Messages"*/}
@@ -124,7 +124,7 @@ export default function Header() {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 flex items-center bg-gray-0/80 px-4 py-4 backdrop-blur-xl dark:bg-gray-50/50 md:px-5 lg:px-6 2xl:py-5 3xl:px-8 4xl:px-10',
+        'sticky top-0 z-50 flex items-center bg-gray-0/80 px-4 py-4 backdrop-blur-xl dark:bg-gray-50/50 print:hidden md:px-5 lg:px-6 2xl:py-5 3xl:px-8 4xl:px-10',
         ((isMounted && windowScroll.y) as number) > 2 ? 'card-shadow' : ''
       )}
     >

@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import SocialItems from '@/components/ui/social-shares';
 import { usePathname, useRouter } from 'next/navigation';
 import cn from '@/utils/class-names';
 import { siteConfig } from '@/config/site.config';
@@ -29,13 +28,17 @@ export default function OtherPagesLayout({
             notIn ? 'justify-between' : 'justify-center'
           )}
         >
-          <Link href={'/'}>
+          <Link href={'/'} className="flex items-center justify-center gap-1">
             <Image
               src={siteConfig.logo}
               alt={siteConfig.title}
-              className="dark:invert"
+              className="h-12 w-12"
               priority
             />
+
+            <h4 className="ps-2.5 font-black  dark:invert">
+              مرجع صنایع غذایی و کشاورزی ایران{' '}
+            </h4>
           </Link>
           {notIn && (
             <Button
@@ -50,7 +53,6 @@ export default function OtherPagesLayout({
         </div>
       </div>
       {children}
-      <SocialItems />
     </div>
   );
 }

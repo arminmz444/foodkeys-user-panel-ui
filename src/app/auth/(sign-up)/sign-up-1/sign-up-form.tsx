@@ -17,6 +17,7 @@ type FormValues = {
   firstName: string;
   lastName?: string;
   email: string;
+  phone: string;
   password: string;
   confirmPassword: string;
   isAgreed: boolean;
@@ -26,15 +27,20 @@ const initialValues = {
   firstName: '',
   lastName: '',
   email: '',
+  phone: '',
   password: '',
   confirmPassword: '',
   isAgreed: false,
 };
 
 const signUpFormSchema = z.object({
-  firstName: z.string().min(1, { message: 'نام الزامی میباشد' }),
-  lastName: z.string().optional(),
-  email: z.string().email({ message: 'آدرس ایمیل اشتباه میباشد' }),
+  firstName: z.string().min(1, { message: 'نام الزامی می‌باشد' }),
+  lastName: z.string().min(1, { message: 'نام خانوادگی الزامی می‌باشد' }),
+  email: z.string().email({ message: 'آدرس ایمیل اشتباه می‌باشد' }),
+  phone: z
+    .string()
+    .regex(/^\d+$/, 'شماره همراه فقط شامل اعداد میباشد')
+    .length(11, 'شماره همراه باید 11 عدد باشد'),
   password: z
     .string()
     .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
@@ -87,42 +93,57 @@ export default function SignUpForm() {
             <Input
               type="text"
               size="lg"
-              label="نام"
+              label="نام*"
               placeholder="نام را وارد کنید"
               className="[&>label>span]:font-medium"
-              color="info"
+              color="success"
               inputClassName="text-sm"
               {...register('firstName')}
               error={errors.firstName?.message}
+              required
             />
             <Input
               type="text"
               size="lg"
-              label="فامیلی"
-              placeholder="فامیلی را وارد کنید"
+              label="نام خانوادگی*"
+              placeholder="نام خانوادگی را وارد کنید"
               className="[&>label>span]:font-medium"
-              color="info"
+              color="success"
               inputClassName="text-sm"
               {...register('lastName')}
               error={errors.lastName?.message}
+              required
             />
             <Input
               type="email"
               size="lg"
-              label="ایمیل"
+              label="ایمیل*"
               className="col-span-2 [&>label>span]:font-medium"
               inputClassName="text-sm"
-              color="info"
-              placeholder="ایمیل را وارد کنید"
+              color="success"
+              placeholder="مثال: info@foodkeys.com"
               {...register('email')}
               error={errors.email?.message}
+              required
+            />
+            <Input
+              type="number"
+              size="lg"
+              label="شماره همراه*"
+              className="col-span-2 [&>label>span]:font-medium"
+              inputClassName="text-sm"
+              color="success"
+              placeholder="مثال: 09123456789"
+              {...register('phone')}
+              error={errors.phone?.message}
+              required
             />
             <Password
               label="رمز عبور"
               placeholder="رمز عبور خود را وارد کنید"
               size="lg"
               className="[&>label>span]:font-medium"
-              color="info"
+              color="success"
               inputClassName="text-sm"
               {...register('password')}
               error={errors.password?.message}
@@ -132,7 +153,7 @@ export default function SignUpForm() {
               placeholder="تکرار رمز عبور را وارد کنید"
               size="lg"
               className="[&>label>span]:font-medium"
-              color="info"
+              color="success"
               inputClassName="text-sm"
               {...register('confirmPassword')}
               error={errors.confirmPassword?.message}
@@ -146,14 +167,14 @@ export default function SignUpForm() {
                     با عضویت، شما به قوانین و مقررات ما موافقت کرده‌اید.{' '}
                     <Link
                       href="/"
-                      className="font-medium text-blue transition-colors hover:underline"
+                      className="font-medium text-[#129974] transition-colors hover:underline"
                     >
                       قوانین
                     </Link>{' '}
                     &{' '}
                     <Link
                       href="/"
-                      className="font-medium text-blue transition-colors hover:underline"
+                      className="font-medium text-[#129974] transition-colors hover:underline"
                     >
                       سیاست حفظ حریم خصوصی
                     </Link>
@@ -163,12 +184,12 @@ export default function SignUpForm() {
             </div>
             <Button
               size="lg"
-              color="info"
+              color="success"
               type="submit"
-              className="col-span-2 mt-2"
+              className="group/btn col-span-2 mt-2"
             >
-              <span>شروع</span>{' '}
-              <PiArrowLeftBold className="ms-2 mt-0.5 h-5 w-5" />
+              <span>ثبت نام</span>{' '}
+              <PiArrowLeftBold className="ms-2 mt-0.5 h-5 w-5 transition-all group-hover/btn:-translate-x-2" />
             </Button>
           </div>
         )}
@@ -177,7 +198,7 @@ export default function SignUpForm() {
         آیا حساب کاربری ندارید?{' '}
         <Link
           href={routes.auth.signIn1}
-          className="font-semibold text-gray-700 transition-colors hover:text-blue"
+          className="font-semibold text-gray-700 transition-colors hover:text-[#129974]"
         >
           ورود
         </Link>

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 
 // import images and icons
-import ForbiddenImg from '@public/403img.svg';
+import ForbiddenImg from '@public/403img.webp';
 import ForbiddenTwoImg from '@public/forbidden-two.png';
 import { PiHouseLineBold } from 'react-icons/pi';
 
@@ -31,7 +31,7 @@ export default function AccessDeniedPage() {
           tag="h1"
           className="text-2xl font-bold leading-normal text-gray-1000 lg:text-3xl"
         >
-          دسترسی ندارید
+          دسترسی ندارید!
         </Text>
         <p className="mt-3 text-sm leading-loose text-gray-500 lg:mt-6 lg:text-base lg:leading-loose">
           شما دسترسی لازم برای ورود به این صفحه را ندارید.
@@ -39,9 +39,9 @@ export default function AccessDeniedPage() {
           لطفاً با مدیر سایت تماس بگیرید تا دسترسی را درخواست کنید.
         </p>
         <Button
-          color="primary"
+          color="success"
           size="xl"
-          className="mt-8 h-12 px-4 xl:h-14 xl:px-6"
+          className="mt-8 h-12 bg-[#129974] px-4 xl:h-14 xl:px-6"
           onClick={() => push('/')}
         >
           <PiHouseLineBold className="ml-3 text-lg" />
