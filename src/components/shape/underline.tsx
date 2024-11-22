@@ -7,6 +7,7 @@ export default function UnderlineShape({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
+      color="#129974"
     >
       <path
         fillRule="evenodd"

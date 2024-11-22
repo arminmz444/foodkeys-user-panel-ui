@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { Dispatch, ReactElement, useState } from 'react';
 import cn from '@/utils/class-names';
 import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
 import { RadioGroup } from '@/components/ui/radio-group';
+import { Badge } from '@/components/ui/badge';
 import { useModal } from '@/app/shared/modal-views/use-modal';
 import HorizontalFormBlockWrapper from './horiozontal-block';
 import {
+  PiCheckBold,
   PiCheckCircleFill,
   PiDownloadSimpleBold,
   PiFire,
@@ -23,56 +25,63 @@ import VisaIcon from '@/components/icons/visa';
 import ApplePayIcon from '@/components/icons/apple-pay';
 import { billingHistoryData } from '@/data/billing-history';
 import { exportToCSV } from '@/utils/export-to-csv';
+import { BiTestTube } from 'react-icons/bi';
+import { FaCheckCircle } from 'react-icons/fa';
+import { IoIosArrowBack } from 'react-icons/io';
+import { SetStateAction } from 'jotai';
+import { JsxElement } from 'typescript';
+import mellat from 'public/mellat.png';
+import zarinPal from 'public/zarinPal.webp';
+import Image from 'next/image';
+import TomanIcon from '@/components/toman/tomanIcon';
+import { Input } from 'rizzui';
 
-const plansOptions = [
+const plansOptions: {
+  icon: ReactElement;
+  title: string;
+  description: string;
+  value: 'free' | 'basic' | 'premium';
+}[] = [
   {
-    icon: <PiStackSimple className="h-4 w-4 text-gray-900" />,
-    title: 'پلن پایه 10 دلار در ماه',
+    icon: <BiTestTube className="h-4 w-4 text-gray-900" />,
+    title: 'پلن تست رایگان 2 ماهه',
     description:
-      'شامل حداکثر 10 کاربر، 20 گیگابایت داده شخصی و دسترسی به تمامی ویژگی‌ها.',
-    value: 'basic',
+      'شامل یک سایت استاندارد ویژه، پشتیبانی 24 ساعته و دسترسی به تمامی ویژگی‌ها (برای شرکت هایی که برای بار اول ثبت نام کرده اند).',
+    value: 'free',
   },
   {
     icon: <PiFire className="h-4 w-4 text-gray-900" />,
-    title: 'پلن ویژه 20 دلار در ماه',
+    title: 'پلن پایه 500,000 تومان ماهیانه',
     description:
-      'شامل حداکثر 20 کاربر، 40 گیگابایت داده شخصی و دسترسی به تمامی ویژگی‌ها.',
-    value: 'premium',
+      'شامل یک سایت استاندارد ویژه، پشتیبانی 24 ساعته و دسترسی به تمامی ویژگی‌ها.',
+    value: 'basic',
   },
   {
     icon: <PiLightning className="h-4 w-4 text-gray-900" />,
-    title: 'پلن شرکتی 40 دلار در ماه',
+    title: 'پلن ویژه 6,000,000 تومان سالیانه',
     description:
-      'تعداد کاربران نامحدود، داده شخصی نامحدود و دسترسی به تمامی ویژگی‌ها.',
-    value: 'enterprise',
+      'شامل یک سایت استاندارد ویژه، پشتیبانی 24 ساعته، دسترسی به تمامی ویژگی‌ها، 3 ماه اشتراک رایگاه اضافی، تخفیف سالیانه.',
+    value: 'premium',
   },
 ];
 
 const cardsOptions = [
   {
-    icon: <MasterCardIcon className="" />,
-    title: 'مستر کارت پایان در 1409',
-    expiry: '06/09',
+    icon: zarinPal,
+    title: 'درگاه زرین پال',
     default: true,
-    value: 'mastercard',
+    value: 'zarinPal',
   },
   {
-    icon: <VisaIcon className="" />,
-    title: 'ویزا پایان در 1409',
-    expiry: '06/09',
+    icon: mellat,
+    title: 'درگاه بانک ملت',
     default: false,
-    value: 'visa',
-  },
-  {
-    icon: <ApplePayIcon className="dark:invert" />,
-    title: 'اپل پی پایان در 1408',
-    expiry: '06/08',
-    default: false,
-    value: 'applepay',
+    value: 'mellat',
   },
 ];
 
 export default function BillingSettingsView() {
+  const [currentPlan, setCurrentPlan] = useState<string>('premium');
   function handleExportData() {
     exportToCSV(
       billingHistoryData,
@@ -90,45 +99,83 @@ export default function BillingSettingsView() {
         description=" "
       />
       <HorizontalFormBlockWrapper
-        title="پلن فعلی"
-        description="اگر نیاز به کاهش سطح سرویس خود در طول دوره‌ی صورتحساب دارید، ما به حساب شما اعتبار خواهیم داد."
+        title="انتخاب پلن"
+        description="با توجه به نیاز خود پلن مورد نظر را برای استفاده از خدمات سایت انتخاب نمایید."
         descriptionClassName="max-w-md"
         childrenWrapperClassName="@3xl:grid-cols-1 max-w-5xl w-full"
       >
         <div>
-          <CurrentPlans />
+          <CurrentPlans
+            currentPlan={currentPlan}
+            setCurrentPlan={setCurrentPlan}
+          />
+          <ul className="mt-10 text-gray-500">
+            <li className="my-1 flex items-center gap-3 ">
+              <PiCheckBold
+                className="flex-shrink-0 flex-grow-0 "
+                size={20}
+                color="#129974"
+              />
+              اختصاص یک سایت استاندارد ویژه با امکانات کامل (معرفی شرکت، عکس و
+              مشخصات کالا یا خدمات و ...)
+            </li>
+            <li className="my-1 flex items-center gap-3">
+              <PiCheckBold
+                className="flex-shrink-0 flex-grow-0 "
+                size={20}
+                color="#129974"
+              />
+              امکان اعمال تغییرات و مدیریت سایت استاندارد ویژه در هر لحظه و بدون
+              مهارت فنی
+            </li>
+            <li className="my-1 flex items-center gap-3">
+              <PiCheckBold
+                className="flex-shrink-0 flex-grow-0 "
+                size={20}
+                color="#129974"
+              />
+              حضور در صفحه اول گوگل در کمتر از یک ماه
+            </li>
+            <li className="my-1 flex items-center gap-3">
+              <PiCheckBold
+                className="flex-shrink-0 flex-grow-0 "
+                size={20}
+                color="#129974"
+              />
+              بی نیاز از داشتن سایت اختصاصی و دغدغه نگهداری و هزینه های آن
+            </li>
+            <li className="my-1 flex items-center gap-3">
+              <PiCheckBold
+                className="flex-shrink-0 flex-grow-0 "
+                size={20}
+                color="#129974"
+              />
+              ضمانت افزایش فروش کالا و خدمات شما
+            </li>
+            <li className="my-1 flex items-center gap-3">
+              <PiCheckBold
+                className="flex-shrink-0 flex-grow-0 "
+                size={20}
+                color="#129974"
+              />
+              کمک به ارتقاء موقعیت شما نسبت به رقبا
+            </li>
+          </ul>
         </div>
       </HorizontalFormBlockWrapper>
-      <HorizontalFormBlockWrapper
-        title="جزییات کارت"
-        description="آپدیت کردن جزییات پرداخت"
-        descriptionClassName="max-w-md"
-        childrenWrapperClassName="@3xl:grid-cols-1 max-w-5xl w-full"
-      >
-        <CardDetails />
-      </HorizontalFormBlockWrapper>
-      <div className="mt-8 xl:mt-10">
-        <div className="mb-5 flex items-center justify-between">
-          <Text tag="h5" className="text-[17px] font-semibold">
-            تاریخچه مالی
-          </Text>
-          <Button
-            onClick={() => handleExportData()}
-            className="dark:bg-gray-200 dark:text-white"
-          >
-            <PiDownloadSimpleBold className="me-2 h-4 w-4" />
-            دانلود
-          </Button>
-        </div>
-        <BillingHistoryTable data={billingHistoryData} />
-      </div>
+      <ConfirmationCard currentPlan={currentPlan} />
+      <TotalCard currentPlan={currentPlan} />
     </>
   );
 }
 
-export function CurrentPlans() {
-  const [currentPlan, setCurrentPlan] = useState('basic');
-
+export function CurrentPlans({
+  currentPlan,
+  setCurrentPlan,
+}: {
+  currentPlan: 'free' | 'basic' | 'premium' | string;
+  setCurrentPlan: Dispatch<SetStateAction<string>>;
+}) {
   return (
     <RadioGroup
       value={currentPlan}
@@ -156,6 +203,16 @@ export function CurrentPlans() {
                   className="mb-1 text-sm font-medium text-gray-900"
                 >
                   {plan.title}
+                  {index == 2 && (
+                    <Badge
+                      variant="flat"
+                      rounded="DEFAULT"
+                      color="danger"
+                      className="mr-2"
+                    >
+                      محبوب ترین{' '}
+                    </Badge>
+                  )}
                 </Text>
                 <PiCheckCircleFill className="icon hidden h-6 w-6 flex-shrink-0 text-gray-900" />
               </div>
@@ -169,12 +226,11 @@ export function CurrentPlans() {
 }
 
 export function CardDetails() {
-  const [paymentMethod, setPaymentMethod] = useState('mastercard');
-  const { openModal } = useModal();
+  const [paymentMethod, setPaymentMethod] = useState('zarinPal');
 
   return (
     <div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 xs:flex-row">
         {cardsOptions.map((cards, index) => (
           <AdvancedRadio
             key={`cards-${index}`}
@@ -185,33 +241,14 @@ export function CardDetails() {
             className="flex gap-3 rounded-xl border border-gray-300 p-5 text-sm hover:cursor-pointer hover:border-gray-900"
             inputClassName="[&:checked~span_div>.icon]:block [&:checked~span]:ring-1 [&:checked~span]:ring-offset-0 [&:checked~span]:ring-gray-900 [&:checked~span]:!border-gray-900"
           >
-            <div className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md border border-gray-100 px-2 py-1.5">
-              {cards.icon}
-            </div>
-            <div className="block">
-              <Text tag="h6" className="mb-1 text-sm font-medium">
-                {cards.title}
-              </Text>
-              <Text tag="p">
-                انقضا <span className="font-medium">{cards.expiry}</span>
-              </Text>
-              <div className="mt-2 flex gap-3">
-                <Button
-                  variant="text"
-                  className={cn(
-                    'h-auto p-0',
-                    cards.default && 'bg-transparent text-gray-500'
-                  )}
-                  disabled={cards.default}
-                >
-                  تنظیم به عنوان پیشفرض
-                </Button>
-                <Button
-                  variant="text"
-                  className={cn('h-auto p-0 text-gray-900')}
-                >
-                  ویرایش
-                </Button>
+            <div className="flex items-center justify-center">
+              <div className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md px-2 py-1.5">
+                <Image src={cards.icon} alt="" />
+              </div>
+              <div className="block">
+                <Text tag="h6" className="mb-1 text-sm font-medium">
+                  {cards.title}
+                </Text>
               </div>
             </div>
             {cards.value === paymentMethod ? (
@@ -222,22 +259,165 @@ export function CardDetails() {
           </AdvancedRadio>
         ))}
       </div>
-
-      <div>
-        <Button
-          type="button"
-          variant="outline"
-          className="mt-4"
-          onClick={() =>
-            openModal({
-              view: <AddBillingCardModalView />,
-            })
-          }
-        >
-          <PiPlusBold className="me-2 h-4 w-4" />
-          <span>اضافه کردن کارت جدید</span>
-        </Button>
-      </div>
     </div>
   );
 }
+
+const ConfirmationCard = ({
+  currentPlan,
+}: {
+  currentPlan: string | 'free' | 'basic' | 'premium';
+}) => {
+  const ordersMap = {
+    free: { title: 'خرید اشتراک تست 2 ماهه رایگان', price: '0' },
+    basic: { title: 'خرید اشتراک یک ماهه', price: '500,000' },
+    premium: { title: 'خرید اشتراک یک ساله', price: '6,000,000' },
+  };
+  return (
+    <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl border bg-white p-2 shadow-xl sm:p-6">
+      <span className="flex items-center justify-center">
+        <span className="ml-3 h-4 w-4 rounded-full bg-black" />
+        <h4>تایید و پرداخت</h4>
+      </span>
+
+      <div className="mt-10 flex w-full flex-col">
+        <div className="flex w-full justify-between pl-4 md:pl-24">
+          <p>سفارش ها</p>
+          <p>هزینه</p>
+        </div>
+        <div className="flex w-full justify-between">
+          <div className="ml-2 mt-5 flex w-3/4 items-center gap-2 rounded-xl bg-gray-100 p-3 text-gray-600 sm:w-4/5 md:ml-8 md:p-4 xl:p-6">
+            <FaCheckCircle
+              size={20}
+              style={{ flexShrink: '0' }}
+              color="#10b981"
+            />
+            <p className="flex gap-1 text-xs md:text-base">
+              {/* @ts-ignore */}
+              {ordersMap[currentPlan].title} بانک صنایع غذایی
+            </p>
+          </div>
+          <div className="mt-5 flex w-1/4 items-center justify-center rounded-xl bg-gray-100 p-3 text-gray-600 sm:w-1/5 md:p-4 xl:p-6">
+            <p className="flex gap-1 text-xs md:text-base">
+              {/* @ts-ignore */}
+              {ordersMap[currentPlan].price} تومان
+            </p>
+          </div>
+        </div>
+        {currentPlan === 'premium' && (
+          <div className="flex w-full justify-between">
+            <div className="ml-2 mt-5 flex w-3/4 items-center gap-2 rounded-xl bg-gray-100 p-3 text-gray-600 sm:w-4/5 md:ml-8 md:p-4 xl:p-6">
+              <FaCheckCircle
+                size={20}
+                style={{ flexShrink: '0' }}
+                color="#10b981"
+              />
+              <p className="flex gap-1 text-xs md:text-base">
+                3 ماه اشتراک هدیه{' '}
+              </p>
+            </div>
+
+            <div className="mt-5 flex w-1/4 items-center justify-center rounded-xl  bg-gray-100 p-3 text-gray-600 sm:w-1/5 md:p-4 xl:p-6">
+              <p className="flex gap-1 text-xs md:text-base">0 تومان</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <span className="mb-5 mt-10 flex items-center justify-center">
+        {/* <span className="ml-3 h-4 w-4 rounded-full bg-black" /> */}
+        <h4>درگاه و نوع پرداخت</h4>
+      </span>
+      <CardDetails />
+    </div>
+  );
+};
+
+const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
+  const totalMapper = {
+    free: 0,
+    basic: 500_000,
+    premium: 6_000_000,
+  };
+  const discount = 0;
+  // @ts-ignore
+  const totalPrice =
+    // @ts-ignore
+    totalMapper[currentPlan] + totalMapper[currentPlan] * 0.1 + discount;
+  return (
+    <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl bg-white p-2 shadow-xl sm:p-6">
+      <span className="flex w-full items-center justify-start">
+        <span className="ml-3 h-4 w-4 rounded-full bg-black" />
+        <h4>فاکتور نهایی</h4>
+      </span>
+
+      <div className="mt-10 flex w-full flex-col gap-4">
+        <div className="flex w-full items-start justify-between">
+          <div className="w-4/5">
+            <p className="text-xs sm:text-base">مجموع</p>
+          </div>
+          <div className="w-1/5">
+            <div className="flex items-center justify-end gap-2">
+              <p className="text-xs sm:text-base">
+                {/* @ts-ignore */}
+                {totalMapper[currentPlan].toLocaleString()}
+              </p>
+              <TomanIcon width="30px" height="30px" fillColor="#1e293b" />
+            </div>
+          </div>
+        </div>
+        <div className="flex w-full items-start justify-between">
+          <div className="w-4/5">
+            <p className="text-xs sm:text-base">مالیات بر ارزش افزوده</p>
+          </div>
+          <div className="w-1/5">
+            <div className="flex items-center justify-end gap-2">
+              <p className="text-xs sm:text-base">
+                {/* @ts-ignore */}
+                {(totalMapper[currentPlan] * 0.1).toLocaleString()}
+              </p>
+              <TomanIcon width="30px" height="30px" fillColor="#1e293b" />
+            </div>
+          </div>
+        </div>
+        <div className="flex w-full items-start justify-between text-red-light">
+          <div className="w-4/5">
+            <p className="text-xs sm:text-base">تخفیف</p>
+          </div>
+          <div className="w-1/5">
+            <div className="flex items-center justify-end gap-2">
+              <p className="text-xs sm:text-base">0</p>
+              <TomanIcon width="30px" height="30px" fillColor="#f43f5e" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-10 w-full">
+        <p className="font-semibold">کد تخفیف دارید؟</p>
+        <div className="mt-5 flex w-full flex-col justify-between sm:flex-row">
+          <div className="w-full rounded-xl p-2 text-sm transition-all hover:scale-105 sm:w-2/5">
+            <Input
+              type="text"
+              variant="flat"
+              size="lg"
+              placeholder="کد خود را وارد کنید ..."
+              className="text-sm"
+            />
+          </div>
+          <div className="mt-5 w-1/2 content-center sm:mt-0 sm:w-1/5">
+            <Button className="w-full">اعمال کد</Button>
+          </div>
+        </div>
+      </div>
+      <hr className=" text-slate-300 mb-10 mt-10 w-full" />
+      <div className="flex w-full flex-col items-center justify-between sm:flex-row">
+        <h4>مجموع قابل پرداخت</h4>
+        <div className="flex items-center justify-end gap-2">
+          <h4>{totalPrice.toLocaleString()}</h4>
+          <TomanIcon width="30px" height="30px" fillColor="#1e293b" />
+        </div>
+      </div>
+
+      <Button className="mt-5 w-full">تایید و پرداخت</Button>
+    </div>
+  );
+};

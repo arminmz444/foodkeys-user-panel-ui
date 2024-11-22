@@ -55,8 +55,8 @@ export default function SignInForm() {
             <Input
               type="email"
               size="lg"
-              label="ایمیل"
-              placeholder="ایمیل را وارد کنید"
+              label="نام کاربری"
+              placeholder="نام کاربری خود را وارد کنید"
               color="info"
               className="[&>label>span]:font-medium"
               inputClassName="text-sm"
@@ -74,23 +74,21 @@ export default function SignInForm() {
               error={errors.password?.message}
             />
             <div className="flex items-center justify-between pb-2">
-              <Checkbox
-                {...register('remember')}
-                label="مرا به خاطر بسپر"
-                color="info"
-                variant="flat"
-                className="[&>label>span]:font-medium"
-              />
               <Link
                 href={routes.auth.forgotPassword1}
-                className="h-auto p-0 text-sm font-semibold text-blue underline transition-colors hover:text-gray-900 hover:no-underline"
+                className="h-auto p-0 text-sm font-semibold text-[#129974] underline transition-colors hover:text-gray-900 hover:no-underline"
               >
-                رمز عبور را فراموش کردید?
+                رمز عبور را فراموش کردید؟
               </Link>
             </div>
-            <Button className="w-full" type="submit" size="lg" color="info">
+            <Button
+              className="group/btn w-full bg-[#129974]"
+              type="submit"
+              size="lg"
+              color="success"
+            >
               <span>ورود</span>{' '}
-              <PiArrowLeftBold className="ms-2 mt-0.5 h-6 w-6" />
+              <PiArrowLeftBold className="ms-2 mt-0.5 h-6 w-6 transition-all group-hover/btn:-translate-x-2" />
             </Button>
           </div>
         )}
@@ -99,7 +97,7 @@ export default function SignInForm() {
         آیا حساب کاربری ندارید?{' '}
         <Link
           href={routes.auth.signUp1}
-          className="font-semibold text-gray-700 transition-colors hover:text-blue"
+          className="font-semibold text-gray-700 transition-colors hover:text-[#129974]"
         >
           ثبت نام
         </Link>

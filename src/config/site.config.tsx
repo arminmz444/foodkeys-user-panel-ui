@@ -1,4 +1,4 @@
-import logoImg from '@public/logo.svg';
+import logoImg from '@public/fkLogo.png';
 import logoIconImg from '@public/logo-short.svg';
 import foodkeysLogo from '@public/logo-dark.svg';
 enum MODE {
@@ -7,11 +7,11 @@ enum MODE {
 }
 
 export const siteConfig = {
-  title: 'Isomorphic',
+  title: 'مرجع صنایع غذایی و کشاورزی ایران',
   description: 'A next js dashboard template',
   logo: logoImg,
   icon: logoIconImg,
   mode: MODE.LIGHT,
-  foodkeysLogo: foodkeysLogo
+  foodkeysLogo: foodkeysLogo,
   // TODO: favicon
 };

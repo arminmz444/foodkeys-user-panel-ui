@@ -70,6 +70,7 @@
     "react-redux": "^9.1.2",
     "react-scroll": "^1.8.9",
     "react-svg-worldmap": "2.0.0-alpha.16",
+    "react-to-print": "^3.0.2",
     "react-use": "^17.4.0",
     "recharts": "^2.8.0",
     "redux-persist": "^6.0.0",
