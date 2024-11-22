@@ -23,19 +23,20 @@ import React, { RefObject, useEffect, useState } from 'react';
 import { useMedia } from '@/hooks/use-media';
 import { Popover } from '@/components/ui/popover';
 import { PiWalletFill } from 'react-icons/pi';
-import walletImage from "@public/wallet.png";
+import walletImage from '@public/wallet.png';
 import { HiXMark } from 'react-icons/hi2';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { atom, useAtom } from 'jotai';
 import { updateNotificationsAtom } from '@/store/notificationStore';
-import {useDispatch} from "react-redux";
-import {addCredit} from "@/store/walletSlice"; // Import atoms from the store
+import { useDispatch } from 'react-redux';
+import { addCredit } from '@/store/walletSlice'; // Import atoms from the store
+import PaymentSuccess from '../payment-success';
+import PaymentReject from '../payment-reject';
 
 // export const notificationsAtom = atom([]);
 
 function HeaderMenuRight() {
-
   const [isOpen, setIsOpen] = useState(false);
 
   const [messages, setMessages] = useAtom(updateNotificationsAtom);
@@ -105,6 +106,8 @@ function HeaderMenuRight() {
         </ActionIcon>
       </NotificationDropdown>
       {/*// @ts-ignore*/}
+      {/* <PaymentSuccess /> */}
+      <PaymentReject />
       <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
         <ActionIcon
           aria-label="Notification"
@@ -187,7 +190,7 @@ function WalletDropdown({
               <HiXMark className="h-auto w-6" strokeWidth={1.8} />
             </ActionIcon>
           </div>
-          <div className="dark:bg-gray-100 from-blue-500 to-indigo-700 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br p-4 text-black">
+          <div className="from-blue-500 to-indigo-700 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br p-4 text-black dark:bg-gray-100">
             <div
               // style={{ backgroundColor: "#f5deb369" }}
               className="w-full max-w-lg transform rounded-lg bg-white p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 dark:bg-gray-200 dark:text-white"
