@@ -53,7 +53,7 @@ export default function DeletePopover({
         size="sm"
         variant="outline"
         aria-label={'Delete Item'}
-        className="cursor-pointer hover:!border-gray-900 hover:text-gray-700"
+        className="cursor-pointer hover:!border-gray-900 hover:text-gray-700 bg-red text-white"
       >
         <TrashIcon className="h-4 w-4" />
       </ActionIcon>

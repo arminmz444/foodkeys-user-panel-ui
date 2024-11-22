@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import { Element } from 'react-scroll';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,12 +9,12 @@ import cn from '../../../../../../utils/class-names';
 import { Text } from 'rizzui';
 import FormNav, {
   formParts,
-} from '../../../../ecommerce/product/create/form-nav';
+} from '../../../../info/food-industry/company/create/form-nav';
 import CompanySummary from '@/app/shared/info/food-industry/company/create/company-summary';
 import {
   defaultValues,
-  productFormSchema,
-  CreateProductInput,
+  companyFormSchema,
+  CreateCompanyInput,
 } from '@/app/shared/info/food-industry/company/create/form-utils';
 import ProductMedia from '@/app/shared/info/food-industry/company/create/product-media';
 import PricingInventory from '@/app/shared/info/food-industry/company/create/pricing-inventory';
@@ -30,6 +30,9 @@ import CompanyOffice from '@/app/shared/info/food-industry/company/create/compan
 import CompanySocial from '@/app/shared/info/food-industry/company/create/company-social';
 import CompanyComplementary from '@/app/shared/info/food-industry/company/create/company-complementary';
 import CompanyHistory from './company-history';
+import useAxiosPrivate from "@/hooks/use-axios-private";
+import {z} from "zod";
+import CompanyGallery from "@/app/shared/info/food-industry/company/create/company-gallery";
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: CompanySummary,
@@ -37,7 +40,8 @@ const MAP_STEP_TO_COMPONENT = {
   [formParts.factory]: CompanyFactory,
   [formParts.office]: CompanyOffice,
   [formParts.social]: CompanySocial,
-  [formParts.media]: ProductMedia,
+  [formParts.products]: ProductMedia,
+  [formParts.gallery]: CompanyGallery,
   [formParts.supplementary]: CompanyComplementary,
   [formParts.pricingInventory]: PricingInventory,
   [formParts.productIdentifiers]: ProductIdentifiers,
@@ -48,20 +52,147 @@ const MAP_STEP_TO_COMPONENT = {
   [formParts.tagsAndCategory]: ProductTaxonomies,
 };
 
-interface IndexProps {
-  id?: string;
-  company?: CreateProductInput;
-  className?: string;
+
+interface Picture {
+  id: string;
+  fileExtension: string;
+  fileName: string;
+  filePath: string;
+  permanent: boolean;
+  fileSize: number;
+  contentType: string;
+  fileCategory: string | null;
+  userId: number | null;
+  createdAt: number[];
+  updatedAt: number[];
+  createdAtStr: string | null;
+  updatedAtStr: string | null;
+  productId: number | null;
 }
 
-export default function CreateProduct({ id, company, className }: IndexProps) {
-  const [isLoading, setLoading] = useState(false);
-  const methods = useForm<CreateProductInput>({
-    defaultValues: defaultValues(company),
-    resolver: zodResolver(productFormSchema),
-  });
+interface Product {
+  id: number;
+  name: string;
+  type: number;
+  categoryType: number;
+  companyId: number | null;
+  description: string | null;
+  createdAt: number[];
+  createdAtStr: string | null;
+  updatedAt: number[];
+  updatedAtStr: string | null;
+  pictures: Picture[];
+  outsourced: boolean;
+  machineUsage: boolean;
+}
 
-  const onSubmit: SubmitHandler<CreateProductInput> = (data) => {
+interface Location {
+  officeLocation: string,
+  factoryLocation: string,
+  officePoBox: string,
+  factoryPoBox: string,
+  officeState: string,
+  officeCity: string,
+  factoryState: string,
+  factoryCity: string,
+  industrialCity: string,
+  country: string,
+}
+
+export interface Company {
+  createdAt: string | null;
+  updatedAt: string | null;
+  id: number;
+  companyName: string;
+  companyNameEn: string;
+  ceo: string;
+  owner: string;
+  answerName: string;
+  history: string;
+  visit: number;
+  ranking: number | null;
+  rankingAll: number;
+  buildingArea: string;
+  landArea: string;
+  holding: string;
+  description: string;
+  advertisingSlogan: string;
+  employeesCount: string;
+  companyType: string;
+  backgroundImage: string;
+  logo: string;
+  subjectOfActivity: string;
+  infoStatusDescription: string;
+  infoStatus: number;
+  createdAtStr: string;
+  updatedAtStr: string;
+  establishDate: number[];
+  establishDateStr: string;
+  registrant: string;
+  registrantUsername: string;
+  registrantPhone: string;
+  registrantTel: string;
+  rawMaterialsOrigin: string;
+  record: string;
+  keyWords: string;
+  tags: string;
+  companyKeyWords: string[];
+  companyTags: string[];
+  companyBrands: string | null;
+  primaryBrand: string | null;
+  mainBrandEn: string | null;
+  category: string;
+  categoryId: number;
+  subCategory: string;
+  subCategoryId: number;
+  relatedIndustries: string[];
+  mainIndustry: string | null;
+  companyStatus: string;
+  userId: number | null;
+  parentCompanyId: number | null;
+  socialMedias: any[];
+  contacts: any[];
+  subCompanies: any[];
+  metadata: any | null;
+  products: Product[];
+  location: Location;
+}
+interface IndexProps {
+  id?: string;
+  company?: Company;
+  className?: string;
+  category: number
+}
+
+export default function CreateCompany({ id, className, category = 1 }: IndexProps) {
+  const [isLoading, setLoading] = useState(false);
+  const [subcategories, setSubcategories] = useState();
+  const _axios = useAxiosPrivate()
+  const [companyData, setCompanyData] = useState<Company | null>(null); // Company data
+
+  const methods = useForm<Company>({
+    defaultValues: defaultValues(companyData),
+    resolver: zodResolver(companyFormSchema),
+  });
+  console.log(companyData)
+  useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        const response = await _axios.get(`/client/panel/company/${id}`);
+        if (response.data.status === 'SUCCESS') {
+          setCompanyData(response.data.data);
+          methods.reset(defaultValues(response.data.data));
+        }
+      } catch (error) {
+        console.error('Error fetching company:', error);
+      }
+    };
+
+    if (id) {
+      fetchCompany();
+    }
+  }, [id, _axios]);
+  const onSubmit: SubmitHandler<CreateCompanyInput> = (data) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
@@ -74,6 +205,7 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
       methods.reset();
     }, 600);
   };
+
 
   return (
     <div className="@container">
@@ -89,14 +221,14 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
                 key={key}
                 name={formParts[key as keyof typeof formParts]}
               >
-                {<Component className="pt-7 @2xl:pt-9 @3xl:pt-11" />}
+                {<Component className="pt-7 @2xl:pt-9 @3xl:pt-11" category={category} />}
               </Element>
             ))}
           </div>
 
           <FormFooter
             isLoading={isLoading}
-            submitBtnText={id ? 'بروز رسانی محصول' : 'ثبت شرکت'}
+            submitBtnText={id ? 'بروز رسانی شرکت' : 'ثبت شرکت'}
           />
         </form>
       </FormProvider>

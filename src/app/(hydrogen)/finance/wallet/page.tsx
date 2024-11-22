@@ -5,7 +5,7 @@ import {routes} from '@/config/routes';
 import React, {useState} from 'react';
 import Image from 'next/image';
 import {PiWalletFill} from 'react-icons/pi';
-// import walletImage from '../../../../../public/wallet.png';
+import walletImage from '../../../../../public/wallet.png';
 import PageHeader from "@/app/shared/page-header";
 
 const defaultAmounts = [50000, 100000, 250000, 500000];

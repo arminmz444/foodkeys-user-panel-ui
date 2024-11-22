@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import {
-    JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal,
+// @ts-ignore
+import {JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal,
     useEffect,
     useState
 } from 'react';
@@ -77,7 +77,9 @@ export default function MessageBody({messages}) {
 
 
             // @ts-ignore
+            // @ts-ignore
             return (
+                // @ts-ignore
                 <div key={message.id}>
                     <div className={`grid items-start gap-3 lg:gap-4 ${avatarAlignmentClass}`}>
                         {!message.fromEmployee && (
@@ -104,8 +106,8 @@ export default function MessageBody({messages}) {
               {message?.senderUsername} <FiExternalLink className="mr-1 h-2.5 w-2.5"/>
             </span>
                                 <DotSeparator className="hidden lg:block"/>
-                                <span className="mt-1.5 flex items-center lg:mt-0">
-                                    {message?.id}{' '}
+                                {/* @ts-ignore */}
+                                <span className="mt-1.5 flex items-center lg:mt-0">{message?.id}{' '}
                                     <Tooltip
                                         size="sm"
                                         rounded="sm"

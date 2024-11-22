@@ -40,7 +40,7 @@ export default function CreateProductPage() {
         </Link>
       </PageHeader>
 
-      <CreateProduct />
+      <CreateProduct category={1} />
     </>
   );
 }

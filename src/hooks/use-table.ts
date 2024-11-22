@@ -195,6 +195,9 @@ export function useTable<T extends AnyObject>(
   function handleSearch(searchValue: string) {
     setSearchTerm(searchValue);
   }
+  function handleRequestRevision(id: number) {
+    console.log(id)
+  }
 
   function searchedData() {
     if (!searchTerm) return sortedData;
@@ -273,5 +276,6 @@ console.log(tableData);
     applyFilters,
     handleDelete,
     handleReset,
+    handleRequestRevision
   };
 }

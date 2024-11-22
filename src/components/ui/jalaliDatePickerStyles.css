@@ -1,0 +1,71 @@
+.custom-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    background-color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #6b7280;
+}
+
+.custom-input:focus {
+    border-color: #0c8af8;
+    box-shadow: 0 0 5px #0074d9;
+    outline: none;
+}
+
+.custom-calendar.rmdp-wrapper {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    padding: 16px;
+}
+
+.custom-calendar .rmdp-header {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.custom-calendar .rmdp-day {
+    font-size: 14px;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border-radius: 50%;
+    color: #374151;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.custom-calendar .rmdp-day.selected {
+    background-color: #0c8af8;
+    color: white;
+}
+
+.custom-calendar .rmdp-day:hover {
+    background-color: #e5e7eb;
+    cursor: pointer;
+}
+
+.custom-calendar .rmdp-arrow-container button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.custom-calendar .rmdp-arrow-container svg {
+    width: 18px;
+    height: 18px;
+    fill: #374151;
+}
+
+.custom-calendar .rmdp-day.today {
+    border: 1px solid #0c8af8;
+    color: #0c8af8;
+}

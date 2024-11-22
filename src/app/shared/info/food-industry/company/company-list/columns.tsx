@@ -14,6 +14,7 @@ import AvatarCard from "@/components/ui/avatar-card";
 import {Button, Popover} from "rizzui";
 import HandWaveIcon from "@/components/icons/hand-wave";
 import {PiHand} from "react-icons/pi";
+import { TbExclamationMark } from "react-icons/tb";
 
 const STATIC_FILE_URL = "http://localhost:8080"
 const companyStatusDict: any = {
@@ -35,6 +36,10 @@ function getStatusBadge(status: string) {
     );
 }
 
+const handleRequestRevision = (id: number) => {
+    console.log(id)
+}
+
 export const getColumns = ({
                                data,
                                sortConfig,
@@ -43,6 +48,8 @@ export const getColumns = ({
                                onHeaderCellClick,
                                handleSelectAll,
                                onChecked,
+                               handleRequestRevision,
+                                revisionRequestLoading
                            }: any) => [
     {
         title: (
@@ -132,11 +139,13 @@ export const getColumns = ({
                     placement="top"
                     color="invert"
                 >
-                    <RankRevisionPopover
-                        title={`درخواست تجدید رتبه`}
-                        description={`آیا می‌خواهید درخواست تجدید رتبه این شرکت را بدهید؟`}
-                        onDelete={() => onDeleteItem(row.id)}
-                    />
+                    {/*// @ts-ignore*/}
+                    <Button isLoading={revisionRequestLoading} onClick={() => handleRequestRevision(row.id)} color="secondary" size="sm"><PiHand className="h-4 w-4"/></Button>
+                    {/*<RankRevisionPopover*/}
+                    {/*    title={`درخواست تجدید رتبه`}*/}
+                    {/*    description={`آیا می‌خواهید درخواست تجدید رتبه این شرکت را بدهید؟`}*/}
+                    {/*    onDelete={() => onDeleteItem(row.id)}*/}
+                    {/*/>*/}
                 </Tooltip>
                 <Tooltip
                     size="sm"
@@ -149,7 +158,7 @@ export const getColumns = ({
                             tag="span"
                             size="sm"
                             variant="outline"
-                            className="hover:!border-gray-900 hover:text-gray-700"
+                            className="hover:!border-gray-900 hover:text-gray-700 bg-orange text-white"
                         >
                             <PencilIcon className="h-4 w-4"/>
                         </ActionIcon>
@@ -157,7 +166,7 @@ export const getColumns = ({
                 </Tooltip>
                 <Tooltip
                     size="sm"
-                    content={() => 'مشاهده اطلاعات'}
+                    content={() => 'مشاهده صفحه اختصاصی'}
                     placement="top"
                     color="invert"
                 >
@@ -166,7 +175,7 @@ export const getColumns = ({
                             tag="span"
                             size="sm"
                             variant="outline"
-                            className="hover:!border-gray-900 hover:text-gray-700"
+                            className="hover:!border-gray-900 hover:text-gray-700 bg-blue text-white"
                         >
                             <EyeIcon className="h-4 w-4"/>
                         </ActionIcon>
@@ -228,7 +237,7 @@ const RankRevisionPopover = ({
                 size="sm"
                 variant="outline"
                 aria-label={'Delete Item'}
-                className="cursor-pointer hover:!border-gray-900 hover:text-gray-700"
+                className="cursor-pointer hover:!border-gray-900 hover:text-gray-700 bg-red text-white"
             >
                 <PiHand className="h-4 w-4"/>
             </ActionIcon>

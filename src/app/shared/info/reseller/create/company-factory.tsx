@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import useAxiosPrivate from '../../../../../../hooks/use-axios-private';
+import useAxiosPrivate from '../../../../../hooks/use-axios-private';
 import { Textarea } from '@/components/ui/textarea';
 
 const Select = dynamic(() => import('@/components/ui/select'), {
@@ -40,7 +40,6 @@ export default function CompanyFactory({ className }: { className?: string }) {
     formState: { errors },
   } = useFormContext();
 
-  // Fetch provinces
   useEffect(() => {
     const fetchProvinces = async () => {
       try {

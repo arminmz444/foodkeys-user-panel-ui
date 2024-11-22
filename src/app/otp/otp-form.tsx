@@ -107,7 +107,8 @@ export default function OtpForm() {
                         </div>
                     )}
                 </Form>
-            </>) : <Form<SendOtpFormValues> onSubmit={onSendOtpSubmit}>
+            </>
+        ) : <Form<SendOtpFormValues> onSubmit={onSendOtpSubmit}>
             {({setValue, register,
                   setError, formState: {errors}}) => (
                 <div dir="rtl" className="space-y-10">

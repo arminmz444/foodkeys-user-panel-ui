@@ -13,6 +13,8 @@ import { Text } from '@/components/ui/text';
 import { PiArrowLeftBold } from 'react-icons/pi';
 import Link from 'next/link';
 import { routes } from '@/config/routes';
+import { useDispatch } from 'react-redux';
+import { login as reduxLogin } from '@/store/userSlice';
 
 const loginSchema = z.object({
     username: z.string().email({ message: 'ایمیل اشتباه است' }),
@@ -25,6 +27,7 @@ type LoginFormSchema = z.infer<typeof loginSchema>;
 export default function SignInForm() {
     // @ts-ignore
     const { login } = useAuth();
+    const reduxDispatch = useDispatch();
     const [loading, setLoading] = useState(false);
 
     const {
@@ -44,6 +47,8 @@ export default function SignInForm() {
         try {
             setLoading(true);
             await login(data.username, data.password);
+            // @ts-ignore
+            reduxDispatch(reduxLogin({ username: 'JohnDoe', token: 'abcd1234' }))
         } catch (error) {
             console.error('Login failed:', error);
         } finally {

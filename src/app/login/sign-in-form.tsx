@@ -13,6 +13,8 @@ import {routes} from '@/config/routes';
 import {Text} from '@/components/ui/text';
 import {SubmitHandler} from 'react-hook-form';
 import {useAuth} from "@/context/AuthContext";
+import {login as reduxLogin} from "@/store/userSlice";
+import {useDispatch} from "react-redux";
 
 const loginSchema = z.object({
     username: z.string({}).min(11, "فرمت نام کاربری اشتباه است").max(11, "فرمت نام کاربری اشتباه است"),
@@ -31,6 +33,8 @@ const initialValues: Login = {
 export default function SignInForm() {
     //TODO: why we need to reset it here
     const [reset, setReset] = useState({});
+    const reduxDispatch = useDispatch();
+
     const [loading, setLoading] = useState(false);
     // @ts-ignore
     const {login, loginOtp} = useAuth()
@@ -38,7 +42,11 @@ export default function SignInForm() {
     const onSubmit: SubmitHandler<Login> = async (data) => {
         setLoading(true)
         console.log(data);
-        await login(data.username, data.password);
+        let m = { token: "", user: "" }
+        await login(data.username, data.password, m);
+        console.log(m)
+        // @ts-ignore
+        reduxDispatch(reduxLogin(m))
         setLoading(false)
         //
         // signIn('credentials', {

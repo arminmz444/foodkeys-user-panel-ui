@@ -98,6 +98,7 @@ export default function EditCompanyPage({
       // },
     ],
   };
+
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
@@ -114,8 +115,8 @@ export default function EditCompanyPage({
           </Button>
         </Link>
       </PageHeader>
-
-      <CreateCompany id={params.id} company={productData} />
+      {/*// @ts-ignore*/}
+      <CreateCompany id={params.id} company={productData}  category={1}/>
     </>
   );
 }

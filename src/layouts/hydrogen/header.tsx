@@ -23,16 +23,19 @@ import React, { RefObject, useEffect, useState } from 'react';
 import { useMedia } from '@/hooks/use-media';
 import { Popover } from '@/components/ui/popover';
 import { PiWalletFill } from 'react-icons/pi';
-// import walletImage from "@public/wallet.png";
+import walletImage from "@public/wallet.png";
 import { HiXMark } from 'react-icons/hi2';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { atom, useAtom } from 'jotai';
-import { updateNotificationsAtom } from '@/store/notificationStore'; // Import atoms from the store
+import { updateNotificationsAtom } from '@/store/notificationStore';
+import {useDispatch} from "react-redux";
+import {addCredit} from "@/store/walletSlice"; // Import atoms from the store
 
 // export const notificationsAtom = atom([]);
 
 function HeaderMenuRight() {
+
   const [isOpen, setIsOpen] = useState(false);
 
   const [messages, setMessages] = useAtom(updateNotificationsAtom);
@@ -150,6 +153,8 @@ function WalletDropdown({
 }: {
   children: JSX.Element & { ref?: RefObject<any> };
 }) {
+  const dispatch = useDispatch();
+
   const isMobile = useMedia('(max-width: 480px)', false);
 
   const [amount, setAmount] = useState<number>(0);
@@ -163,6 +168,7 @@ function WalletDropdown({
       alert('لطفا مبلغ معتبری وارد کنید');
       return;
     }
+    dispatch(addCredit(amount));
     alert(`در حال هدایت به درگاه بانکی برای پرداخت مبلغ ${amount} تومان`);
   };
   const defaultAmounts = [50000, 100000, 250000, 500000];
@@ -170,7 +176,7 @@ function WalletDropdown({
   return (
     <>
       <Modal size="lg" isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="m-auto px-7 pb-8 pt-6">
+        <div className="m-auto px-7 pt-6 dark:bg-gray-100 dark:text-white">
           <div className="flex items-center justify-between">
             <h3>افزایش اعتبار کیف پول</h3>
             <ActionIcon
@@ -181,24 +187,23 @@ function WalletDropdown({
               <HiXMark className="h-auto w-6" strokeWidth={1.8} />
             </ActionIcon>
           </div>
-          <div className="from-blue-500 to-indigo-700 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br p-4 text-black">
+          <div className="dark:bg-gray-100 from-blue-500 to-indigo-700 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br p-4 text-black">
             <div
-              style={{ backgroundColor: '#c1bfbd69' }}
               // style={{ backgroundColor: "#f5deb369" }}
-              className="w-full max-w-lg transform rounded-lg bg-white p-6 text-center shadow-lg transition-all duration-300 hover:scale-105"
+              className="w-full max-w-lg transform rounded-lg bg-white p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 dark:bg-gray-200 dark:text-white"
             >
               <div className="flex flex-col items-center gap-4">
                 <PiWalletFill className="text-indigo-600 animate-pulse text-7xl" />
                 <h1 className="text-2xl font-bold text-gray-800">
                   اعتبار خود را افزایش دهید
                 </h1>
-                {/* <Image
+                <Image
                   src={walletImage || null}
                   alt="Wallet"
                   width={150}
                   height={150}
                   className="transform transition-all duration-500 hover:rotate-6"
-                /> */}
+                />
                 <div className="mt-4 flex w-full flex-col items-center">
                   <label
                     htmlFor="amount"
@@ -211,7 +216,7 @@ function WalletDropdown({
                     id="amount"
                     value={amount}
                     onChange={(e) => setAmount(Number(e.target.value))}
-                    className="focus:ring-indigo-500 text-black-800 mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2"
+                    className="focus:ring-indigo-500 text-black-800 mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 dark:text-black"
                     placeholder="مبلغ را وارد کنید"
                   />
                   <div className="mb-4 flex gap-3">
@@ -229,7 +234,7 @@ function WalletDropdown({
                   <Button
                     onClick={handleSubmit}
                     variant="solid"
-                    className="hover:bg-indigo-700 w-full transform rounded-lg bg-orange py-3 font-semibold text-black transition-transform duration-300 hover:scale-105"
+                    className="hover:bg-indigo-700 w-full transform rounded-lg bg-orange py-3 font-semibold text-black transition-transform duration-300 hover:scale-105 dark:text-white"
                   >
                     افزایش اعتبار و رفتن به صفحه پرداخت
                   </Button>

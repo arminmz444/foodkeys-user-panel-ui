@@ -1,9 +1,9 @@
-import {ForwardedRef, forwardRef} from 'react';
+import { ForwardedRef, forwardRef, useRef } from 'react';
 import cn from '@/utils/class-names';
 import UploadIcon from '../shape/upload';
 import Image from 'next/image';
-import {Progressbar} from "rizzui";
-import {PhotoProvider, PhotoView} from "react-photo-view";
+import { Progressbar } from "rizzui";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 
 const STATIC_FILE_URL = "http://localhost:8080";
 const inputClasses = {
@@ -38,6 +38,14 @@ function LogoUpload(
     }: LogoUploadProps,
     ref: ForwardedRef<HTMLInputElement>
 ) {
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const handleClick = () => {
+        if (inputRef.current) {
+            inputRef.current.click();
+        }
+    };
+
     return (
         <div className={cn(wrapperClassName)}>
             {label && (
@@ -45,7 +53,10 @@ function LogoUpload(
             )}
             <div className={cn(inputClasses.base, inputClasses.flex, className)}>
                 <input
-                    ref={ref}
+                    ref={(e) => {
+                        if (ref) typeof ref === 'function' ? ref(e) : ref.current = e;
+                        inputRef.current = e;
+                    }}
                     title=""
                     type="file"
                     accept="image/*"
@@ -53,10 +64,11 @@ function LogoUpload(
                     {...props}
                 />
                 {loading ? (
-                    <Progressbar rounded="md" value={progress} size="lg"/>
+                        <div className="relative w-24 h-24">
+                    <Progressbar rounded="md" value={progress} size="lg" />
+                        </div>
                 ) : success ? (
-                    <div className="relative w-24 h-24 overflow-hidden rounded-full border border-gray-300">
-
+                    <div onClick={handleClick} className="relative w-24 h-24 overflow-hidden rounded-full border border-gray-300">
                         <Image
                             // @ts-ignore
                             src={logoPreview}
@@ -67,8 +79,10 @@ function LogoUpload(
                     </div>
                 ) : (
                     <div
-                        className="relative w-24 h-24 overflow-hidden rounded-full border border-gray-300 flex items-center justify-center">
-                        <UploadIcon className="text-gray-300 w-12 h-12"/>
+                        onClick={handleClick}
+                        className="relative w-24 h-24 overflow-hidden rounded-full border border-gray-300 flex items-center justify-center"
+                    >
+                        <UploadIcon className="text-gray-300 w-12 h-12" />
                     </div>
                 )}
             </div>

@@ -114,8 +114,8 @@ export default function EditCompanyPage({
           </Button>
         </Link>
       </PageHeader>
-
-      <CreateCompany id={params.id} company={productData} />
+      {/*// @ts-ignore*/}
+      <CreateCompany id={params.id} company={productData}  category={``}/>
     </>
   );
 }

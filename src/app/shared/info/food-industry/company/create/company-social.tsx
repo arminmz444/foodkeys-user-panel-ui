@@ -10,7 +10,7 @@ import { PiPlusBold } from 'react-icons/pi';
 import { Button } from '@/components/ui/button';
 import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
-import { useCallback, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import { Radio } from 'rizzui';
 const Select = dynamic(() => import('@/components/ui/select'), {
   ssr: false,
@@ -32,11 +32,20 @@ export default function CompanySocial({ className }: { className?: string }) {
     register,
     control,
     formState: { errors },
+    watch
   } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'brands',
   });
+
+  const watchedEmails = watch('emails', []);
+
+  useEffect(() => {
+    if (watchedEmails && watchedEmails.length) {
+      setEmails(watchedEmails);
+    }
+  }, [watchedEmails]);
 
   return (
     <FormGroup
@@ -48,46 +57,67 @@ export default function CompanySocial({ className }: { className?: string }) {
         type="number"
         label="شماره تلگرام"
         placeholder="شماره تلگرام"
-        {...register('telegram')}
-        error={errors.telegram?.message as string}
+        {...register('telegramPhoneNo')}
+        error={errors.telegramPhoneNo?.message as string}
         helperText="(مثال: 09123456789)"
+      />
+      <Input
+          label="آیدی تلگرام"
+          placeholder="آیدی تلگرام"
+          {...register('telegramId')}
+          error={errors.telegramId?.message as string}
+          helperText="(مثال: foodkeys)"
       />
       <Input
         type="number"
         label="شماره واتساپ"
         placeholder="شماره واتساپ"
-        {...register('whatsapp')}
-        error={errors.whatsapp?.message as string}
+        {...register('whatsAppPhoneNo')}
+        error={errors.whatsAppPhoneNo?.message as string}
         helperText="(مثال: 09123456789)"
+      />
+      <Input
+          label="آیدی واتساپ"
+          placeholder="آیدی واتساپ"
+          {...register('whatsAppId')}
+          error={errors.whatsAppId?.message as string}
+          helperText="(مثال: arminm4)"
       />
       <Input
         label="آی دی اینستاگرام"
         placeholder="آی دی اینستاگرام"
-        {...register('instagram')}
-        error={errors.instagram?.message as string}
+        {...register('instagramId')}
+        error={errors.instagramId?.message as string}
         helperText="(مثال: foodkeys@)"
       />
       <Input
         label="آی دی لینکدین"
         placeholder="آی دی لینکدین"
-        {...register('instagram')}
-        error={errors.instagram?.message as string}
+        {...register('linkedInId')}
+        error={errors.linkedInId?.message as string}
         helperText="(مثال: foodkeys)"
+      />
+      <Input
+          label="آی دی اسکایپ"
+          placeholder="آی دی اسکایپ"
+          {...register('skypeId')}
+          error={errors.skypeId?.message as string}
+          helperText="(مثال: foodkeys)"
       />
       <Input
         type="number"
         label="شماره ایتا"
         placeholder="شماره ایتا"
-        {...register('eitaa')}
-        error={errors.eitaa?.message as string}
+        {...register('eitaaPhoneNo')}
+        error={errors.eitaaPhoneNo?.message as string}
         helperText="(مثال: 09123456789)"
       />
       <Input
         type="number"
         label="شماره روبیکا"
         placeholder="شماره روبیکا"
-        {...register('rubika')}
-        error={errors.rubika?.message as string}
+        {...register('rubikaPhoneNo')}
+        error={errors.rubikaPhoneNo?.message as string}
         helperText="(مثال: 09123456789)"
       />
       <div className="flex flex-col space-y-2">
@@ -126,8 +156,8 @@ export default function CompanySocial({ className }: { className?: string }) {
       </div>
       <Input
         type="url"
-        label="وبسایت"
-        placeholder="وبسایت"
+        label="وب سایت"
+        placeholder="وب سایت"
         {...register('website')}
         error={errors.website?.message as string}
         helperText="(مثال: https://www.foodkeys.com)"

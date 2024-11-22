@@ -1,49 +1,45 @@
-import { Controller, useFormContext } from 'react-hook-form';
-import { RadioGroup } from '@/components/ui/radio-group';
-import { AdvancedRadio } from '@/components/ui/advanced-radio';
-import { PiCheckCircleFill } from 'react-icons/pi';
+import { Controller, useFormContext } from "react-hook-form";
+import { RadioGroup } from "@/components/ui/radio-group";
+import { AdvancedRadio } from "@/components/ui/advanced-radio";
+import { PiCheckCircleFill } from "react-icons/pi";
 
 const availability = [
-  {
-    value: 'online',
-    name: 'فقط در صورت خرید  آنلاین  موجود است',
-  },
-  {
-    value: 'coming-soon',
-    name: 'به زودی',
-  },
-  {
-    value: 'offline',
-    name: 'فقط در فروشگاه حضوری مجود است',
-  },
+    {
+        value: "OLD_PRODUCTS",
+        name: "استفاده از محصولات سایت قدیم",
+    },
+    {
+        value: "NEW_PRODUCTS",
+        name: "استفاده از محصولات سایت جدید",
+    },
 ];
 
 export default function ProductAvailability() {
-  const { control } = useFormContext();
+    const { control } = useFormContext();
 
-  return (
-    <Controller
-      name="productAvailability"
-      control={control}
-      render={({ field: { value, onChange } }) => (
-        <RadioGroup
-          value={value}
-          setValue={onChange}
-          className="col-span-full grid gap-4 @2xl:grid-cols-3 @4xl:gap-6"
-        >
-          {availability.map((item) => (
-            <AdvancedRadio
-              key={item.value}
-              value={item.value}
-              className="flex justify-between gap-6 rounded-xl border border-gray-200 p-6 text-gray-600 hover:cursor-pointer hover:border-gray-700 @4xl:gap-20"
-              inputClassName="[&:checked:enabled~span]:ring-1 [&:checked:enabled~span]:ring-offset-0 [&:checked:enabled~span]:ring-gray-700 [&:checked:enabled~span]:border-gray-700 [&:checked~span>.icon]:block"
-            >
-              <span>{item.name}</span>
-              <PiCheckCircleFill className="icon hidden h-5 min-w-[1.25rem] text-gray-900" />
-            </AdvancedRadio>
-          ))}
-        </RadioGroup>
-      )}
-    />
-  );
+    return (
+        <Controller
+            name="productAvailability"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+                <RadioGroup
+                    value={value}
+                    setValue={onChange}
+                    className="grid grid-cols-1 gap-4 lg:grid-cols-2"
+                >
+                    {availability.map((item) => (
+                        <AdvancedRadio
+                            key={item.value}
+                            value={item.value}
+                            className="flex justify-between rounded-xl border border-gray-200 p-6 text-gray-600 hover:cursor-pointer hover:border-gray-700"
+                            inputClassName="[&:checked:enabled~span]:ring-1 [&:checked:enabled~span]:ring-offset-0 [&:checked:enabled~span]:ring-gray-700 [&:checked:enabled~span]:border-gray-700 [&:checked~span>.icon]:block"
+                        >
+                            <span>{item.name}</span>
+                            <PiCheckCircleFill className="icon hidden h-5 min-w-[1.25rem] text-gray-900" />
+                        </AdvancedRadio>
+                    ))}
+                </RadioGroup>
+            )}
+        />
+    );
 }

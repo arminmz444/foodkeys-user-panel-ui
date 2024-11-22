@@ -8,6 +8,8 @@ import { routes } from '@/config/routes';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import {useAuth} from "@/context/AuthContext";
+import {RootState} from "@/store/store";
+import {useDispatch, useSelector} from "react-redux";
 
 const menuItems = [
   {
@@ -23,27 +25,31 @@ const menuItems = [
     href: '#',
   },
 ];
+const STATIC_FILES_URL= "http://localhost:8080"
 
 function DropdownMenu() {
+  const wallet = useSelector((state: RootState) => state.wallet);
+  const user = useSelector((state: RootState) => state.user);
   // @ts-ignore
   const { logout } = useAuth()
-
   return (
     <div className="w-64 text-left rtl:text-right">
       <div className="flex items-center border-b border-gray-300 px-6 pb-5 pt-6">
         <Avatar
-          src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"
-          name="فرهاد مجیدی"
+            // @ts-ignore
+            src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"}
+          name={user.firstName || "کاربر"}
           color="invert"
         />
         <div className="ms-3">
           <Text tag="h6" className="font-semibold">
-            فرهاد مجیدی
+            {user.firstName} {user.lastName}
           </Text>
-          <Text className="text-gray-600">flores@iso.io</Text>
+          <Text className="text-gray-600">{user.username}</Text>
         </div>
       </div>
       <div className="grid px-3.5 py-3.5 font-medium text-gray-700">
+        <div className="flex items-center border-b border-gray-300 px-2.5 pb-5 pt-1">کیف پول: {wallet.credit} تومان</div>
         {menuItems.map((item) => (
           <Link
             key={item.name}
@@ -68,6 +74,9 @@ function DropdownMenu() {
 }
 
 export default function ProfileMenu() {
+  const wallet = useSelector((state: RootState) => state.wallet);
+  const user = useSelector((state: RootState) => state.user);
+
   return (
     <Popover
       content={() => <DropdownMenu />}
@@ -77,7 +86,7 @@ export default function ProfileMenu() {
     >
       <button className="w-9 shrink-0 rounded-full outline-none focus-visible:ring-[1.5px] focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-px sm:w-10">
         <Avatar
-          src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"
+          src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"}
           name="John Doe"
           color="invert"
           className="!h-9 w-9 sm:!h-10 sm:w-10"

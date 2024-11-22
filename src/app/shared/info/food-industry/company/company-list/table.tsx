@@ -12,6 +12,8 @@ import { PiBuildings, PiX } from 'react-icons/pi';
 import {useTable} from "@/hooks/use-table";
 import axiosInstance from "@/utils/axios-instance";
 import Spinner from "@/components/ui/spinner";
+import useAxiosPrivate from "@/hooks/use-axios-private";
+import toast from "react-hot-toast";
 
 const FilterElement = dynamic(
     () => import('@/app/shared/ecommerce/product/product-list/filter-element'),
@@ -29,8 +31,8 @@ const filterState = {
 
 const fetchCompanies = async (searchTerm: string, currentPage: number, pageSize: number) => {
     const API_URL = searchTerm
-        ? `http://localhost:8080/api/v1/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-        : `http://localhost:8080/api/v1/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
+        ? `http://localhost:8080/api/v1/client/panel/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+        : `http://localhost:8080/api/v1/client/panel/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
 
     const response = await axiosInstance.get(API_URL);
 
@@ -45,11 +47,29 @@ const fetchCompanies = async (searchTerm: string, currentPage: number, pageSize:
 };
 
 export default function CompaniesTable() {
+    const [revisionRequestLoading, setRevisionRequestLoading] = useState<boolean>(false)
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [inputValue, setInputValue] = useState('');
     const searchInput = useRef<HTMLInputElement>(null);
+    const _axios = useAxiosPrivate()
+    const handleRequestRevision = async (id: number) => {
+        console.log(id)
+        setRevisionRequestLoading(true)
+        try {
+            let response = await _axios.post("company/" + id + "/revision/", {})
+            if (response.status === 200 && response.data.statusCode === 200)
+                toast.success(response.data.message)
+            else toast.error(response.data.message)
+        } catch (e) {
+            console.error(e)
+            // @ts-ignore
+            toast.error(e?.response?.data?.message || "خطا در درخواست بازبینی")
+        } finally {
+            setRevisionRequestLoading(false)
+        }
+    }
 
     const debounceSearch = useCallback((func: Function, delay: number) => {
         let timer: NodeJS.Timeout;
@@ -100,6 +120,7 @@ export default function CompaniesTable() {
         handleSelectAll,
         handleDelete,
         handleReset,
+        // handleRequestRevision
     } = useTable(data?.data || [], pageSize, filterState, isLoading);
 
     const columns = useMemo(
@@ -112,6 +133,8 @@ export default function CompaniesTable() {
                 onDeleteItem: (id: string) => handleDelete(id),
                 onChecked: handleRowSelect,
                 handleSelectAll,
+                handleRequestRevision: handleRequestRevision,
+                revisionRequestLoading: revisionRequestLoading
             }),
         [data, selectedRowKeys, sortConfig]
     );

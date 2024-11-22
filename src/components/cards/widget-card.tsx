@@ -50,6 +50,7 @@ function WidgetCard(
     >
       <div
         className={cn(
+            // @ts-ignore
           action && 'flex items-start justify-between',
           headerClassName
         )}

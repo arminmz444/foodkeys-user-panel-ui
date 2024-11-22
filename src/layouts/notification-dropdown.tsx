@@ -1,5 +1,6 @@
 'use client';
 
+// @ts-ignore
 import { JSXElementConstructor, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal,
   RefObject,
   useState
@@ -119,8 +120,8 @@ function NotificationsList({
           <div className="grid cursor-pointer grid-cols-1 gap-1 ps-4">
             {/*// @ts-ignore*/}
             {notifications?.map((item: { name: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | PromiseLikeOfReactNode | null | undefined; id: any; icon: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | PromiseLikeOfReactNode | null | undefined; unRead: any; }) => (
-            <div
-              key={item.title + item.id}
+                /* @ts-ignore */
+              <div key={item.title + item.id}
               onClick={() => handleNotificationClick(item.id)}
               className="group grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-md px-2 py-2 pe-3 transition-colors hover:bg-gray-100 dark:hover:bg-gray-50"
             >
@@ -133,16 +134,19 @@ function NotificationsList({
                     tag="h6"
                     className="mb-0.5 w-11/12 truncate text-sm font-semibold"
                   >
+                    {/* @ts-ignore */}
                     {item.title}
                   </Text>
                   <span className="ms-auto whitespace-nowrap pe-8 text-xs text-gray-500">
                     {/* @ts-ignore */}
                     {/*/!* {dayjs(item.sendTime).locale('fa').fromNow(true)} *!/4*/}
                     {/*ماه*/}
+                    {/* @ts-ignore */}
                     {item.message}
                   </span>
                 </div>
                 <div className="ms-auto flex-shrink-0">
+                  {/* @ts-ignore */}
                   {!item.read ? (
                     <Badge
                       renderAsDot

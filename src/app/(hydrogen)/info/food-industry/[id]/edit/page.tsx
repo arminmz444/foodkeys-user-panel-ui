@@ -5,8 +5,6 @@ import { Button } from '@/components/ui/button';
 import PageHeader from '@/app/shared/page-header';
 import CreateCompany from '@/app/shared/info/food-industry/company/create';
 
-
-
 const productData = {
   title: 'سیب',
   brands: [
@@ -22,6 +20,7 @@ const productData = {
     persian: "میهن",
     english: "mihan"
   },
+  subcategory: 1,
   description: 'مخلوط سالاد باغی ایسبرگ فرش اکسپرس',
   sku: 'SKU-28935',
   type: 'محصول دیجیتال',
@@ -115,7 +114,7 @@ export default function EditCompanyPage({
         </Link>
       </PageHeader>
 
-      <CreateCompany id={params.id} company={productData} />
+      <CreateCompany id={params.id} category={1} />
     </>
   );
 }

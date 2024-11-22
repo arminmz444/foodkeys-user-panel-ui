@@ -1,207 +1,400 @@
+// import { z } from 'zod';
+//
+// export const customFields = [
+//   {
+//     label: '',
+//     value: '',
+//   },
+// ];
+// export const locationShipping = [
+//   {
+//     name: '',
+//     shippingCharge: '',
+//   },
+// ];
+// export const productVariants = [
+//   {
+//     label: '',
+//     value: '',
+//   },
+// ];
+//
+// export function defaultValues(product?: CreateProductInput) {
+//   return {
+//     title: product?.title ?? '',
+//     companyName: product?.companyName ?? '',
+//     sku: product?.sku ?? '',
+//     type: product?.type ?? '',
+//     categories: product?.categories ?? '',
+//     description: product?.description ?? '',
+//     price: product?.price ?? '',
+//     costPrice: product?.costPrice ?? '',
+//     retailPrice: product?.retailPrice ?? '',
+//     salePrice: product?.salePrice ?? '',
+//     inventoryTracking: product?.inventoryTracking ?? '',
+//     currentStock: product?.currentStock ?? '',
+//     lowStock: product?.lowStock ?? '',
+//     productAvailability: product?.productAvailability ?? '',
+//     tradeNumber: product?.tradeNumber ?? '',
+//     manufacturerNumber: product?.manufacturerNumber ?? '',
+//     brand: product?.brand ?? '',
+//     upcEan: product?.upcEan ?? '',
+//     // customFields:
+//     //   product?.customFields.length === 0 ? customFields : product?.customFields,
+//
+//     freeShipping: product?.freeShipping ?? false,
+//     shippingPrice: product?.shippingPrice ?? '',
+//     locationBasedShipping: product?.locationBasedShipping ?? false,
+//     locationShipping:
+//       product?.locationShipping.length === 0
+//         ? locationShipping
+//         : product?.locationShipping,
+//     pageTitle: product?.pageTitle ?? '',
+//     metaDescription: product?.metaDescription ?? '',
+//     metaKeywords: product?.metaKeywords ?? '',
+//     productUrl: product?.productUrl ?? '',
+//     isPurchaseSpecifyDate: product?.isPurchaseSpecifyDate ?? false,
+//     isLimitDate: product?.isLimitDate ?? false,
+//     dateFieldName: product?.dateFieldName ?? '',
+//     productVariants:
+//       product?.productVariants.length === 0
+//         ? productVariants
+//         : product?.productVariants,
+//     tags: product?.tags ?? [],
+//   };
+// }
+//
+// export const productFormSchema = z.object({
+//   title: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   companyName: z.string().min(3, { message: 'این فیلد اجباری می‌باشد' }),
+//   sku: z.string().optional(),
+//   type: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   categories: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   subcategory: z.number().min(1, { message: 'این فیلد اجباری است'}),
+//   description: z.string().optional(),
+//   price: z
+//     .number()
+//     .min(0, { message: 'این فیلد اجباری میباشد' })
+//     .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
+//   costPrice: z.number().optional().or(z.string().optional()),
+//   retailPrice: z
+//     .number()
+//     .min(0, { message: 'این فیلد اجباری میباشد' })
+//     .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
+//   salePrice: z
+//     .number()
+//     .min(0, { message: 'این فیلد اجباری میباشد' })
+//     .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
+//   inventoryTracking: z.string().optional(),
+//   currentStock: z.number().or(z.string()).optional(),
+//   lowStock: z.number().or(z.string()).optional(),
+//   productAvailability: z.string().optional(),
+//   tradeNumber: z.number().or(z.string()).optional(),
+//   manufacturerNumber: z.number().or(z.string()).optional(),
+//   brand: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   upcEan: z.number().or(z.string()).optional(),
+//   // customFields: z.array(
+//   //   z.object({
+//   //     label: z.string().optional(),
+//   //     value: z.string().optional(),
+//   //   })
+//   // ),
+//
+//   freeShipping: z.boolean().optional(),
+//   shippingPrice: z
+//     .number()
+//     .min(0, { message: 'این فیلد اجباری میباشد' })
+//     .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
+//   locationBasedShipping: z.boolean().optional(),
+//   locationShipping: z.array(
+//     z.object({
+//       name: z.string().optional(),
+//       shippingCharge: z.number().or(z.string()).optional(),
+//     })
+//   ),
+//   pageTitle: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   metaDescription: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   metaKeywords: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   productUrl: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+//   isPurchaseSpecifyDate: z.boolean().optional(),
+//   isLimitDate: z.boolean().optional(),
+//   dateFieldName: z.string().optional(),
+//   availableDate: z.date().min(new Date('1900-01-01')).optional(),
+//   endDate: z.date().min(new Date('1900-01-02')).optional(),
+//   productVariants: z.array(
+//     z.object({
+//       name: z.string().optional(),
+//       value: z.string().optional(),
+//     })
+//   ),
+//   tags: z.array(z.string()).optional(),
+// });
+//
+// export type CreateProductInput = z.infer<typeof productFormSchema>;
+//
+// export const menuItems = [
+//   {
+//     label: 'خلاصه',
+//     value: 'summary',
+//   },
+//   {
+//     label: 'عکس و گالری',
+//     value: 'images_gallery',
+//   },
+//   {
+//     label: 'قیمت',
+//     value: 'pricing_inventory',
+//   },
+//   {
+//     label: 'شخصی سازی فیلد ها',
+//     value: 'product_identifiers',
+//   },
+//   {
+//     label: 'حمل و نقل ',
+//     value: 'shipping_availability',
+//   },
+//   {
+//     label: 'بازاریابی',
+//     value: 'seo',
+//   },
+//   {
+//     label: 'تنظیمات دیگر',
+//     value: 'variant_options',
+//   },
+// ];
+//
+// // Category option
+// export const categoryOption = [
+//   {
+//     value: 'fruits',
+//     name: 'میوه',
+//   },
+//   {
+//     value: 'grocery',
+//     name: 'سبزیجات',
+//   },
+//   {
+//     value: 'meat',
+//     name: 'گوشت',
+//   },
+//   {
+//     value: 'cat food',
+//     name: 'غذای گربه',
+//   },
+// ];
+//
+// // Type option
+// export const typeOption = [
+//   {
+//     value: 'digital company',
+//     name: 'محصول دیجیتال',
+//   },
+//   {
+//     value: 'physical company',
+//     name: 'محصول فیزیکی',
+//   },
+// ];
+//
+// // Variant option
+// export const variantOption = [
+//   {
+//     value: 'single',
+//     name: 'تک',
+//   },
+//   {
+//     value: 'multiple',
+//     name: 'چندتایی',
+//   },
+// ];
 import { z } from 'zod';
 
-export const customFields = [
-  {
-    label: '',
-    value: '',
-  },
-];
-export const locationShipping = [
-  {
-    name: '',
-    shippingCharge: '',
-  },
-];
-export const productVariants = [
-  {
-    label: '',
-    value: '',
-  },
-];
+const pictureSchema = z.object({
+  id: z.string(),
+  fileExtension: z.string(),
+  fileName: z.string(),
+  filePath: z.string(),
+  permanent: z.boolean(),
+  fileSize: z.number(),
+  contentType: z.string(),
+  fileCategory: z.string().nullable(),
+  userId: z.number().nullable(),
+  createdAt: z.array(z.number()),
+  updatedAt: z.array(z.number()),
+  createdAtStr: z.string().nullable(),
+  updatedAtStr: z.string().nullable(),
+  productId: z.number().nullable(),
+});
 
-export function defaultValues(product?: CreateProductInput) {
+const productSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  type: z.number(),
+  categoryType: z.number(),
+  companyId: z.number().nullable(),
+  description: z.string().nullable(),
+  createdAt: z.array(z.number()),
+  createdAtStr: z.string().nullable(),
+  updatedAt: z.array(z.number()),
+  updatedAtStr: z.string().nullable(),
+  pictures: z.array(pictureSchema),
+  outsourced: z.boolean(),
+  machineUsage: z.boolean(),
+});
+
+const locationSchema = z.object({
+  officeLocation: z.string(),
+  factoryLocation: z.string(),
+  officePoBox: z.string(),
+  factoryPoBox: z.string(),
+  officeState: z.string(),
+  officeCity: z.string(),
+  factoryState: z.string(),
+  factoryCity: z.string(),
+  industrialCity: z.string(),
+  country: z.string(),
+});
+
+const telSchema = z.object({
+  telNumber: z.number(),
+  telType: z.string(),
+});
+
+const contactSchema = z.object({
+  name: z.string(),
+  lastName: z.string(),
+  email: z.string(),
+  phone: z.string(),
+  isCEO: z.boolean(),
+  position: z.string(),
+});
+
+export const companyFormSchema = z.object({
+  companyName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  companyNameEn: z.string(),
+  ceo: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  ceoPhoneNumber: z.string().min(1, { message: "این فیلد اجباری می‌باشد" }),
+  owner: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  answerName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  history: z.string().optional(),
+  visit: z.number().optional(),
+  ranking: z.number().nullable().optional(),
+  rankingAll: z.number().min(0),
+  buildingArea: z.string().optional(),
+  landArea: z.string().optional(),
+  holding: z.string().optional(),
+  description: z.string().optional(),
+  advertisingSlogan: z.string().optional(),
+  employeesCount: z.string().optional(),
+  companyType: z.string().optional(),
+  backgroundImage: z.string().optional(),
+  logo: z.string().optional(),
+  subjectOfActivity: z.string().optional(),
+  infoStatusDescription: z.string().optional(),
+  infoStatus: z.number().optional(),
+  establishDate: z.array(z.number()).optional(),
+  establishDateStr: z.string().optional(),
+  registrant: z.string().optional(),
+  registrantUsername: z.string().optional(),
+  registrantPhone: z.string().optional(),
+  registrantTel: z.string().optional(),
+  rawMaterialsOrigin: z.string().optional(),
+  record: z.string().optional(),
+  keyWords: z.string().optional(),
+  tags: z.string().optional(),
+  companyKeyWords: z.array(z.string()).optional(),
+  companyTags: z.array(z.string()).optional(),
+  relatedIndustries: z.array(z.string()).optional(),
+  companyStatus: z.string().optional(),
+  products: z.array(productSchema).optional(),
+  primaryBrand: z.string().optional(),
+  mainBrandEn: z.string().optional(),
+  companyBrands: z.array(z.string()).optional(),
+  location: locationSchema.optional(),
+  factoryTels: z.array(telSchema).optional(),
+  telegramId: z.string().optional(),
+  telegramPhoneNo: z.string().optional(),
+  smsNumber: z.string().optional(),
+  hotlineNumber: z.string().optional(),
+  whatsAppId: z.string().optional(),
+  whatsAppPhoneNo: z.string().optional(),
+  instagramId: z.string().optional(),
+  linkedInId: z.string().optional(),
+  eitaaPhoneNo: z.string().optional(),
+  rubikaPhoneNo: z.string().optional(),
+  skypeId: z.string().optional(),
+  website: z.string().optional(),
+  contacts: z.array(contactSchema).optional(),
+  emails: z.array(z.string()).optional()
+});
+
+export type CreateCompanyInput = z.infer<typeof companyFormSchema>;
+
+export function defaultValues(company?: CreateCompanyInput | null) {
   return {
-    title: product?.title ?? '',
-    companyName: product?.companyName ?? '',
-    sku: product?.sku ?? '',
-    type: product?.type ?? '',
-    categories: product?.categories ?? '',
-    description: product?.description ?? '',
-    price: product?.price ?? '',
-    costPrice: product?.costPrice ?? '',
-    retailPrice: product?.retailPrice ?? '',
-    salePrice: product?.salePrice ?? '',
-    inventoryTracking: product?.inventoryTracking ?? '',
-    currentStock: product?.currentStock ?? '',
-    lowStock: product?.lowStock ?? '',
-    productAvailability: product?.productAvailability ?? '',
-    tradeNumber: product?.tradeNumber ?? '',
-    manufacturerNumber: product?.manufacturerNumber ?? '',
-    brand: product?.brand ?? '',
-    upcEan: product?.upcEan ?? '',
-    customFields:
-      product?.customFields.length === 0 ? customFields : product?.customFields,
-
-    freeShipping: product?.freeShipping ?? false,
-    shippingPrice: product?.shippingPrice ?? '',
-    locationBasedShipping: product?.locationBasedShipping ?? false,
-    locationShipping:
-      product?.locationShipping.length === 0
-        ? locationShipping
-        : product?.locationShipping,
-    pageTitle: product?.pageTitle ?? '',
-    metaDescription: product?.metaDescription ?? '',
-    metaKeywords: product?.metaKeywords ?? '',
-    productUrl: product?.productUrl ?? '',
-    isPurchaseSpecifyDate: product?.isPurchaseSpecifyDate ?? false,
-    isLimitDate: product?.isLimitDate ?? false,
-    dateFieldName: product?.dateFieldName ?? '',
-    productVariants:
-      product?.productVariants.length === 0
-        ? productVariants
-        : product?.productVariants,
-    tags: product?.tags ?? [],
+    companyName: company?.companyName ?? '',
+    companyNameEn: company?.companyNameEn ?? '',
+    ceo: company?.ceo ?? '',
+    ceoPhoneNumber: company?.ceoPhoneNumber ?? '',
+    owner: company?.owner ?? '',
+    answerName: company?.answerName ?? '',
+    history: company?.history ?? '',
+    buildingArea: company?.buildingArea ?? '',
+    landArea: company?.landArea ?? '',
+    holding: company?.holding ?? '',
+    description: company?.description ?? '',
+    advertisingSlogan: company?.advertisingSlogan ?? '',
+    employeesCount: company?.employeesCount ?? '',
+    companyType: company?.companyType ?? '',
+    backgroundImage: company?.backgroundImage ?? '',
+    logo: company?.logo ?? '',
+    subjectOfActivity: company?.subjectOfActivity ?? '',
+    establishDate: company?.establishDate ?? [],
+    rawMaterialsOrigin: company?.rawMaterialsOrigin ?? '',
+    keyWords: company?.keyWords ?? '',
+    tags: company?.tags ?? '',
+    companyKeyWords: company?.companyKeyWords ?? [],
+    companyTags: company?.companyTags ?? [],
+    companyStatus: company?.companyStatus ?? '',
+    products: company?.products ?? [],
+    primaryBrand: company?.primaryBrand ?? '',
+    mainBrandEn: company?.mainBrandEn ?? '',
+    factoryCity: company?.location?.factoryCity ?? '',
+    factoryState: company?.location?.factoryState ?? '',
+    industrialCity: company?.location?.industrialCity ?? '',
+    factoryPoBox: company?.location?.factoryPoBox ?? '',
+    officePoBox: company?.location?.officePoBox ?? '',
+    factoryLocation: company?.location?.factoryLocation ?? '',
+    officeLocation: company?.location?.officeLocation ?? '',
+    officeCity: company?.location?.officeCity ?? '',
+    officeState: company?.location?.officeState ?? '',
+    factoryTels: company?.factoryTels ?? [],
+    telegramId: company?.telegramId ?? '',
+    telegramPhoneNo: company?.telegramPhoneNo ?? '',
+    smsNumber: company?.smsNumber ?? '',
+    hotlineNumber: company?.hotlineNumber ?? '',
+    whatsAppId: company?.whatsAppId ?? '',
+    whatsAppPhoneNo: company?.whatsAppPhoneNo ?? '',
+    instagramId: company?.instagramId ?? '',
+    linkedInId: company?.linkedInId ?? '',
+    eitaaPhoneNo: company?.eitaaPhoneNo ?? '',
+    rubikaPhoneNo: company?.rubikaPhoneNo ?? '',
+    skypeId: company?.skypeId ?? '',
+    website: company?.website ?? '',
+    contacts: company?.contacts ?? '',
+    emails: company?.emails ?? ''
+    // establishDateStr: company?.establishDateStr ?? '',
+    // registrant: company?.registrant ?? '',
+    // registrantUsername: company?.registrantUsername ?? '',
+    // registrantPhone: company?.registrantPhone ?? '',
+    // registrantTel: company?.registrantTel ?? '',
+    // visit: company?.visit ?? 0,
+    // ranking: company?.ranking ?? null,
+    // rankingAll: company?.rankingAll ?? 0,
+    // infoStatusDescription: company?.infoStatusDescription ?? '',
+    // infoStatus: company?.infoStatus ?? 0,
+    // record: company?.record ?? '',
+    // relatedIndustries: company?.relatedIndustries ?? [],+
+    
   };
 }
 
-export const productFormSchema = z.object({
-  title: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  companyName: z.string().min(3, { message: 'این فیلد اجباری می‌باشد' }),
-  sku: z.string().optional(),
-  type: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  categories: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  description: z.string().optional(),
-  price: z
-    .number()
-    .min(0, { message: 'این فیلد اجباری میباشد' })
-    .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
-  costPrice: z.number().optional().or(z.string().optional()),
-  retailPrice: z
-    .number()
-    .min(0, { message: 'این فیلد اجباری میباشد' })
-    .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
-  salePrice: z
-    .number()
-    .min(0, { message: 'این فیلد اجباری میباشد' })
-    .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
-  inventoryTracking: z.string().optional(),
-  currentStock: z.number().or(z.string()).optional(),
-  lowStock: z.number().or(z.string()).optional(),
-  productAvailability: z.string().optional(),
-  tradeNumber: z.number().or(z.string()).optional(),
-  manufacturerNumber: z.number().or(z.string()).optional(),
-  brand: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  upcEan: z.number().or(z.string()).optional(),
-  customFields: z.array(
-    z.object({
-      label: z.string().optional(),
-      value: z.string().optional(),
-    })
-  ),
-
-  freeShipping: z.boolean().optional(),
-  shippingPrice: z
-    .number()
-    .min(0, { message: 'این فیلد اجباری میباشد' })
-    .or(z.string().min(1, { message: 'این فیلد اجباری میباشد' })),
-  locationBasedShipping: z.boolean().optional(),
-  locationShipping: z.array(
-    z.object({
-      name: z.string().optional(),
-      shippingCharge: z.number().or(z.string()).optional(),
-    })
-  ),
-  pageTitle: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  metaDescription: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  metaKeywords: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  productUrl: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  isPurchaseSpecifyDate: z.boolean().optional(),
-  isLimitDate: z.boolean().optional(),
-  dateFieldName: z.string().optional(),
-  availableDate: z.date().min(new Date('1900-01-01')).optional(),
-  endDate: z.date().min(new Date('1900-01-02')).optional(),
-  productVariants: z.array(
-    z.object({
-      name: z.string().optional(),
-      value: z.string().optional(),
-    })
-  ),
-  tags: z.array(z.string()).optional(),
-});
-
-export type CreateProductInput = z.infer<typeof productFormSchema>;
-
-export const menuItems = [
-  {
-    label: 'خلاصه',
-    value: 'summary',
-  },
-  {
-    label: 'عکس و گالری',
-    value: 'images_gallery',
-  },
-  {
-    label: 'قیمت',
-    value: 'pricing_inventory',
-  },
-  {
-    label: 'شخصی سازی فیلد ها',
-    value: 'product_identifiers',
-  },
-  {
-    label: 'حمل و نقل ',
-    value: 'shipping_availability',
-  },
-  {
-    label: 'بازاریابی',
-    value: 'seo',
-  },
-  {
-    label: 'تنظیمات دیگر',
-    value: 'variant_options',
-  },
-];
-
-// Category option
-export const categoryOption = [
-  {
-    value: 'fruits',
-    name: 'میوه',
-  },
-  {
-    value: 'grocery',
-    name: 'سبزیجات',
-  },
-  {
-    value: 'meat',
-    name: 'گوشت',
-  },
-  {
-    value: 'cat food',
-    name: 'غذای گربه',
-  },
-];
-
-// Type option
-export const typeOption = [
-  {
-    value: 'digital company',
-    name: 'محصول دیجیتال',
-  },
-  {
-    value: 'physical company',
-    name: 'محصول فیزیکی',
-  },
-];
-
-// Variant option
-export const variantOption = [
-  {
-    value: 'single',
-    name: 'تک',
-  },
-  {
-    value: 'multiple',
-    name: 'چندتایی',
-  },
-];

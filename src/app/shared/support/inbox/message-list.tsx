@@ -111,10 +111,10 @@ export function MessageItem({ className, message }: MessageItemProps) {
       <div>
         <div className="flex items-center justify-between lg:flex-col lg:items-start 2xl:flex-row 2xl:items-center">
           <Text tag="h4" className="flex items-center">
-            <span className="text-sm font-semibold dark:text-gray-700">
-              {message.subject}
-            </span>
-            {message.hasAttachment && (
+            {/* @ts-ignore */}
+            <span className="text-sm font-semibold dark:text-gray-700">{message.subject}
+              {/* @ts-ignore */}
+            </span>{message.hasAttachment && (
               <PiPaperclipLight className="mr-2 h-4 w-4 text-gray-500" />
             )}
             {!message.markedAsRead && (
@@ -122,7 +122,7 @@ export function MessageItem({ className, message }: MessageItemProps) {
             )}
           </Text>
           <span className="text-xs text-gray-500">
-            {/*{getRelativeTime(new Date(message.createdAt))}*/}
+            {/*{getRelativeTime(new Date(message.createdAt))}*/}{/* @ts-ignore */}
             {message.createdAtStr}
           </span>
         </div>

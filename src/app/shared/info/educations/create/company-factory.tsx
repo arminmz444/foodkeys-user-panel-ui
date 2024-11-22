@@ -5,12 +5,12 @@ import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
 import SelectLoader from '@/components/loader/select-loader';
 import QuillLoader from '@/components/loader/quill-loader';
-import { PiPlusBold, PiXBold } from 'react-icons/pi';
+import { PiPlusBold } from 'react-icons/pi';
 import { Button } from '@/components/ui/button';
 import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import useAxiosPrivate from '../../../../../../hooks/use-axios-private';
+import useAxiosPrivate from '../../../../../hooks/use-axios-private';
 import { Textarea } from '@/components/ui/textarea';
 
 const Select = dynamic(() => import('@/components/ui/select'), {

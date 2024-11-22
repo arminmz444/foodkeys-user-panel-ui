@@ -43,6 +43,7 @@ export default function MetricCard({
   chartClassName,
   children,
 }: React.PropsWithChildren<MetricCardTypes>) {
+  // @ts-ignore
   return (
     <div
       className={cn(
@@ -63,7 +64,7 @@ export default function MetricCard({
               {icon}
             </div>
           )}
-
+          {/*// @ts-ignore*/}
           <div className={cn(icon && 'ps-3', contentClassName)}>
             <Text className={cn('mb-0.5 text-gray-500', titleClassName)}>
               {title}

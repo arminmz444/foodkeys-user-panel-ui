@@ -344,6 +344,7 @@ export default function SelectBox<OptionType extends SelectOption>({
                   selectClasses.rounded[rounded],
                   disabled && selectFieldClasses.disabled,
                   clearable && selectFieldClasses.clearable,
+                  // @ts-ignore
                   prefix && selectFieldClasses.prefixStartPadding.size[size],
                   suffix && selectFieldClasses.suffixEndPadding.size[size],
                   // isFocus && 'is-focus', // must have is-focus class based on onFocus event
@@ -366,6 +367,7 @@ export default function SelectBox<OptionType extends SelectOption>({
                   className={cn(
                     'block w-full truncate text-left rtl:text-right',
                     emptyValue && 'text-gray-500 dark:text-gray-300',
+                    // @ts-ignore
                     prefix && selectFieldClasses.prefixStartPadding.size[size],
                     suffix && selectFieldClasses.suffixEndPadding.size[size]
                   )}
@@ -445,6 +447,7 @@ export default function SelectBox<OptionType extends SelectOption>({
                         {({ selected }) => (
                           <span
                             className={cn(
+                                // @ts-ignore
                               suffix &&
                                 selectFieldClasses.suffixEndPadding.size[size],
                               prefix &&

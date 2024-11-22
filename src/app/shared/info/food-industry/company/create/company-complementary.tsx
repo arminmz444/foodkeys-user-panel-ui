@@ -10,7 +10,7 @@ import {PiPlusBold, PiTagBold, PiXBold} from "react-icons/pi";
 import {Button} from "@/components/ui/button";
 import {ActionIcon} from "@/components/ui/action-icon";
 import TrashIcon from "@/components/icons/trash";
-import {useCallback, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Radio} from "rizzui";
 import Upload from "@/components/ui/upload";
 import Image from "next/image";
@@ -41,8 +41,19 @@ export default function CompanyComplementary({className}: { className?: string }
         register,
         control,
         formState: {errors},
+        watch
     } = useFormContext();
+    const watchedTags = watch('companyTags', []);
+    const watchedKeywords = watch('companyKeyWords', []);
 
+    useEffect(() => {
+        if (watchedTags && watchedTags.length) {
+            setTags(watchedTags);
+        }
+        if (watchedKeywords && watchedKeywords.length) {
+            setKeywords(watchedKeywords);
+        }
+    }, [watchedTags, watchedKeywords]);
     return (
         <FormGroup
             title="اطلاعات تکمیلی"

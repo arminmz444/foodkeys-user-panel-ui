@@ -21,10 +21,10 @@ const CompanyHistory = ({ className }: { className?: string }) => {
       className={cn(className)}
     >
       <Textarea
-        label="تاریخچه"
+        label="تاریخچه فعالیت شرکت"
         placeholder="تاریخچه فعالیت شرکت"
-        {...register('otherBrands')}
-        error={errors.otherBrands?.message as string}
+        {...register('history')}
+        error={errors.history?.message as string}
         rows={5}
         className="col-span-full"
       />

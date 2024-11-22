@@ -22,25 +22,43 @@ const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
   loading: () => <QuillLoader className="col-span-full h-[143px]" />,
 });
 
-export default function CompanyFactory({ className }: { className?: string }) {
+interface FactoryTel {
+  id: number,
+  telType: string,
+  telNumber: string,
+  companyId: number
+}
+export default function CompanyFactory({ className, category, data }: { className?: string, category?: number, data?: any }) {
   const _axios = useAxiosPrivate();
   const [provinces, setProvinces] = useState<{ id: string; name: string }[]>(
     []
   );
   const [cities, setCities] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
-  const [factoryPhones, setFactoryPhones] = useState<string[]>([]);
+  const [factoryTels, setFactoryTels] = useState<string[]>([]);
   const [contacts, setContacts] = useState<
-    { name: string; lastName: string; position: string; phoneNumber: string }[]
+    { name: string; lastName: string; position: string; phone: string, email: string, isCEO: boolean,  }[]
   >([]);
 
   const {
     register,
     control,
     formState: { errors },
+    watch
   } = useFormContext();
 
-  // Fetch provinces
+  const watchedTels = watch('factoryTels', []);
+  const watchedContacts = watch('contacts', []);
+
+  useEffect(() => {
+    if (watchedTels && watchedTels.length) {
+      setFactoryTels(watchedTels.map((tel: FactoryTel) => tel.telNumber));
+    }
+    if (watchedContacts && watchedContacts) {
+      setContacts(watchedContacts);
+    }
+  }, [watchedTels, watchedContacts]);
+
   useEffect(() => {
     const fetchProvinces = async () => {
       try {
@@ -81,56 +99,67 @@ export default function CompanyFactory({ className }: { className?: string }) {
       description="شامل تلفن های تماس، آدرس و ..."
       className={cn(className)}
     >
-      <Controller
-        name="factoryProvince"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <Select
-            label="استان کارخانه"
-            options={provinces.map((province) => ({
-              value: province.id,
-              name: province.name,
-            }))}
-            value={value}
-            onChange={(e) => {
-              onChange(e);
-              //@ts-ignore
-              setSelectedProvince(e);
-            }}
-            placeholder="انتخاب استان"
-            error={errors?.factoryProvince?.message as string}
-            isRequired
-          />
-        )}
+      {/*<Controller*/}
+      {/*  name="factoryProvince"*/}
+      {/*  control={control}*/}
+      {/*  render={({ field: { onChange, value } }) => (*/}
+      {/*    <Select*/}
+      {/*      label="استان کارخانه"*/}
+      {/*      options={provinces.map((province) => ({*/}
+      {/*        value: province.id,*/}
+      {/*        name: province.name,*/}
+      {/*      }))}*/}
+      {/*      value={value}*/}
+      {/*      onChange={(e) => {*/}
+      {/*        onChange(e);*/}
+      {/*        //@ts-ignore*/}
+      {/*        setSelectedProvince(e);*/}
+      {/*      }}*/}
+      {/*      placeholder="انتخاب استان"*/}
+      {/*      error={errors?.factoryProvince?.message as string}*/}
+      {/*      isRequired*/}
+      {/*    />*/}
+      {/*  )}*/}
+      {/*/>*/}
+      {/*<Controller*/}
+      {/*  name="factoryCity"*/}
+      {/*  control={control}*/}
+      {/*  render={({ field: { onChange, value } }) => (*/}
+      {/*    <Select*/}
+      {/*      label="شهر کارخانه"*/}
+      {/*      // @ts-ignore*/}
+      {/*      options={cities.map((city) => ({*/}
+      {/*        //@ts-ignore*/}
+      {/*        value: city.id,*/}
+      {/*        //@ts-ignore*/}
+      {/*        name: city.nameFa,*/}
+      {/*      }))}*/}
+      {/*      value={value}*/}
+      {/*      onChange={onChange}*/}
+      {/*      placeholder="انتخاب شهر"*/}
+      {/*      error={errors?.factoryCity?.message as string}*/}
+      {/*      isRequired*/}
+      {/*    />*/}
+      {/*  )}*/}
+      {/*/>*/}
+      <Input
+          label="استان کارخانه*"
+          placeholder="استان کارخانه*"
+          {...register('factoryState')}
+          error={errors.factoryState?.message as string}
       />
-      <Controller
-        name="factoryCity"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <Select
-            label="شهر کارخانه"
-            // @ts-ignore
-            options={cities.map((city) => ({
-              //@ts-ignore
-              value: city.id,
-              //@ts-ignore
-              name: city.nameFa,
-            }))}
-            value={value}
-            onChange={onChange}
-            placeholder="انتخاب شهر"
-            error={errors?.factoryCity?.message as string}
-            isRequired
-          />
-        )}
+      <Input
+          label="شهر کارخانه*"
+          placeholder="شهر کارخانه*"
+          {...register('factoryCity')}
+          error={errors.factoryCity?.message as string}
       />
 
       <Input
         label="نام شهرک صنعتی*"
         placeholder="نام شهرک صنعتی"
-        {...register('industrialCityName')}
-        error={errors.industrialCityName?.message as string}
-        required
+        {...register('industrialCity')}
+        error={errors.industrialCity?.message as string}
       />
       <Input
         label="کد پستی کارخانه"
@@ -144,22 +173,22 @@ export default function CompanyFactory({ className }: { className?: string }) {
         <label className="font-medium text-gray-700 dark:text-gray-600">
           تلفن‌های ثابت کارخانه
         </label>
-        {factoryPhones.map((phone, index) => (
+        {factoryTels.map((phone, index) => (
           <div key={index} className="flex items-center gap-2 space-x-2">
             <Input
               type="number"
               value={phone}
               placeholder={`تلفن کارخانه ${index + 1}`}
               onChange={(e) => {
-                const newPhones = [...factoryPhones];
+                const newPhones = [...factoryTels];
                 newPhones[index] = e.target.value;
-                setFactoryPhones(newPhones);
+                setFactoryTels(newPhones);
               }}
               className="flex-grow"
             />
             <ActionIcon
               onClick={() =>
-                setFactoryPhones(factoryPhones.filter((_, i) => i !== index))
+                setFactoryTels(factoryTels.filter((_, i) => i !== index))
               }
               variant="flat"
               color="danger"
@@ -168,9 +197,9 @@ export default function CompanyFactory({ className }: { className?: string }) {
             </ActionIcon>
           </div>
         ))}
-        {factoryPhones.length < 3 && (
+        {factoryTels.length < 3 && (
           <Button
-            onClick={() => setFactoryPhones([...factoryPhones, ''])}
+            onClick={() => setFactoryTels([...factoryTels, ''])}
             variant="outline"
           >
             <PiPlusBold className="me-2 h-4 w-4" /> اضافه کردن تلفن جدید
@@ -188,8 +217,8 @@ export default function CompanyFactory({ className }: { className?: string }) {
             className="grid grid-cols-1 items-center gap-4 xl:grid-cols-4"
           >
             <Input
-              label="نام و نام خانوادگی*"
-              placeholder="نام و نام خانوادگی"
+              label="نام*"
+              placeholder="نام*"
               value={contact.name}
               onChange={(e) => {
                 const newContacts = [...contacts];
@@ -197,7 +226,18 @@ export default function CompanyFactory({ className }: { className?: string }) {
                 setContacts(newContacts);
               }}
               className="flex-grow"
-              required
+            />
+
+            <Input
+                label="نام خانوادگی*"
+                placeholder="نام خانوادگی*"
+                value={contact.lastName}
+                onChange={(e) => {
+                  const newContacts = [...contacts];
+                  newContacts[index].lastName = e.target.value;
+                  setContacts(newContacts);
+                }}
+                className="flex-grow"
             />
 
             <Input
@@ -215,13 +255,26 @@ export default function CompanyFactory({ className }: { className?: string }) {
               label="شماره موبایل*"
               type="number"
               placeholder="شماره موبایل*"
-              value={contact.phoneNumber}
+              value={contact.phone}
               onChange={(e) => {
                 const newContacts = [...contacts];
-                newContacts[index].phoneNumber = e.target.value;
+                newContacts[index].phone = e.target.value;
                 setContacts(newContacts);
               }}
               className="flex-grow"
+            />
+
+            <Input
+                label="ایمیل"
+                type="email"
+                placeholder="ایمیل"
+                value={contact.email}
+                onChange={(e) => {
+                  const newContacts = [...contacts];
+                  newContacts[index].email = e.target.value;
+                  setContacts(newContacts);
+                }}
+                className="flex-grow"
             />
             <ActionIcon
               onClick={() =>
@@ -251,12 +304,19 @@ export default function CompanyFactory({ className }: { className?: string }) {
       </div>
       <Textarea
         label="آدرس کارخانه*"
-        placeholder="آدرس"
-        {...register('companyAddress')}
-        error={errors.companyAddress?.message as string}
+        placeholder="آدرس کارخانه"
+        {...register('factoryLocation')}
+        error={errors.factoryLocation?.message as string}
         rows={5}
         className="col-span-full"
-        required
+      />
+      <Textarea
+          label="آدرس دفتر مرکزی*"
+          placeholder="آدرس دفتر مرکزی"
+          {...register('officeLocation')}
+          error={errors.officeLocation?.message as string}
+          rows={5}
+          className="col-span-full"
       />
 
       {/* Factory Address */}

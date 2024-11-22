@@ -11,6 +11,9 @@ import {signIn} from "next-auth/react";
 import {da, ro} from "date-fns/locale";
 import {useLocation} from "react-use";
 import Cookies from "js-cookie";
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from '@/store/store';
 
 const initialState = {
     user: null,
@@ -70,7 +73,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
 
-    const login = useCallback(async (username: any, password: any) => {
+    const login = useCallback(async (username: any, password: any, m: any) => {
         try {
             const response = await axiosInstance.post('/auth/login', { username, password });
             const data = response.data;
@@ -84,6 +87,8 @@ export const AuthProvider = ({ children }) => {
                 // @ts-ignore
                 dispatch({type: CONTEXT_ACTION.SET_USER, payload: data.data?.user});
                 toast.success('با موفقیت وارد شدید');
+                m.token = data.data?.token
+                m.user = data.data?.user
                 router.push('/analytics');
             } else // @ts-ignore
                 throw new Error(data?.message || 'خطا در ورود')
@@ -144,6 +149,60 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
+    const forgotPasswordOtp = useCallback(async (phoneNumber: any) => {
+        try {
+            await axiosInstance.post('/auth/forgot-password/otp', { phoneNumber });
+            toast.success('رمز یکبار مصرف با موفقیت ارسال شد');
+            return true;
+        } catch (error) {
+            toast.error('خطا در ارسال رمز یکبار مصرف');
+            return false;
+        }
+    }, []);
+
+    const forgotPasswordVerify = useCallback(async (otp: any, phoneNumber: any) => {
+        try {
+            await axiosInstance.post('/auth/forgot-password/verify', { otp, phoneNumber });
+            return true;
+        } catch (error) {
+            console.log(error)
+            // @ts-ignore
+            toast.error(error?.response?.data?.message || 'خطا در بررسی رمز یکبارمصرف');
+            return false;
+        }
+    }, []);
+
+
+    const forgotPassword = useCallback(async (password: any, username: any, formHook: any) => {
+        try {
+            const response = await axiosInstance.post('/auth/forgot-password', {
+                password,
+                username,
+            });
+            if (response?.data?.status === 'SUCCESS') {
+                toast.success(response.data.message);
+                router.push('/login');
+            }
+            else toast.error(response?.data?.message || 'خطا در بازنشانی رمزعبور')
+        } catch (error: any) {
+            console.log("Error in forgotPassword" + JSON.stringify(error.response?.data));
+            if (
+                error.response &&
+                error.response.status === 400 &&
+                error.response.data.statusCode === 400 &&
+                error.response.data.error?.length
+            ) {
+                toast.error(error.response.data.message);
+                error.response.data.error.forEach((err: { formikField: string; message: any; }) => {
+                    if (err.formikField !== 'GENERAL') formHook.setFieldError(err.formikField, err.message);
+                });
+            } else {
+                toast.error('خطا در بازنشانی رمز عبور');
+            }
+            // throw error;
+        }
+    }, []);
+
     const changePassword = useCallback(async (oldPassword: any, newPassword: any, confirmNewPassword: any, formHook: any) => {
         try {
             const response = await axiosInstance.post('/auth/change-password', {
@@ -199,8 +258,12 @@ export const AuthProvider = ({ children }) => {
     // @ts-ignore
     return (
         // @ts-ignore
-        <AuthContext.Provider value={{ state, login, loginOtp, requestOtp, changePassword, logout, dispatch }}>
+        <AuthContext.Provider value={{ state, login, loginOtp, requestOtp, changePassword, logout, dispatch, forgotPasswordOtp, forgotPasswordVerify, forgotPassword }}>
+            <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
             {children}
+                </PersistGate>
+            </Provider>
         </AuthContext.Provider>
     );
 };
