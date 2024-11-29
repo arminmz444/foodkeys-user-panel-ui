@@ -131,7 +131,7 @@ export default function ProfileSettingsView({
           return (
             <>
               <ProfileHeader
-                title="صادق قاسم نژاد"
+                title="آرمین مظفری"
                 description="ویرایش عکس و اطلاعات شخصی"
               >
                 <div className="w-full sm:w-auto md:ms-auto">
@@ -387,7 +387,7 @@ export function ProfileHeader({
       <div className="relative z-10 mx-auto flex w-full max-w-screen-2xl flex-wrap items-end justify-start gap-6 border-b border-dashed border-gray-300 pb-10">
         <div className="relative -top-1/3 aspect-square w-[110px] overflow-hidden rounded-full border-[6px] border-white bg-gray-100 shadow-profilePic @2xl:w-[130px] @5xl:-top-2/3 @5xl:w-[150px] dark:border-gray-50 3xl:w-[200px]">
           <Image
-            src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/profile-image.webp"
+            src="http://localhost:8080/files/USER_AVATAR/d34e81dc-1a3d-44d0-8748-019edcfa7754.jpg"
             alt="profile-pic"
             fill
             sizes="(max-width: 768px) 100vw"

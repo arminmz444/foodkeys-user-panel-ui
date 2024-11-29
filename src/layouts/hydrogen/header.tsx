@@ -178,7 +178,7 @@ function WalletDropdown({
             const API_URL = `http://localhost:8080/api/v1/payment/start/3`
             try {
                 const response = await axiosInstance.post(API_URL, {
-                    "amount": amount,
+                    "amount": amount * 10,
                     "redirectUrl": "/api/v1/payment/callback",
                     "description": "افزایش شارژ کیف پول",
                     "mobile": "09352388350",
@@ -203,7 +203,7 @@ function WalletDropdown({
             window.location.href = response?.data?.url;
         else toast.error("خطا در افزایش اعتبار")
         // dispatch(addCredit(amount));
-        alert(`در حال هدایت به درگاه بانکی برای پرداخت مبلغ ${amount} تومان`);
+        // alert(`در حال هدایت به درگاه بانکی برای پرداخت مبلغ ${amount} تومان`);
     };
     const defaultAmounts = [50000, 100000, 250000, 500000];
 

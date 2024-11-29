@@ -742,8 +742,8 @@ export default function PersonalInfoView() {
                                 {/*</HorizontalFormBlockWrapper>*/}
 
                                 <HorizontalFormBlockWrapper
-                                    title="پورتفولیو"
-                                    description="چند تا از نمونه کار هاتو به اشتراک بذار"
+                                    title="عکس پس زمینه پروفایل"
+                                    description="عکس دلخواه خود را انتخاب کنید"
                                     className="border-0 pb-0"
                                 >
                                     <div className="mb-5 @3xl:col-span-2">

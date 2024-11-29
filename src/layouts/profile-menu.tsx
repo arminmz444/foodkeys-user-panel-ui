@@ -37,7 +37,7 @@ function DropdownMenu() {
       <div className="flex items-center border-b border-gray-300 px-6 pb-5 pt-6">
         <Avatar
             // @ts-ignore
-            src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"}
+            src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "http://localhost:8080/files/USER_AVATAR/d34e81dc-1a3d-44d0-8748-019edcfa7754.jpg"}
           name={user.firstName || "کاربر"}
           color="invert"
         />
@@ -86,7 +86,7 @@ export default function ProfileMenu() {
     >
       <button className="w-9 shrink-0 rounded-full outline-none focus-visible:ring-[1.5px] focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-px sm:w-10">
         <Avatar
-          src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"}
+          src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "http://localhost:8080/files/USER_AVATAR/d34e81dc-1a3d-44d0-8748-019edcfa7754.jpg"}
           name="John Doe"
           color="invert"
           className="!h-9 w-9 sm:!h-10 sm:w-10"

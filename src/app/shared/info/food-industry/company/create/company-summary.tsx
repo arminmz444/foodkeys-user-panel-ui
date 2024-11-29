@@ -461,31 +461,31 @@ export default function CompanySummary({className, category}: { className?: stri
             {/*    )}*/}
             {/*</div>*/}
 
-            <Controller
-                name="submissionDate"
-                control={control}
-                render={({field: {onChange, value, onBlur}}) => (
-                    <DatePicker
-                        selected={value}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        dateFormat="yyyy/MM/dd"
-                        maxDate={new Date()}
-                        placeholderText="تاریخ ثبت"
-                        inputProps={{
-                            label: 'تاریخ ثبت',
-                            variant: 'outline',
-                            inputClassName: 'p-4 border border-gray-300 rounded-md',
-                        }}
-                        popperPlacement="bottom-end"
-                        className="flex-grow"
-                    />
-                )}
-            />
-            {errors.submissionDate && (
-                // @ts-ignore
-                <p className="text-red-500 text-sm">{errors.submissionDate.message}</p>
-            )}
+            {/*<Controller*/}
+            {/*    name="submissionDate"*/}
+            {/*    control={control}*/}
+            {/*    render={({field: {onChange, value, onBlur}}) => (*/}
+            {/*        <DatePicker*/}
+            {/*            selected={value}*/}
+            {/*            onChange={onChange}*/}
+            {/*            onBlur={onBlur}*/}
+            {/*            dateFormat="yyyy/MM/dd"*/}
+            {/*            maxDate={new Date()}*/}
+            {/*            placeholderText="تاریخ ثبت"*/}
+            {/*            inputProps={{*/}
+            {/*                label: 'تاریخ ثبت',*/}
+            {/*                variant: 'outline',*/}
+            {/*                inputClassName: 'p-4 border border-gray-300 rounded-md',*/}
+            {/*            }}*/}
+            {/*            popperPlacement="bottom-end"*/}
+            {/*            className="flex-grow"*/}
+            {/*        />*/}
+            {/*    )}*/}
+            {/*/>*/}
+            {/*{errors.submissionDate && (*/}
+            {/*    // @ts-ignore*/}
+            {/*    <p className="text-red-500 text-sm">{errors.submissionDate.message}</p>*/}
+            {/*)}*/}
             <Textarea
                 label="توضیحات شرکت"
                 placeholder="توضیحات شرکت"

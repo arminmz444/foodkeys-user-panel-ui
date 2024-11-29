@@ -82,13 +82,13 @@ export default function MainDashboard() {
                 </QueryClientProvider>
                 {/*<RecentOrder className="relative @4xl:col-span-2 @7xl:col-span-12"/>*/}
 
-                <RepeatCustomerRate className="@4xl:col-span-2 @7xl:col-span-12 @[90rem]:col-span-8"/>
+                {/*<RepeatCustomerRate className="@4xl:col-span-2 @7xl:col-span-12 @[90rem]:col-span-8"/>*/}
 
-                <BestSellers className="@7xl:col-span-6 @[90rem]:col-span-4"/>
+                {/*<BestSellers className="@7xl:col-span-6 @[90rem]:col-span-4"/>*/}
 
-                <UserLocation className="@7xl:col-span-6 @[90rem]:col-span-5 @[112rem]:col-span-4"/>
+                {/*<UserLocation className="@7xl:col-span-6 @[90rem]:col-span-5 @[112rem]:col-span-4"/>*/}
 
-                <StockReport className="@4xl:col-span-2 @7xl:col-span-12 @[90rem]:col-span-7 @[112rem]:col-span-8"/>
+                {/*<StockReport className="@4xl:col-span-2 @7xl:col-span-12 @[90rem]:col-span-7 @[112rem]:col-span-8"/>*/}
             </div>
         </div>
     );

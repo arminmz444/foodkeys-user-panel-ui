@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { useModal } from '@/app/shared/modal-views/use-modal';
+import { useRouter } from 'next/navigation';
 import HorizontalFormBlockWrapper from './horiozontal-block';
 import {
   PiCheckBold,
@@ -350,7 +351,7 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
   // @ts-ignore
   const [totalPrice, setTotalPrice] = useState(0)
   const [totalDiscount, setTotalDiscount] = useState(0)
-
+  const router = useRouter();
   const totalMapper = {
     free: 0,
     basic: 500_000,
@@ -366,7 +367,7 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
     setTotalDiscount(discountAmount);
   }, [discount, currentPlan]);
   const handlePayment = async () => {
-    let bundleId;
+    let bundleId: number;
     switch (currentPlan) {
       case 'free':
         bundleId = 1;
@@ -378,32 +379,34 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
         bundleId = 3;
         break;
     }
-    const startPayment = async () => {
+    const createSubscription = async () => {
       const API_URL = `http://localhost:8080/api/v1/subscription`
+      let data = {
+        "bundleId": bundleId,
+      }
+      if (discountCode)
+        { // @ts-ignore
+          data["discountCode"] = discountCode;
+        }
       try {
-        const response = await axiosInstance.post(API_URL, {
-          "userId": 9,
-          "bundleId": 1,
-          "discountCode": discountCode || null
-        });
+        const response = await axiosInstance.post(API_URL, data);
 
         if (response.data.statusCode === 200) {
+          toast.success(response.data.message)
           return {
             data: response.data.data,
           };
-        } else {
-          toast.error("خطا در خرید اشتراک")
-          // throw new Error('Failed to start payment');
         }
       } catch (error) {
-        toast.error("خطا در خرید اشتراک")
+        // @ts-ignore
+        toast.error(error?.response?.data?.message || "خطا در خرید اشتراک")
         console.error('Failed to buy subscription', error);
       }
     };
-    let response = await startPayment()
-    if (response?.data?.url)
-      window.location.href = response?.data?.url;
-    else toast.error("خطا در افزایش اعتبار")
+    let response = await createSubscription()
+    if (response?.data)
+      router.push("/bundle")
+
     // dispatch(addCredit(amount));
   };
   const applyDiscountCode = async () => {

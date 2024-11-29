@@ -256,7 +256,6 @@ function ProductCard({ data }: ProductCardTypes) {
   );
 }
 
-// total cart balance calculation
 function CartCalculations() {
   const router = useRouter();
   return (

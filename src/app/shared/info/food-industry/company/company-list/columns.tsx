@@ -170,7 +170,7 @@ export const getColumns = ({
                     placement="top"
                     color="invert"
                 >
-                    <Link href={routes.info.foodIndustryView(row.id)}>
+                    <a href={"http://localhost:3000/view/producers/details?id=" + row.id}>
                         <ActionIcon
                             tag="span"
                             size="sm"
@@ -179,7 +179,7 @@ export const getColumns = ({
                         >
                             <EyeIcon className="h-4 w-4"/>
                         </ActionIcon>
-                    </Link>
+                    </a>
                 </Tooltip>
                 <DeletePopover
                     title={`جذف شرکت`}

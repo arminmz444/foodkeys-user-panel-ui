@@ -9,16 +9,24 @@ const pageHeader = {
   title: 'ثبت شرکت جدید',
   breadcrumb: [
     {
-      href: routes.eCommerce.dashboard,
+      href: routes.info.dashboard,
+      name: 'مدیریت اطلاعات',
+    },
+    {
+      href: routes.info.foodIndustryList,
       name: 'بانک صنعت غذا',
     },
     {
-      href: routes.eCommerce.products,
-      name: 'شرکت ها',
+      href: routes.info.foodIndustryList,
+      name: 'لیست شرکت‌ها',
     },
     {
-      name: 'ایجاد',
+      href: routes.info.foodIndustryAdd,
+      name: 'ثبت شرکت جدید',
     },
+    // {
+    //   name: params.id,
+    // },
   ],
 };
 

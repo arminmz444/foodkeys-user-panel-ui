@@ -166,62 +166,62 @@ export const menuItems = [
                 name: 'ثبت شرکت جدید',
                 href: routes.info.foodIndustryAdd,
             },
-            {
-                name: 'نمایش اطلاعات',
-                href: routes.info.foodIndustryView(1234),
-            },
-            {
-                name: 'ویرایش اطلاعات',
-                href: routes.info.foodIndustryEdit(1234),
-            },
-            {
-                name: 'ویرایش اطلاعات',
-                href: routes.eCommerce.ediProduct(DUMMY_ID),
-            },
-            {
-                name: 'دسته بندی',
-                href: routes.eCommerce.categories,
-            },
-            {
-                name: 'ساخت دسته بندی',
-                href: routes.eCommerce.createCategory,
-            },
-            {
-                name: 'ویرایش دسته بندی',
-                href: routes.eCommerce.editCategory(DUMMY_ID),
-            },
-            {
-                name: 'سفارشات',
-                href: routes.eCommerce.orders,
-            },
-            {
-                name: 'جزییات سفارش',
-                href: routes.eCommerce.orderDetails(DUMMY_ID),
-            },
-            {
-                name: 'ساخت سفارش',
-                href: routes.eCommerce.createOrder,
-            },
-            {
-                name: 'ویرایش سفارش',
-                href: routes.eCommerce.editOrder(DUMMY_ID),
-            },
-            {
-                name: 'تظرات',
-                href: routes.eCommerce.reviews,
-            },
-            {
-                name: 'خرید',
-                href: routes.eCommerce.shop,
-            },
-            {
-                name: 'سبد خرید',
-                href: routes.eCommerce.cart,
-            },
-            {
-                name: 'پرداخت و تسویه حساب',
-                href: routes.eCommerce.checkout,
-            },
+            // {
+            //     name: 'نمایش اطلاعات',
+            //     href: routes.info.foodIndustryView(1234),
+            // },
+            // {
+            //     name: 'ویرایش اطلاعات',
+            //     href: routes.info.foodIndustryEdit(1234),
+            // },
+            // {
+            //     name: 'ویرایش اطلاعات',
+            //     href: routes.eCommerce.ediProduct(DUMMY_ID),
+            // },
+            // {
+            //     name: 'دسته بندی',
+            //     href: routes.eCommerce.categories,
+            // },
+            // {
+            //     name: 'ساخت دسته بندی',
+            //     href: routes.eCommerce.createCategory,
+            // },
+            // {
+            //     name: 'ویرایش دسته بندی',
+            //     href: routes.eCommerce.editCategory(DUMMY_ID),
+            // },
+            // {
+            //     name: 'سفارشات',
+            //     href: routes.eCommerce.orders,
+            // },
+            // {
+            //     name: 'جزییات سفارش',
+            //     href: routes.eCommerce.orderDetails(DUMMY_ID),
+            // },
+            // {
+            //     name: 'ساخت سفارش',
+            //     href: routes.eCommerce.createOrder,
+            // },
+            // {
+            //     name: 'ویرایش سفارش',
+            //     href: routes.eCommerce.editOrder(DUMMY_ID),
+            // },
+            // {
+            //     name: 'تظرات',
+            //     href: routes.eCommerce.reviews,
+            // },
+            // {
+            //     name: 'خرید',
+            //     href: routes.eCommerce.shop,
+            // },
+            // {
+            //     name: 'سبد خرید',
+            //     href: routes.eCommerce.cart,
+            // },
+            // {
+            //     name: 'پرداخت و تسویه حساب',
+            //     href: routes.eCommerce.checkout,
+            // },
         ],
     },
     {

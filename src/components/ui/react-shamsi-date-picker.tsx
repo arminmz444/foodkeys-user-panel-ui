@@ -42,7 +42,7 @@ export default function JalaliDatePicker() {
                     color: '#4B5563', // Slightly dark gray
                 }}
             >
-                تاریخ ثبت
+                تاریخ تاسیس
             </label>
 
             <DatePicker
@@ -85,7 +85,7 @@ export default function JalaliDatePicker() {
                         }}
                     >
                         {/* The date text */}
-                        <span>{value ? value : 'تاریخ ثبت'}</span>
+                        <span>{value ? value : 'تاریخ تاسیس'}</span>
                         {/* Calendar Icon */}
                         <PiCalendarBlank className="h-5 w-5 text-gray-500" />
                     </div>
