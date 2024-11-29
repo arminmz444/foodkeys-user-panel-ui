@@ -17,7 +17,7 @@ type FileStatsType = {
 const filesStatData = [
   {
     id: 1,
-    title: 'تمامی عکس ها',
+    title: 'تعداد شرکت‌ها',
     metric: '36,476 گیگابایت',
     fill: '#3872FA',
     percentage: 32,
@@ -27,7 +27,7 @@ const filesStatData = [
   },
   {
     id: 2,
-    title: 'تمامی ویدیو ها',
+    title: 'تعداد بازدید‌ها',
     metric: '53,406 گیگابایت',
     fill: '#3872FA',
     percentage: 48,

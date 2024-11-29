@@ -3,7 +3,7 @@ import PencilIcon from "@/components/icons/pencil";
 import {Textarea} from "@/components/ui/textarea";
 import Image from 'next/image';
 import {useEffect, useRef, useState} from 'react';
-import {useFieldArray, useFormContext} from 'react-hook-form';
+import {Controller, useFieldArray, useFormContext} from 'react-hook-form';
 import {Input} from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
 import cn from '@/utils/class-names';
@@ -16,6 +16,7 @@ import {PiTagBold, PiXBold} from "react-icons/pi";
 import ProductPricing from "@/app/shared/info/food-industry/company/create/product-pricing";
 import ProductAvailability from "@/app/shared/info/food-industry/company/create/product-availability";
 import {inter} from "@/app/fonts";
+
 interface ProductMediaProps {
     className?: string;
 }
@@ -25,6 +26,7 @@ interface ProductSchema {
     description: string;
     categoryType: string;
 }
+
 // export default function ProductMedia({className}: ProductMediaProps) {
 //     const {
 //         register,
@@ -204,15 +206,16 @@ interface ProductSchema {
 //         </FormGroup>
 //     );
 // }
-export default function ProductMedia({ className }) {
+export default function ProductMedia({className}) {
     const {
         control,
-        formState: { errors },
+        formState: {errors},
         register,
+        getValues,
+        watch
     } = useFormContext();
 
-    // Use useFieldArray for products
-    const { fields: products, append, remove, update } = useFieldArray({
+    const {fields: products, append, remove, update} = useFieldArray({
         control,
         name: 'products',
     });
@@ -221,61 +224,89 @@ export default function ProductMedia({ className }) {
         isOpen: false,
         size: 'md',
     });
-
+    const watchedProductAvailability = watch('productAvailability', "2");
     return (
         <FormGroup
             title="مدیریت محصولات و خدمات"
             description="محصولات و خدمات شرکت خود را ثبت کنید"
             className={cn(className)}
         >
-            <ProductAvailability />
-            <Textarea
-                label="عنوان محصولات (خدمات)"
-                placeholder="عنوان محصولات (خدمات)"
-                {...register('productsTitle')}
-                error={errors.productsTitle?.message as string}
-                className="col-span-full w-full"
-                rows={3}
-            />
-            {/* ... other components */}
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-around gap-2 flex-wrap w-full">
-                    <Button
-                        variant="outline"
-                        color="secondary"
-                        onClick={() =>
-                            setModalState((prevState) => ({
-                                ...prevState,
-                                isOpen: true,
-                                size: 'lg',
-                            }))
-                        }
-                    >
-                        مدیریت محصولات و خدمات
-                    </Button>
-                    <Text as="span" className="text-sm text-gray-500">
-                        ثبت شده: {products.length}
-                    </Text>
+            <ProductAvailability/>
+            {watchedProductAvailability === "1" ? (
+                <>
+                    <Textarea
+                        label="عنوان محصولات (خدمات)"
+                        placeholder="عنوان محصولات (خدمات)"
+                        {...register('productTitles')}
+                        error={errors.productTitles?.message as string}
+                        className="col-span-full w-full"
+                        rows={3}
+                    />
+                    <Textarea
+                        label="توضیحات محصولات (خدمات)"
+                        placeholder="توضیحات محصولات (خدمات)"
+                        {...register('productsDescription')}
+                        error={errors.productsDescription?.message as string}
+                        className="col-span-full w-full"
+                        rows={3}
+                    />
+                    <Textarea
+                        label="عنوان محصولات برون‌سپاری"
+                        placeholder="عنوان محصولات برون‌سپاری"
+                        {...register('outSourcedProductTitles')}
+                        error={errors.outSourcedProductTitles?.message as string}
+                        className="col-span-full w-full"
+                        rows={3}
+                    />
+                    <Textarea
+                        label="توضیحات محصولات برون‌سپاری"
+                        placeholder="توضیحات محصولات برون‌سپاری"
+                        {...register('outSourcedProductsDescription')}
+                        error={errors.outSourcedProductsDescription?.message as string}
+                        className="col-span-full w-full"
+                        rows={3}
+                    />
+                </>) : <>
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-around gap-2 flex-wrap w-full">
+                        <Button
+                            variant="outline"
+                            color="secondary"
+                            onClick={() =>
+                                setModalState((prevState) => ({
+                                    ...prevState,
+                                    isOpen: true,
+                                    size: 'lg',
+                                }))
+                            }
+                        >
+                            مدیریت محصولات و خدمات
+                        </Button>
+                        <Text as="span" className="text-sm text-gray-500">
+                            ثبت شده: {products.length}
+                        </Text>
+                    </div>
+                    <div className="flex items-center justify-around gap-2 flex-wrap w-full">
+                        <Button
+                            variant="outline"
+                            color="secondary"
+                            onClick={() =>
+                                setModalState((prevState) => ({
+                                    ...prevState,
+                                    isOpen: true,
+                                    size: 'lg',
+                                }))
+                            }
+                        >
+                            مدیریت محصولات برون‌سپاری‌شده
+                        </Button>
+                        <Text as="span" className="text-sm text-gray-500">
+                            ثبت شده: {products.length}
+                        </Text>
+                    </div>
                 </div>
-                <div className="flex items-center justify-around gap-2 flex-wrap w-full">
-                    <Button
-                        variant="outline"
-                        color="secondary"
-                        onClick={() =>
-                            setModalState((prevState) => ({
-                                ...prevState,
-                                isOpen: true,
-                                size: 'lg',
-                            }))
-                        }
-                    >
-                        مدیریت محصولات برون‌سپاری‌شده
-                    </Button>
-                    <Text as="span" className="text-sm text-gray-500">
-                        ثبت شده: {products.length}
-                    </Text>
-                </div>
-            </div>
+            </>}
+
 
             {/*<Modal*/}
             {/*    isOpen={modalState.isOpen}*/}
@@ -311,7 +342,7 @@ export default function ProductMedia({ className }) {
                 isOpen={modalState.isOpen}
                 size={modalState.size}
                 onClose={() =>
-                    setModalState((prevState) => ({ ...prevState, isOpen: false }))
+                    setModalState((prevState) => ({...prevState, isOpen: false}))
                 }
             >
                 <div className="m-auto px-7 pt-6 pb-8 max-h-[90vh] overflow-auto">
@@ -441,15 +472,15 @@ export default function ProductMedia({ className }) {
 // };
 const Swiper = dynamic(() =>
         import('swiper/react').then((mod) => mod.Swiper),
-    { ssr: false }
+    {ssr: false}
 );
 const SwiperSlide = dynamic(() =>
         import('swiper/react').then((mod) => mod.SwiperSlide),
-    { ssr: false }
+    {ssr: false}
 );
 
-// Import Swiper styles
 import dynamic from "next/dynamic";
+import {Switch} from "@/components/ui/switch";
 
 export const MultipleFiles = ({
                                   className,
@@ -460,7 +491,7 @@ export const MultipleFiles = ({
     label?: React.ReactNode;
     registerName: string;
 }) => {
-    const { register, setValue, watch } = useFormContext();
+    const {register, setValue, watch} = useFormContext();
     const multiRef = useRef<HTMLInputElement>(null);
     const [multiImages, setMultiImages] = useState<Array<File>>(watch(registerName) || []);
 
@@ -507,7 +538,7 @@ export const MultipleFiles = ({
                     >
                         {multiImages.map((file, index) => (
                             <SwiperSlide key={file.name}>
-                                <div className="relative">
+                                <div className="relative mt-2">
                                     <Image
                                         src={URL.createObjectURL(file)}
                                         alt={file.name}
@@ -519,33 +550,31 @@ export const MultipleFiles = ({
                                         onClick={() => handleMultiImageDelete(index)}
                                         className="absolute top-0 right-0 m-2 text-white bg-red-500 rounded-full p-1"
                                     >
-                                        <TrashIcon className="h-5 w-5" />
+                                        <TrashIcon className="h-5 w-5"/>
                                     </button>
                                 </div>
-                                {/* Additional Inputs or Controls */}
                                 <div className="mt-4">
                                     <Input
-                                        placeholder="عنوان"
-                                        // You can register this input if needed
+                                        placeholder="عنوان جایگزین"
                                     />
-                                    <div className="mt-2">
-                                        <Radio
-                                            value="NotTrackInventoryProduct"
-                                            inputClassName="dark:checked:!bg-gray-200 dark:checked:!border-gray-200 dark:focus:ring-gray-200 dark:focus:ring-offset-gray-0"
-                                        />
-                                        <label className="ms-2">عکس اصلی</label>
-                                    </div>
+                                    {/*<div className="mt-2">*/}
+                                    {/*    <Radio*/}
+                                    {/*        value="NotTrackInventoryProduct"*/}
+                                    {/*        inputClassName="dark:checked:!bg-gray-200 dark:checked:!border-gray-200 dark:focus:ring-gray-200 dark:focus:ring-offset-gray-0"*/}
+                                    {/*    />*/}
+                                    {/*    <label className="ms-2">عکس اصلی</label>*/}
+                                    {/*</div>*/}
                                 </div>
                             </SwiperSlide>
                         ))}
                     </Swiper>
-                    {/* Hidden input to register the files */}
                     <input type="hidden" {...register(registerName)} />
                 </>
             )}
         </div>
     );
 };
+
 interface ItemCrudProps {
     name: string;
     items: string[];
@@ -614,8 +643,8 @@ interface ItemCrudProps {
 //     );
 // }
 
-function ItemCrud({ name, items, setItems, registerName }) {
-    const { setValue } = useFormContext();
+function ItemCrud({name, items, setItems, registerName}) {
+    const {setValue} = useFormContext();
     const [itemText, setItemText] = useState('');
 
     function handleItemAdd() {
@@ -641,7 +670,7 @@ function ItemCrud({ name, items, setItems, registerName }) {
                     value={itemText}
                     placeholder={`${name} وارد کنید`}
                     onChange={(e) => setItemText(e.target.value)}
-                    prefix={<PiTagBold className="h-4 w-4" />}
+                    prefix={<PiTagBold className="h-4 w-4"/>}
                     className="w-full"
                 />
                 <Button onClick={handleItemAdd} className="ms-4 shrink-0 text-sm">
@@ -661,7 +690,7 @@ function ItemCrud({ name, items, setItems, registerName }) {
                                 onClick={() => handleItemRemove(text)}
                                 className="ps-2 text-gray-500 hover:text-gray-900"
                             >
-                                <PiXBold className="h-3.5 w-3.5" />
+                                <PiXBold className="h-3.5 w-3.5"/>
                             </button>
                         </div>
                     ))}
@@ -791,8 +820,8 @@ function ItemCrud({ name, items, setItems, registerName }) {
 //     );
 // };
 
-const ProductAccordion = ({ products, append, remove, update }) => {
-    const { register } = useFormContext();
+const ProductAccordion = ({products, append, remove, update}) => {
+    const {control, register} = useFormContext();
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     const toggleAccordion = (index: number) => {
@@ -800,121 +829,123 @@ const ProductAccordion = ({ products, append, remove, update }) => {
     };
 
     return (
-        <div className="w-full max-w-full bg-white rounded-lg shadow-md">
-            {products.map((field, index) => (
-                <div key={field.id}>
-                    {/* Accordion Header */}
-                    <button
-                        className="flex items-center justify-between w-full p-4 focus:outline-none hover:bg-gray-50 transition"
-                        onClick={() => toggleAccordion(index)}
-                    >
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                {/* Optional icon or image */}
+        <>
+            <div className="w-full max-w-full bg-white rounded-lg shadow-md">
+                {products.map((field, index) => (
+                    <div key={field.id}>
+                        <button
+                            className="flex items-center justify-between w-full p-4 focus:outline-none hover:bg-gray-50 transition"
+                            onClick={() => toggleAccordion(index)}
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                    {/* Optional icon or image */}
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-medium">
+                                        {field.name || 'محصول جدید'}
+                                    </h3>
+                                    <p className="text-sm text-gray-500">
+                                        {field.categoryType ?? 'سایر'}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="text-base font-medium">
-                                    {field.name || 'محصول جدید'}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                    {field.categoryType ?? 'سایر'}
-                                </p>
-                            </div>
-                        </div>
-                        <span className="text-gray-500">
+                            <span className="text-gray-500">
               {openIndex === index ? '▲' : '▼'}
             </span>
-                    </button>
+                        </button>
 
-                    {/* Accordion Content with Form */}
-                    <div
-                        className={`transition-all duration-300 ease-in-out ${
-                            openIndex === index ? 'max-h-fit' : 'max-h-0 overflow-hidden'
-                        }`}
-                    >
-                        <div className="p-4">
-                            {/* Form Content */}
-                            <div className="grid grid-cols-12 gap-y-6 gap-x-5">
-                                {/* Product Name */}
-                                <Input
-                                    label="عنوان محصول *"
-                                    inputClassName="border-2"
-                                    size="lg"
-                                    className="col-span-12 lg:col-span-6"
-                                    {...register(`products.${index}.name`)}
-                                />
-                                {/* Category Type */}
-                                <Input
-                                    label="دسته بندی محصول *"
-                                    inputClassName="border-2"
-                                    size="lg"
-                                    className="col-span-12 lg:col-span-6"
-                                    {...register(`products.${index}.categoryType`)}
-                                />
-                                {/* Description */}
-                                <Textarea
-                                    label="توضیحات محصول"
-                                    className="col-span-full"
-                                    rows={3}
-                                    {...register(`products.${index}.description`)}
-                                />
-                                {/* Display Checkbox */}
-                                <Checkbox
-                                    size="lg"
-                                    inputClassName="border-2"
-                                    className="col-span-12"
-                                    label="نمایش محصول"
-                                    {...register(`products.${index}.display`)}
-                                />
-                                {/* Tags and Keywords */}
-                                <div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">
-                                    <ItemCrud
-                                        name="تگ"
-                                        items={field.tags || []}
-                                        setItems={(items) => update(index, {...field, tags: items})}
-                                        registerName={`products.${index}.tags`}
-                                    />
-                                    <ItemCrud
-                                        name="کلمه کلیدی"
-                                        items={field.keywords || []}
-                                        setItems={(items) => update(index, {...field, keywords: items})}
-                                        registerName={`products.${index}.keywords`}
-                                    />
-                                </div>
-                                {/* Images */}
-                                <MultipleFiles
-                                    className="col-span-12"
-                                    label="تصویر محصول"
-                                    registerName={`products.${index}.images`}
-                                />
-                                {/* Action Buttons */}
-                                <div className="col-span-12 mt-2 flex justify-end gap-4">
-                                    <Button
+                        <div
+                            className={`transition-all duration-300 ease-in-out ${
+                                openIndex === index ? 'max-h-fit' : 'max-h-0 overflow-hidden'
+                            }`}
+                        >
+                            <div className="p-4">
+                                <div className="grid grid-cols-12 gap-y-6 gap-x-5">
+                                    <Input
+                                        label="عنوان محصول *"
+                                        inputClassName="border-2"
                                         size="lg"
-                                        className="col-span-2 mt-2"
-                                        onClick={() => {
-                                            // Handle save or update product if needed
-                                        }}
-                                    >
-                                        <PencilIcon className="h-4 w-4 me-1"/> ویرایش
-                                    </Button>
-                                    <Button
+                                        className="col-span-12 lg:col-span-6"
+                                        {...register(`products.${index}.name`)}
+                                    />
+                                    <Input
+                                        label="دسته بندی محصول *"
+                                        inputClassName="border-2"
                                         size="lg"
-                                        className="bg-red text-white col-span-2 mt-2"
-                                        onClick={() => remove(index)}
-                                    >
-                                        <TrashIcon className="h-4 w-4 me-1"/>حذف
-                                    </Button>
+                                        className="col-span-12 lg:col-span-6"
+                                        {...register(`products.${index}.categoryType`)}
+                                    />
+                                    <Textarea
+                                        label="توضیحات محصول"
+                                        className="col-span-full"
+                                        rows={3}
+                                        {...register(`products.${index}.description`)}
+                                    />
+                                    {/*<Checkbox*/}
+                                    {/*    size="lg"*/}
+                                    {/*    inputClassName="border-2"*/}
+                                    {/*    className="col-span-12"*/}
+                                    {/*    label="نمایش محصول"*/}
+                                    {/*    {...register(`products.${index}.showProduct`)}*/}
+                                    {/*/>*/}
+                                    <Controller
+                                        name="showProduct"
+                                        control={control}
+                                        render={({ field: { value } }) => (
+                                            <Switch
+                                                label="نمایش محصول"
+                                                className="col-span-full"
+                                                switchClassName="dark:border-gray-400 "
+                                                handlerClassName="dark:bg-gray-400"
+                                                {...register(`products.${index}.showProduct`)}
+                                            />
+                                        )}
+                                    />
+                                    {/*<div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">*/}
+                                    {/*    <ItemCrud*/}
+                                    {/*        name="تگ"*/}
+                                    {/*        items={field.tags || []}*/}
+                                    {/*        setItems={(items) => update(index, {...field, tags: items})}*/}
+                                    {/*        registerName={`products.${index}.tags`}*/}
+                                    {/*    />*/}
+                                    {/*    <ItemCrud*/}
+                                    {/*        name="کلمه کلیدی"*/}
+                                    {/*        items={field.keywords || []}*/}
+                                    {/*        setItems={(items) => update(index, {...field, keywords: items})}*/}
+                                    {/*        registerName={`products.${index}.keywords`}*/}
+                                    {/*    />*/}
+                                    {/*</div>*/}
+                                    <MultipleFiles
+                                        className="col-span-12"
+                                        label="تصویر محصول"
+                                        registerName={`products.${index}.images`}
+                                    />
+                                    <div className="col-span-12 mt-2 flex justify-end gap-4">
+                                        <Button
+                                            size="lg"
+                                            className="col-span-2 mt-2"
+                                            onClick={() => {
+                                            }}
+                                        >
+                                            <PencilIcon className="h-4 w-4 me-1"/> ویرایش
+                                        </Button>
+                                        <Button
+                                            size="lg"
+                                            className="bg-red text-white col-span-2 mt-2"
+                                            onClick={() => remove(index)}
+                                        >
+                                            <TrashIcon className="h-4 w-4 me-1"/>حذف
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        {index < products.length - 1 && <hr className="border-gray-200"/>}
                     </div>
-
-                    {index < products.length - 1 && <hr className="border-gray-200"/>}
-                </div>
-            ))}
-
-            {/* Button to add a new product */}
+                ))}
+            </div>
             <Button
                 variant="solid"
                 color="primary"
@@ -933,6 +964,6 @@ const ProductAccordion = ({ products, append, remove, update }) => {
             >
                 افزودن محصول جدید
             </Button>
-        </div>
+        </>
     );
 };

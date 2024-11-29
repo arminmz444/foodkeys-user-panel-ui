@@ -67,7 +67,7 @@ function LogoUpload(
                         <div className="relative w-24 h-24">
                     <Progressbar rounded="md" value={progress} size="lg" />
                         </div>
-                ) : success ? (
+                ) : (success || logoPreview) ? (
                     <div onClick={handleClick} className="relative w-24 h-24 overflow-hidden rounded-full border border-gray-300">
                         <Image
                             // @ts-ignore

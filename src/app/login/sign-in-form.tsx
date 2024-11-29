@@ -42,7 +42,7 @@ export default function SignInForm() {
     const onSubmit: SubmitHandler<Login> = async (data) => {
         setLoading(true)
         console.log(data);
-        let m = { token: "", user: "" }
+        let m = {token: "", user: ""}
         await login(data.username, data.password, m);
         console.log(m)
         // @ts-ignore
@@ -92,18 +92,21 @@ export default function SignInForm() {
                             <Checkbox
                                 {...register('remember')}
                                 label="مرا به خاطر بسپر"
-                                color="info"
+                                color="success"
                                 variant="flat"
                                 className="[&>label>span]:font-medium"
                             />
                             <Link
                                 href={routes.auth.forgotPassword1}
-                                className="h-auto p-0 text-sm font-semibold text-blue underline transition-colors hover:text-gray-900 hover:no-underline"
+                                className="h-auto p-0 text-sm font-semibold text-[#129974] underline transition-colors hover:text-gray-900 hover:no-underline"
                             >
                                 رمز عبور را فراموش کردید?
                             </Link>
                         </div>
-                        <Button isLoading={loading} className="w-full" type="submit" size="lg" color="info">
+                        <Button className="group/btn w-full bg-[#129974]"
+                                type="submit"
+                                size="lg"
+                                color="success" isLoading={loading}>
                             <span>ورود</span>{' '}
                             <PiArrowLeftBold className="ms-2 mt-0.5 h-5 w-5"/>
                         </Button>
@@ -114,7 +117,7 @@ export default function SignInForm() {
                 آیا حساب کاربری ندارید?{' '}
                 <Link
                     href={routes.auth.signUp1}
-                    className="font-semibold text-gray-700 transition-colors hover:text-blue"
+                    className="font-semibold text-gray-700 transition-colors hover:text-[#129974]"
                 >
                     ثبت نام
                 </Link>

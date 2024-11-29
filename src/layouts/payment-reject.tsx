@@ -17,13 +17,13 @@ import { IoClose } from 'react-icons/io5';
 import { SlCallEnd } from 'react-icons/sl';
 
 export default function PaymentReject() {
-  const [modalState, setModalState] = useState(false);
+  const [modalState, setModalState] = useState(true);
   return (
     <>
       <Button onClick={() => setModalState(true)}>پرداخ</Button>
       <Modal
         isOpen={modalState}
-        onClose={() => setModalState(false)}
+        onClose={() => console.log("Bilakh")}
         overlayClassName="backdrop-blur"
         containerClassName="!max-w-xl !shadow-2xl"
       >

@@ -15,13 +15,12 @@ import { PiNewspaperClipping } from 'react-icons/pi';
 import { FaCheck } from 'react-icons/fa6';
 
 export default function PaymentSuccess() {
-  const [modalState, setModalState] = useState(false);
+  const [modalState, setModalState] = useState(true);
   return (
     <>
-      <Button onClick={() => setModalState(true)}>پرداخ</Button>
       <Modal
         isOpen={modalState}
-        onClose={() => setModalState(false)}
+        onClose={() => console.log()}
         overlayClassName="backdrop-blur"
         containerClassName="!max-w-xl !shadow-2xl"
       >

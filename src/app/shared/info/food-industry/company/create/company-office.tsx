@@ -10,7 +10,7 @@ import { PiPlusBold } from 'react-icons/pi';
 import { Button } from '@/components/ui/button';
 import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
-import { useCallback, useState } from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import { Radio } from 'rizzui';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -27,6 +27,12 @@ const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
 //   const { data } = await axios.get('http://localhost:8080/api/v1/category/1/subcategory');
 //   return data;
 // };
+interface OfficeTel {
+    id: number,
+    telType: string,
+    telNumber: string,
+    companyId: number
+}
 
 export default function CompanyOffice({ className }: { className?: string }) {
   const [provinces, setProvinces] = useState<{ id: string; name: string }[]>(
@@ -34,7 +40,7 @@ export default function CompanyOffice({ className }: { className?: string }) {
   );
   const [cities, setCities] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState(null);
-  const [factoryPhones, setFactoryPhones] = useState<string[]>([]);
+  const [officeTels, setOfficeTels] = useState<string[]>([]);
   const [officeFaxes, setOfficeFaxes] = useState<string[]>([]);
   const [contacts, setContacts] = useState<
     { name: string; lastName: string; position: string; phoneNumber: string }[]
@@ -44,11 +50,25 @@ export default function CompanyOffice({ className }: { className?: string }) {
     register,
     control,
     formState: { errors },
+      watch
   } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'brands',
   });
+
+    const watchedOfficeTels = watch('officeTels', []);
+    const watchedOfficeFaxes = watch('officeFaxes', []);
+
+    useEffect(() => {
+        if (watchedOfficeTels && watchedOfficeTels.length) {
+            setOfficeTels(watchedOfficeTels.map((tel: OfficeTel) => tel.telNumber));
+        }
+        if (watchedOfficeFaxes && watchedOfficeFaxes.length) {
+            setOfficeFaxes(watchedOfficeFaxes.map((fax: OfficeTel) => fax.telNumber));
+        }
+
+    }, [watchedOfficeTels, watchedOfficeFaxes]);
 
   //   const addCustomField = useCallback(
   //     () => append([...brands]),
@@ -135,22 +155,22 @@ export default function CompanyOffice({ className }: { className?: string }) {
             <label className="font-medium text-gray-700 dark:text-gray-600">
               تلفن‌های ثابت دفتر مرکزی
             </label>
-            {factoryPhones.map((phone, index) => (
+            {officeTels.map((phone, index) => (
                 <div key={index} className="flex items-center gap-2 space-x-2">
                   <Input
                       type="number"
                       value={phone}
                       placeholder={`تلفن دفتر مرکزی ${index + 1}`}
                       onChange={(e) => {
-                        const newPhones = [...factoryPhones];
+                        const newPhones = [...officeTels];
                         newPhones[index] = e.target.value;
-                        setFactoryPhones(newPhones);
+                        setOfficeTels(newPhones);
                       }}
                       className="flex-grow"
                   />
                   <ActionIcon
                       onClick={() =>
-                          setFactoryPhones(factoryPhones.filter((_, i) => i !== index))
+                          setOfficeTels(officeTels.filter((_, i) => i !== index))
                       }
                       variant="flat"
                       color="danger"
@@ -159,9 +179,9 @@ export default function CompanyOffice({ className }: { className?: string }) {
                   </ActionIcon>
                 </div>
             ))}
-            {factoryPhones.length < 3 && (
+            {officeTels.length < 3 && (
                 <Button
-                    onClick={() => setFactoryPhones([...factoryPhones, ''])}
+                    onClick={() => setOfficeTels([...officeTels, ''])}
                     variant="outline"
                 >
                   <PiPlusBold className="me-2 h-4 w-4"/> اضافه کردن تلفن جدید

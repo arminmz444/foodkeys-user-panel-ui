@@ -6,7 +6,6 @@ import InvoiceDetails from '@/app/shared/invoice/invoice-details';
 import PageHeader from '@/app/shared/page-header';
 import { PiDownloadSimpleBold, PiPrinterBold } from 'react-icons/pi';
 import { useRef } from 'react';
-import { useReactToPrint } from 'react-to-print';
 
 const pageHeader = {
   title: 'جزییات فاکتور',
@@ -27,7 +26,6 @@ const pageHeader = {
 
 export default function InvoiceDetailsPage({ params }: any) {
   const invoiceRef = useRef<HTMLDivElement>();
-  const reactToPrintFn = useReactToPrint({ invoiceRef });
 
   function handlePrint() {
     console.log('write print logic');

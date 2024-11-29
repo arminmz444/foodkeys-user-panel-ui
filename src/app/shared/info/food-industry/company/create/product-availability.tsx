@@ -5,17 +5,17 @@ import { PiCheckCircleFill } from "react-icons/pi";
 
 const availability = [
     {
-        value: "OLD_PRODUCTS",
+        value: "1",
         name: "استفاده از محصولات سایت قدیم",
     },
     {
-        value: "NEW_PRODUCTS",
+        value: "2",
         name: "استفاده از محصولات سایت جدید",
     },
 ];
 
 export default function ProductAvailability() {
-    const { control } = useFormContext();
+    const { control, register } = useFormContext();
 
     return (
         <Controller
@@ -31,6 +31,7 @@ export default function ProductAvailability() {
                         <AdvancedRadio
                             key={item.value}
                             value={item.value}
+                            {...register('productAvailability')}
                             className="flex justify-between rounded-xl border border-gray-200 p-6 text-gray-600 hover:cursor-pointer hover:border-gray-700"
                             inputClassName="[&:checked:enabled~span]:ring-1 [&:checked:enabled~span]:ring-offset-0 [&:checked:enabled~span]:ring-gray-700 [&:checked:enabled~span]:border-gray-700 [&:checked~span>.icon]:block"
                         >

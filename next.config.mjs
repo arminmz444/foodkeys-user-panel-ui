@@ -60,6 +60,12 @@ const nextConfig = {
         hostname: 'www.uplooder.net',
         // pathname: '/img/image/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
+        pathname: '/files/**',
+      },
     ],
   },
 };

@@ -42,6 +42,7 @@ export default function CompanyGallery({ className, category, data }: { classNam
         <MultipleFiles className="col-span-2" label="عکس‌های نمونه محصولات تولیدی" />
           <MultipleFiles className="col-span-2" label="عکس‌های افتخارات و گواهینامه‌ها" />
           <MultipleFiles className="col-span-2" label="عکس‌های مدیران و مسئولین" />
+          <MultipleFiles className="col-span-2" label="اسلایدر شرکت" />
       </FormGroup>
   );
 }

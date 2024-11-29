@@ -6,8 +6,6 @@ import Table from '@/components/ui/table';
 import { usePathname } from 'next/navigation';
 import farmLogo from 'public/farmLogo.webp';
 import farmSign from 'public/farmSignature.png';
-import { useRef } from 'react';
-import { useReactToPrint, UseReactToPrintFn } from 'react-to-print';
 
 const invoiceItems = [
   {

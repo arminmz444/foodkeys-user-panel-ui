@@ -47,7 +47,7 @@ export default function FleetStatus({ className }: { className?: string }) {
           tag="h3"
           className="col-span-full mb-8 text-base font-semibold sm:text-lg"
         >
-          وضعیت ناوگان
+          بازدید‌های شخصی‌سازی شده
         </Text>
         <div className="mb-6 w-full @3xl:w-40 @4xl:mb-0">
           <div className="mx-auto h-44 w-44">
@@ -72,7 +72,7 @@ export default function FleetStatus({ className }: { className?: string }) {
             </ResponsiveContainer>
           </div>
           <p className="mt-4 text-center font-semibold text-gray-800">
-            کارایی ناوگان
+            درصد بازدید براساس شرکت
           </p>
         </div>
         <div className="">

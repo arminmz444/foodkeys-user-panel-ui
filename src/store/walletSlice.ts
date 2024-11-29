@@ -16,11 +16,14 @@ const walletSlice = createSlice({
         addCredit: (state, action: PayloadAction<number>) => {
             state.credit += action.payload;
         },
+        setCredit: (state, action: PayloadAction<number>) => {
+            state.credit = action.payload;
+        },
         resetCredit: (state) => {
             state.credit = 0;
         },
     },
 });
 
-export const { addCredit, resetCredit } = walletSlice.actions;
+export const { addCredit, resetCredit, setCredit } = walletSlice.actions;
 export default walletSlice.reducer;

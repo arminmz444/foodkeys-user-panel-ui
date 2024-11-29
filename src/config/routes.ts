@@ -172,7 +172,7 @@ export const routes = {
   maintenance: '/maintenance',
   blank: '/blank',
   auth: {
-    signUp1: '/auth/sign-up-1',
+    signUp1: '/sign-up',
     signUp2: '/auth/sign-up-2',
     signUp3: '/auth/sign-up-3',
     signUp4: '/auth/sign-up-4',
@@ -196,6 +196,7 @@ export const routes = {
     otp4: '/auth/otp-4',
     otp5: '/auth/otp-5',
   },
+  bundle: '/bundle',
   signIn: '/login',
   otp: '/login/otp',
 };

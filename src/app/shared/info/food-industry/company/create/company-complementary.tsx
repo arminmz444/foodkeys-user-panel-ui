@@ -57,129 +57,129 @@ export default function CompanyComplementary({className}: { className?: string }
     return (
         <FormGroup
             title="اطلاعات تکمیلی"
-            description="شامل نام دسته‌بندی، تجاری و ..."
+            description="شامل تگ، کلمات کلیدی و ..."
             className={cn(className)}
         >
 
-            <Input
-                label="نام شرکت*"
-                placeholder="نام شرکت"
-                {...register('companyName')}
-                error={errors.companyName?.message as string}
-            />
-            <Input
-                label="نام شرکت به انگلیسی*"
-                placeholder="نام شرکت به انگلیسی"
-                {...register('companyEnglishName')}
-                error={errors.companyEnglishName?.message as string}
-            />
+            {/*<Input*/}
+            {/*    label="نام شرکت*"*/}
+            {/*    placeholder="نام شرکت"*/}
+            {/*    {...register('companyName')}*/}
+            {/*    error={errors.companyName?.message as string}*/}
+            {/*/>*/}
+            {/*<Input*/}
+            {/*    label="نام شرکت به انگلیسی*"*/}
+            {/*    placeholder="نام شرکت به انگلیسی"*/}
+            {/*    {...register('companyEnglishName')}*/}
+            {/*    error={errors.companyEnglishName?.message as string}*/}
+            {/*/>*/}
 
-            <Input
-                label="نام تجاری اصلی*"
-                placeholder=""
-                className="flex-grow"
-                {...register(`mainBrand.persian`)}
-            />
-            <Input
-                label="نام تجاری اصلی به انگلیسی*"
-                placeholder=""
-                className="flex-grow"
-                {...register(`mainBrand.english`)}
-            />
+            {/*<Input*/}
+            {/*    label="نام تجاری اصلی*"*/}
+            {/*    placeholder=""*/}
+            {/*    className="flex-grow"*/}
+            {/*    {...register(`mainBrand.persian`)}*/}
+            {/*/>*/}
+            {/*<Input*/}
+            {/*    label="نام تجاری اصلی به انگلیسی*"*/}
+            {/*    placeholder=""*/}
+            {/*    className="flex-grow"*/}
+            {/*    {...register(`mainBrand.english`)}*/}
+            {/*/>*/}
 
-            <Input
-                type="number"
-                label="متراژ بنای کارخانه"
-                placeholder="متراژ بنای کارخانه"
-                {...register('factoryArea')}
-                error={errors.factoryArea?.message as string}
-            />
-            <Input
-                type="number"
-                label="متراژ زمین کارخانه"
-                placeholder="متراژ زمین کارخانه"
-                {...register('landArea')}
-                error={errors.landArea?.message as string}
-            />
-            <Input
-                label="نام مدیر عامل*"
-                placeholder="نام مدیر عامل"
-                {...register('ceoName')}
-                error={errors.ceoName?.message as string}
-            />
-            <Input
-                type="number"
-                label="شماره تلفن مدیر عامل*"
-                placeholder="شماره تلفن مدیر عامل"
-                {...register('ceoPhoneNumber')}
-                error={errors.ceoPhoneNumber?.message as string}
-            />
-            <div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">
-                <div className="flex flex-col space-y-2">
-                    <label className="font-medium text-gray-700 dark:text-gray-600">تاریخ تاسیس</label>
-                    <Controller
-                        name="establishmentDate"
-                        control={control}
-                        render={({field: {onChange, value}}) => (
-                            <DatePicker
-                                selected={value}
-                                onChange={onChange}
-                                maxDate={new Date()}
-                                placeholderText="تاریخ تاسیس"
-                                inputProps={{
-                                    variant: 'outline',
-                                    inputClassName: 'p-4 border border-gray-300 rounded-md',
-                                }}
-                                popperPlacement="bottom-end"
-                                className="flex-grow"
-                            />
-                        )}
-                    />
-                    {errors.establishmentDate && (
-                        // @ts-ignore
-                        <p className="text-red-500 text-sm">{errors.establishmentDate.message}</p>
-                    )}
-                </div>
+            {/*<Input*/}
+            {/*    type="number"*/}
+            {/*    label="متراژ بنای کارخانه"*/}
+            {/*    placeholder="متراژ بنای کارخانه"*/}
+            {/*    {...register('factoryArea')}*/}
+            {/*    error={errors.factoryArea?.message as string}*/}
+            {/*/>*/}
+            {/*<Input*/}
+            {/*    type="number"*/}
+            {/*    label="متراژ زمین کارخانه"*/}
+            {/*    placeholder="متراژ زمین کارخانه"*/}
+            {/*    {...register('landArea')}*/}
+            {/*    error={errors.landArea?.message as string}*/}
+            {/*/>*/}
+            {/*<Input*/}
+            {/*    label="نام مدیر عامل*"*/}
+            {/*    placeholder="نام مدیر عامل"*/}
+            {/*    {...register('ceoName')}*/}
+            {/*    error={errors.ceoName?.message as string}*/}
+            {/*/>*/}
+            {/*<Input*/}
+            {/*    type="number"*/}
+            {/*    label="شماره تلفن مدیر عامل*"*/}
+            {/*    placeholder="شماره تلفن مدیر عامل"*/}
+            {/*    {...register('ceoPhoneNumber')}*/}
+            {/*    error={errors.ceoPhoneNumber?.message as string}*/}
+            {/*/>*/}
+            {/*<div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">*/}
+            {/*    <div className="flex flex-col space-y-2">*/}
+            {/*        <label className="font-medium text-gray-700 dark:text-gray-600">تاریخ تاسیس</label>*/}
+            {/*        <Controller*/}
+            {/*            name="establishmentDate"*/}
+            {/*            control={control}*/}
+            {/*            render={({field: {onChange, value}}) => (*/}
+            {/*                <DatePicker*/}
+            {/*                    selected={value}*/}
+            {/*                    onChange={onChange}*/}
+            {/*                    maxDate={new Date()}*/}
+            {/*                    placeholderText="تاریخ تاسیس"*/}
+            {/*                    inputProps={{*/}
+            {/*                        variant: 'outline',*/}
+            {/*                        inputClassName: 'p-4 border border-gray-300 rounded-md',*/}
+            {/*                    }}*/}
+            {/*                    popperPlacement="bottom-end"*/}
+            {/*                    className="flex-grow"*/}
+            {/*                />*/}
+            {/*            )}*/}
+            {/*        />*/}
+            {/*        {errors.establishmentDate && (*/}
+            {/*            // @ts-ignore*/}
+            {/*            <p className="text-red-500 text-sm">{errors.establishmentDate.message}</p>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
 
-                <div className="flex flex-col space-y-2">
-                    <label className="font-medium text-gray-700 dark:text-gray-600">تاریخ ثبت</label>
-                    <Controller
-                        name="submissionDate"
-                        control={control}
-                        render={({field: {onChange, value}}) => (
-                            <DatePicker
-                                selected={value}
-                                onChange={onChange}
-                                maxDate={new Date()}
-                                placeholderText="تاریخ ثبت"
-                                inputProps={{
-                                    variant: 'outline',
-                                    inputClassName: 'p-4 border border-gray-300 rounded-md',
-                                }}
-                                popperPlacement="bottom-end"
-                                className="flex-grow"
-                            />
-                        )}
-                    />
-                    {errors.submissionDate && (
-                        // @ts-ignore
-                        <p className="text-red-500 text-sm">{errors.submissionDate.message}</p>
-                    )}
-                </div>
-            </div>
-            <Controller
-                control={control}
-                name="history"
-                render={({field: {onChange, value}}) => (
-                    <QuillEditor
-                        value={value}
-                        onChange={onChange}
-                        label="تاریخچه فعالیت شرکت"
-                        className="col-span-full [&_.ql-editor]:min-h-[100px]"
-                        labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-                    />
-                )}
-            />
+            {/*    <div className="flex flex-col space-y-2">*/}
+            {/*        <label className="font-medium text-gray-700 dark:text-gray-600">تاریخ ثبت</label>*/}
+            {/*        <Controller*/}
+            {/*            name="submissionDate"*/}
+            {/*            control={control}*/}
+            {/*            render={({field: {onChange, value}}) => (*/}
+            {/*                <DatePicker*/}
+            {/*                    selected={value}*/}
+            {/*                    onChange={onChange}*/}
+            {/*                    maxDate={new Date()}*/}
+            {/*                    placeholderText="تاریخ ثبت"*/}
+            {/*                    inputProps={{*/}
+            {/*                        variant: 'outline',*/}
+            {/*                        inputClassName: 'p-4 border border-gray-300 rounded-md',*/}
+            {/*                    }}*/}
+            {/*                    popperPlacement="bottom-end"*/}
+            {/*                    className="flex-grow"*/}
+            {/*                />*/}
+            {/*            )}*/}
+            {/*        />*/}
+            {/*        {errors.submissionDate && (*/}
+            {/*            // @ts-ignore*/}
+            {/*            <p className="text-red-500 text-sm">{errors.submissionDate.message}</p>*/}
+            {/*        )}*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+            {/*<Controller*/}
+            {/*    control={control}*/}
+            {/*    name="history"*/}
+            {/*    render={({field: {onChange, value}}) => (*/}
+            {/*        <QuillEditor*/}
+            {/*            value={value}*/}
+            {/*            onChange={onChange}*/}
+            {/*            label="تاریخچه فعالیت شرکت"*/}
+            {/*            className="col-span-full [&_.ql-editor]:min-h-[100px]"*/}
+            {/*            labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"*/}
+            {/*        />*/}
+            {/*    )}*/}
+            {/*/>*/}
             {/*<div className="col-span-full grid grid-cols-1 gap-4">*/}
             {/*    <ItemCrud name="تگ" items={tags} setItems={setTags} registerName="tags"/>*/}
             {/*</div>*/}

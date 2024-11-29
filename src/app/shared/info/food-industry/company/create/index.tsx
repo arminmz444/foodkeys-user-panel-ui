@@ -33,6 +33,7 @@ import CompanyHistory from './company-history';
 import useAxiosPrivate from "@/hooks/use-axios-private";
 import {z} from "zod";
 import CompanyGallery from "@/app/shared/info/food-industry/company/create/company-gallery";
+import {useRouter} from "next/navigation";
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: CompanySummary,
@@ -43,13 +44,13 @@ const MAP_STEP_TO_COMPONENT = {
   [formParts.products]: ProductMedia,
   [formParts.gallery]: CompanyGallery,
   [formParts.supplementary]: CompanyComplementary,
-  [formParts.pricingInventory]: PricingInventory,
-  [formParts.productIdentifiers]: ProductIdentifiers,
-  [formParts.shipping]: ShippingInfo,
-  [formParts.seo]: ProductSeo,
-  [formParts.deliveryEvent]: DeliveryEvent,
-  [formParts.variantOptions]: ProductVariants,
-  [formParts.tagsAndCategory]: ProductTaxonomies,
+  // [formParts.pricingInventory]: PricingInventory,
+  // [formParts.productIdentifiers]: ProductIdentifiers,
+  // [formParts.shipping]: ShippingInfo,
+  // [formParts.seo]: ProductSeo,
+  // [formParts.deliveryEvent]: DeliveryEvent,
+  // [formParts.variantOptions]: ProductVariants,
+  // [formParts.tagsAndCategory]: ProductTaxonomies,
 };
 
 
@@ -84,6 +85,7 @@ interface Product {
   pictures: Picture[];
   outsourced: boolean;
   machineUsage: boolean;
+  showProduct: boolean;
 }
 
 interface Location {
@@ -122,12 +124,7 @@ export interface Company {
   backgroundImage: string;
   logo: string;
   subjectOfActivity: string;
-  infoStatusDescription: string;
-  infoStatus: number;
-  createdAtStr: string;
-  updatedAtStr: string;
   establishDate: number[];
-  establishDateStr: string;
   registrant: string;
   registrantUsername: string;
   registrantPhone: string;
@@ -165,6 +162,7 @@ interface IndexProps {
 }
 
 export default function CreateCompany({ id, className, category = 1 }: IndexProps) {
+  const router = useRouter()
   const [isLoading, setLoading] = useState(false);
   const [subcategories, setSubcategories] = useState();
   const _axios = useAxiosPrivate()
@@ -174,7 +172,6 @@ export default function CreateCompany({ id, className, category = 1 }: IndexProp
     defaultValues: defaultValues(companyData),
     resolver: zodResolver(companyFormSchema),
   });
-  console.log(companyData)
   useEffect(() => {
     const fetchCompany = async () => {
       try {
@@ -192,11 +189,24 @@ export default function CreateCompany({ id, className, category = 1 }: IndexProp
       fetchCompany();
     }
   }, [id, _axios]);
-  const onSubmit: SubmitHandler<CreateCompanyInput> = (data) => {
+  const onSubmit: SubmitHandler<CreateCompanyInput> = async (data) => {
     setLoading(true);
+    const fetchSubscriptions = async () => {
+      try {
+        const response = await _axios.get(`/subscription`);
+        if (response.data.status === 'SUCCESS') {
+          if (!response.data?.data)
+            router.replace("/bundle/buy")
+        }
+      } catch (error) {
+        console.error('Error fetching subcategories:', error);
+      }
+    };
+    await fetchSubscriptions();
     setTimeout(() => {
       setLoading(false);
       console.log('product_data', data);
+
       toast.success(
         <Text tag="b">
           {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود

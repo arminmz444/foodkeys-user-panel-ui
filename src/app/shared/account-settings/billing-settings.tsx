@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, ReactElement, useState } from 'react';
+import {Dispatch, ReactElement, useEffect, useState} from 'react';
 import cn from '@/utils/class-names';
 import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,7 @@ import {
   PiFire,
   PiLightning,
   PiPlusBold,
-  PiStackSimple,
+  PiStackSimple, PiWallet,
 } from 'react-icons/pi';
 import { AdvancedRadio } from '@/components/ui/advanced-radio';
 import BillingHistoryTable from './billing-history/table';
@@ -35,6 +35,9 @@ import zarinPal from 'public/zarinPal.webp';
 import Image from 'next/image';
 import TomanIcon from '@/components/toman/tomanIcon';
 import { Input } from 'rizzui';
+import {BsCreditCard} from "react-icons/bs";
+import axiosInstance from "@/utils/axios-instance";
+import toast from "react-hot-toast";
 
 const plansOptions: {
   icon: ReactElement;
@@ -67,9 +70,16 @@ const plansOptions: {
 
 const cardsOptions = [
   {
+    icon: <BsCreditCard size={25} />,
+    title: 'اعتبار کیف پول',
+    default: true,
+    value: 'credit',
+    isIcon: true
+  },
+  {
     icon: zarinPal,
     title: 'درگاه زرین پال',
-    default: true,
+    default: false,
     value: 'zarinPal',
   },
   {
@@ -92,12 +102,12 @@ export default function BillingSettingsView() {
 
   return (
     <>
-      <HorizontalFormBlockWrapper
-        childrenWrapperClassName="gap-0 @lg:gap-0"
-        title="برنامه ریزی حساب"
-        titleClassName="text-xl font-semibold"
-        description=" "
-      />
+      {/*<HorizontalFormBlockWrapper*/}
+      {/*  childrenWrapperClassName="gap-0 @lg:gap-0"*/}
+      {/*  title="خرید اشتراک"*/}
+      {/*  titleClassName="text-xl font-semibold"*/}
+      {/*  description=" "*/}
+      {/*/>*/}
       <HorizontalFormBlockWrapper
         title="انتخاب پلن"
         description="با توجه به نیاز خود پلن مورد نظر را برای استفاده از خدمات سایت انتخاب نمایید."
@@ -226,7 +236,8 @@ export function CurrentPlans({
 }
 
 export function CardDetails() {
-  const [paymentMethod, setPaymentMethod] = useState('zarinPal');
+  const [paymentMethod, setPaymentMethod] = useState('credit');
+
 
   return (
     <div>
@@ -243,7 +254,8 @@ export function CardDetails() {
           >
             <div className="flex items-center justify-center">
               <div className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md px-2 py-1.5">
-                <Image src={cards.icon} alt="" />
+                {/*// @ts-ignore*/}
+                {cards.isIcon ? <>{cards.icon}</> : <Image src={cards.icon} alt="" />}
               </div>
               <div className="block">
                 <Text tag="h6" className="mb-1 text-sm font-medium">
@@ -333,16 +345,113 @@ const ConfirmationCard = ({
 };
 
 const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
+  const [discountCode, setDiscountCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  // @ts-ignore
+  const [totalPrice, setTotalPrice] = useState(0)
+  const [totalDiscount, setTotalDiscount] = useState(0)
+
   const totalMapper = {
     free: 0,
     basic: 500_000,
     premium: 6_000_000,
   };
-  const discount = 0;
-  // @ts-ignore
-  const totalPrice =
+  useEffect(() => {
     // @ts-ignore
-    totalMapper[currentPlan] + totalMapper[currentPlan] * 0.1 + discount;
+    const basePrice = totalMapper[currentPlan];
+    const tax = basePrice * 0.1;
+    const discountAmount = (basePrice * discount) / 100;
+    // @ts-ignore
+    setTotalPrice(basePrice + tax - discountAmount);
+    setTotalDiscount(discountAmount);
+  }, [discount, currentPlan]);
+  const handlePayment = async () => {
+    let bundleId;
+    switch (currentPlan) {
+      case 'free':
+        bundleId = 1;
+        break;
+      case 'basic':
+        bundleId = 2;
+        break;
+      case 'premium':
+        bundleId = 3;
+        break;
+    }
+    const startPayment = async () => {
+      const API_URL = `http://localhost:8080/api/v1/subscription`
+      try {
+        const response = await axiosInstance.post(API_URL, {
+          "userId": 9,
+          "bundleId": 1,
+          "discountCode": discountCode || null
+        });
+
+        if (response.data.statusCode === 200) {
+          return {
+            data: response.data.data,
+          };
+        } else {
+          toast.error("خطا در خرید اشتراک")
+          // throw new Error('Failed to start payment');
+        }
+      } catch (error) {
+        toast.error("خطا در خرید اشتراک")
+        console.error('Failed to buy subscription', error);
+      }
+    };
+    let response = await startPayment()
+    if (response?.data?.url)
+      window.location.href = response?.data?.url;
+    else toast.error("خطا در افزایش اعتبار")
+    // dispatch(addCredit(amount));
+  };
+  const applyDiscountCode = async () => {
+    let bundleId;
+    switch (currentPlan) {
+      case 'free':
+        bundleId = 1;
+        break;
+      case 'basic':
+        bundleId = 2;
+        break;
+      case 'premium':
+        bundleId = 3;
+        break;
+    }
+    const applyDiscount = async () => {
+      const API_URL = `http://localhost:8080/api/v1/discount/${encodeURIComponent(discountCode)}/use`
+      try {
+        const response = await axiosInstance.post(API_URL, {});
+
+        if (response.data.statusCode === 200) {
+          toast.success(response.data.message)
+          return {
+            data: response.data.data,
+          };
+        } else {
+          toast.error("کد تخفیف یافت نشد")
+          // throw new Error('Failed to start payment');
+        }
+      } catch (error) {
+        // @ts-ignore
+        toast.error(error?.response?.data?.message || "کد تخفیف یافت نشد")
+        console.error('Failed to apply discount code', error);
+      }
+    };
+    let response = await applyDiscount()
+    if (response?.data)
+      setDiscount(response?.data)
+    //   // window.location.href = response?.data?.url;
+    // else toast.error("کد تخفیف یافت نشد")
+    // dispatch(addCredit(amount));
+  };
+  // const discount = 0;
+  // @ts-ignore
+  // const totalPrice =
+  //   // @ts-ignore
+  //   totalMapper[currentPlan] + totalMapper[currentPlan] * 0.1 + discount;
+  // @ts-ignore
   return (
     <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl bg-white p-2 shadow-xl sm:p-6">
       <span className="flex w-full items-center justify-start">
@@ -385,7 +494,7 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
           </div>
           <div className="w-1/5">
             <div className="flex items-center justify-end gap-2">
-              <p className="text-xs sm:text-base">0</p>
+              <p className="text-xs sm:text-base">{totalDiscount}</p>
               <TomanIcon width="30px" height="30px" fillColor="#f43f5e" />
             </div>
           </div>
@@ -398,13 +507,14 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
             <Input
               type="text"
               variant="flat"
+              onChange={(e) => setDiscountCode(e.target.value)}
               size="lg"
               placeholder="کد خود را وارد کنید ..."
               className="text-sm"
             />
           </div>
           <div className="mt-5 w-1/2 content-center sm:mt-0 sm:w-1/5">
-            <Button className="w-full">اعمال کد</Button>
+            <Button onClick={applyDiscountCode} className="w-full">اعمال کد</Button>
           </div>
         </div>
       </div>
@@ -412,12 +522,13 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
       <div className="flex w-full flex-col items-center justify-between sm:flex-row">
         <h4>مجموع قابل پرداخت</h4>
         <div className="flex items-center justify-end gap-2">
+          {/* @ts-ignore */}
           <h4>{totalPrice.toLocaleString()}</h4>
           <TomanIcon width="30px" height="30px" fillColor="#1e293b" />
         </div>
       </div>
 
-      <Button className="mt-5 w-full">تایید و پرداخت</Button>
+      <Button onClick={handlePayment} className="mt-5 w-full">تایید و پرداخت</Button>
     </div>
   );
 };

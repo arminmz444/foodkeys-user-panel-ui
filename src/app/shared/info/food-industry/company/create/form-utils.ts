@@ -217,28 +217,17 @@ const pictureSchema = z.object({
   fileSize: z.number(),
   contentType: z.string(),
   fileCategory: z.string().nullable(),
-  userId: z.number().nullable(),
-  createdAt: z.array(z.number()),
-  updatedAt: z.array(z.number()),
-  createdAtStr: z.string().nullable(),
-  updatedAtStr: z.string().nullable(),
   productId: z.number().nullable(),
 });
 
 const productSchema = z.object({
-  id: z.number(),
   name: z.string(),
-  type: z.number(),
-  categoryType: z.number(),
-  companyId: z.number().nullable(),
-  description: z.string().nullable(),
-  createdAt: z.array(z.number()),
-  createdAtStr: z.string().nullable(),
-  updatedAt: z.array(z.number()),
-  updatedAtStr: z.string().nullable(),
-  pictures: z.array(pictureSchema),
-  outsourced: z.boolean(),
-  machineUsage: z.boolean(),
+  companyType: z.string().optional(),
+  description: z.string().optional(),
+  pictures: z.array(pictureSchema).optional(),
+  outsourced: z.boolean().optional(),
+  machineUsage: z.boolean().optional(),
+  showProduct: z.boolean().optional(),
 });
 
 const locationSchema = z.object({
@@ -255,7 +244,7 @@ const locationSchema = z.object({
 });
 
 const telSchema = z.object({
-  telNumber: z.number(),
+  telNumber: z.string(),
   telType: z.string(),
 });
 
@@ -264,8 +253,18 @@ const contactSchema = z.object({
   lastName: z.string(),
   email: z.string(),
   phone: z.string(),
-  isCEO: z.boolean(),
+  // isCEO: z.boolean(),
   position: z.string(),
+});
+
+const subcategorySchema = z.object({
+  name: z.string(),
+  value: z.number(),
+});
+
+const companyTypeSchema = z.object({
+  name: z.string(),
+  value: z.string(),
 });
 
 export const companyFormSchema = z.object({
@@ -277,22 +276,21 @@ export const companyFormSchema = z.object({
   answerName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   history: z.string().optional(),
   visit: z.number().optional(),
-  ranking: z.number().nullable().optional(),
-  rankingAll: z.number().min(0),
   buildingArea: z.string().optional(),
   landArea: z.string().optional(),
   holding: z.string().optional(),
   description: z.string().optional(),
   advertisingSlogan: z.string().optional(),
   employeesCount: z.string().optional(),
-  companyType: z.string().optional(),
-  backgroundImage: z.string().optional(),
-  logo: z.string().optional(),
+  companyType: companyTypeSchema.optional(),
+  // backgroundImage: z.array(z.instanceof(File)).optional(),
+  logo: z.instanceof(File).refine((file) => file?.size <= 20 * 1024 * 1024, {
+    message: 'حداکثر حجم فایل باید ۲۰ مگابایت باشد',
+  }).nullable().optional(),
   subjectOfActivity: z.string().optional(),
   infoStatusDescription: z.string().optional(),
   infoStatus: z.number().optional(),
-  establishDate: z.array(z.number()).optional(),
-  establishDateStr: z.string().optional(),
+  establishDate: z.string().optional(),
   registrant: z.string().optional(),
   registrantUsername: z.string().optional(),
   registrantPhone: z.string().optional(),
@@ -311,6 +309,9 @@ export const companyFormSchema = z.object({
   companyBrands: z.array(z.string()).optional(),
   location: locationSchema.optional(),
   factoryTels: z.array(telSchema).optional(),
+  factoryFaxes: z.array(telSchema).optional(),
+  officeTels: z.array(telSchema).optional(),
+  officeFaxes: z.array(telSchema).optional(),
   telegramId: z.string().optional(),
   telegramPhoneNo: z.string().optional(),
   smsNumber: z.string().optional(),
@@ -324,7 +325,15 @@ export const companyFormSchema = z.object({
   skypeId: z.string().optional(),
   website: z.string().optional(),
   contacts: z.array(contactSchema).optional(),
-  emails: z.array(z.string()).optional()
+  emails: z.array(z.string()).optional(),
+  productAvailability: z.string().optional(),
+  subcategory: subcategorySchema.optional(),
+  productTitles: z.string().optional(),
+  outSourcedProductTitles: z.string().optional(),
+  productsDescription: z.string().optional(),
+  outSourcedProductsDescription: z.string().optional(),
+  currentLogo: z.string().optional(),
+  currentBackgroundImages: z.array(z.string()).optional(),
 });
 
 export type CreateCompanyInput = z.infer<typeof companyFormSchema>;
@@ -345,8 +354,8 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     advertisingSlogan: company?.advertisingSlogan ?? '',
     employeesCount: company?.employeesCount ?? '',
     companyType: company?.companyType ?? '',
-    backgroundImage: company?.backgroundImage ?? '',
-    logo: company?.logo ?? '',
+    // backgroundImage: company?.backgroundImage ?? '',
+    // logo: company?.logo ?? '',
     subjectOfActivity: company?.subjectOfActivity ?? '',
     establishDate: company?.establishDate ?? [],
     rawMaterialsOrigin: company?.rawMaterialsOrigin ?? '',
@@ -368,6 +377,9 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     officeCity: company?.location?.officeCity ?? '',
     officeState: company?.location?.officeState ?? '',
     factoryTels: company?.factoryTels ?? [],
+    factoryFaxes: company?.factoryFaxes ?? [],
+    officeTels: company?.officeTels ?? [],
+    officeFaxes: company?.officeFaxes ?? [],
     telegramId: company?.telegramId ?? '',
     telegramPhoneNo: company?.telegramPhoneNo ?? '',
     smsNumber: company?.smsNumber ?? '',
@@ -381,20 +393,15 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     skypeId: company?.skypeId ?? '',
     website: company?.website ?? '',
     contacts: company?.contacts ?? '',
-    emails: company?.emails ?? ''
-    // establishDateStr: company?.establishDateStr ?? '',
-    // registrant: company?.registrant ?? '',
-    // registrantUsername: company?.registrantUsername ?? '',
-    // registrantPhone: company?.registrantPhone ?? '',
-    // registrantTel: company?.registrantTel ?? '',
-    // visit: company?.visit ?? 0,
-    // ranking: company?.ranking ?? null,
-    // rankingAll: company?.rankingAll ?? 0,
-    // infoStatusDescription: company?.infoStatusDescription ?? '',
-    // infoStatus: company?.infoStatus ?? 0,
-    // record: company?.record ?? '',
-    // relatedIndustries: company?.relatedIndustries ?? [],+
-    
+    emails: company?.emails ?? '',
+    productAvailability: company?.productAvailability ?? '2',
+    subcategory: company?.subcategory ?? null,
+    productTitles: company?.productTitles ?? "",
+    outSourcedProductTitles: company?.outSourcedProductTitles ?? "",
+    productsDescription: company?.productsDescription ?? "",
+    outSourcedProductsDescription: company?.outSourcedProductsDescription ?? "",
+    currentLogo: company?.logo ?? "",
+    currentBackgroundImages: company?.currentBackgroundImages ?? [],
   };
 }
 

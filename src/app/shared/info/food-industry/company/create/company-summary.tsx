@@ -39,7 +39,8 @@ export default function CompanySummary({className, category}: { className?: stri
     const [logoProgress, setLogoProgress] = useState<number>(0);
     const [logoError, setLogoError] = useState<string | null>(null);
     const [logoSuccess, setLogoSuccess] = useState<boolean>(false);
-    const logoPreview = logo ? URL.createObjectURL(logo) : null;
+    // const logoPreview = logo ? URL.createObjectURL(logo) : null;
+    // const [logoPreview, setLogoPreview] = useState<string | null>(logo ? URL.createObjectURL(logo) : null);
 
     const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
     const [backgroundLoading, setBackgroundLoading] = useState<boolean>(false);
@@ -78,6 +79,20 @@ export default function CompanySummary({className, category}: { className?: stri
         fetchCompanyTypes();
     }, [_axios]);
 
+    const {
+        register,
+        control,
+        formState: {errors},
+        setValue,
+        watch
+    } = useFormContext();
+
+    const watchedLogo = watch('currentLogo', "");
+    const logoPreview = logo
+        ? URL.createObjectURL(logo)
+        : watchedLogo
+            ? `http://localhost:8080${watchedLogo}`
+            : null;
     const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         handleFileUpload(
             event,
@@ -85,7 +100,8 @@ export default function CompanySummary({className, category}: { className?: stri
             setLogoLoading,
             setLogoProgress,
             setLogoError,
-            setLogoSuccess
+            setLogoSuccess,
+            "logo"
         );
     };
 
@@ -98,7 +114,8 @@ export default function CompanySummary({className, category}: { className?: stri
             setBackgroundLoading,
             setBackgroundProgress,
             setBackgroundError,
-            setBackgroundSuccess
+            setBackgroundSuccess,
+            "backgroundImage"
         );
     };
 
@@ -108,7 +125,8 @@ export default function CompanySummary({className, category}: { className?: stri
         setLoading: React.Dispatch<React.SetStateAction<boolean>>,
         setProgress: React.Dispatch<React.SetStateAction<number>>,
         setError: React.Dispatch<React.SetStateAction<string | null>>,
-        setSuccess: React.Dispatch<React.SetStateAction<boolean>>
+        setSuccess: React.Dispatch<React.SetStateAction<boolean>>,
+        fileType: string
     ) => {
         setError(null);
         setSuccess(false);
@@ -125,6 +143,7 @@ export default function CompanySummary({className, category}: { className?: stri
         setLoading(true);
         setProgress(0);
         setFile(uploadedFile);
+        setValue(fileType, uploadedFile)
 
         const interval = setInterval(() => {
             setProgress((prev) => {
@@ -143,47 +162,6 @@ export default function CompanySummary({className, category}: { className?: stri
         const maxSize = 8 * 1024 * 1024; // 8MB
         return validTypes.includes(file.type) && file.size <= maxSize;
     };
-    // if (isLoading) {
-    //   return <div>Loading...</div>;
-    // }
-    //
-    // if (error) {
-    //   return <div>Error fetching subcategories</div>;
-    // }
-    // const companyTypeOptions = [
-    //     {
-    //         value: 1,
-    //         name: 'سهامی خاص',
-    //     },
-    //     {
-    //         value: 2,
-    //         name: 'سهامی عام',
-    //     },
-    //     {
-    //         value: 3,
-    //         name: 'با مسئولیت محدود',
-    //     },
-    //     {
-    //         value: 4,
-    //         name: 'تضامنی',
-    //     },
-    //     {
-    //         value: 5,
-    //         name: 'مختلط سهامی',
-    //     },
-    //     {
-    //         value: 6,
-    //         name: 'مختلط غیرسهامی',
-    //     },
-    //     {
-    //         value: 7,
-    //         name: 'نسبی',
-    //     },
-    //     {
-    //         value: 8,
-    //         name: 'تعاونی تولید و مصرف',
-    //     },
-    // ];
 
     const brands = [
         {
@@ -191,45 +169,8 @@ export default function CompanySummary({className, category}: { className?: stri
             english: '',
         },
     ];
-    const categoryOption = [
-        {
-            value: 1,
-            name: 'بانک تولیدکنندگان',
-        },
-        {
-            value: 2,
-            name: 'بانک ماشین‌آلات',
-        },
-        {
-            value: 3,
-            name: 'بانک ملزومات بسته بندی',
-        },
-        {
-            value: 4,
-            name: 'بانک مواد اولیه و افزودنی',
-        },
-        {
-            value: 5,
-            name: 'بانک واردکنندگان و صادرکنندگان',
-        },
-        {
-            value: 6,
-            name: 'بانک پخش کنندگان',
-        },
-        {
-            value: 7,
-            name: 'بانک مواد اولیه خام (دامی ، باغی ، زراعی و آبزی)',
-        },
-        {
-            value: 8,
-            name: 'بانک تجهیزات و لوازم آزمایشگاهی و تحقیقاتی',
-        },
-    ];
-    const {
-        register,
-        control,
-        formState: {errors},
-    } = useFormContext();
+
+
     const {fields, append, remove} = useFieldArray({
         control,
         name: 'brands',
@@ -250,7 +191,7 @@ export default function CompanySummary({className, category}: { className?: stri
                     label="آپلود لوگو"
                     accept="image/*"
                     onChange={handleLogoUpload}
-                    logoPreview={logoPreview}
+                    logoPreview={logoPreview || watchedLogo}
                     loading={logoLoading}
                     progress={logoProgress}
                     error={logoError}
@@ -258,18 +199,18 @@ export default function CompanySummary({className, category}: { className?: stri
                     wrapperClassName="flex-grow"
                 />
 
-                <LogoUpload
-                    label="آپلود پس زمینه"
-                    accept="image/*"
-                    onChange={handleBackgroundUpload}
-                    logoPreview={backgroundPreview}
-                    loading={backgroundLoading}
-                    progress={backgroundProgress}
-                    error={backgroundError}
-                    success={backgroundSuccess}
-                    wrapperClassName="flex-grow"
-                    // className="w-full xl:w-auto h-44 xl:h-60"
-                />
+                {/*<LogoUpload*/}
+                {/*    label="آپلود پس زمینه"*/}
+                {/*    accept="image/*"*/}
+                {/*    onChange={handleBackgroundUpload}*/}
+                {/*    logoPreview={backgroundPreview}*/}
+                {/*    loading={backgroundLoading}*/}
+                {/*    progress={backgroundProgress}*/}
+                {/*    error={backgroundError}*/}
+                {/*    success={backgroundSuccess}*/}
+                {/*    wrapperClassName="flex-grow"*/}
+                {/*    // className="w-full xl:w-auto h-44 xl:h-60"*/}
+                {/*/>*/}
             </div>
             {/*{(!logoError && !backgroundError && '') || (*/}
             {/*    <p className="pt-3 text-sm text-gray-500">*/}
@@ -316,14 +257,13 @@ export default function CompanySummary({className, category}: { className?: stri
                           value: subcategory.value,
                           name: subcategory.name,
                         }))}
-                        value={value}
                         onChange={onChange}
+                        value={value}
                         label="دسته بندی"
-                        error={errors?.subcategories?.message as string}
-                        getOptionValue={(option) => option.name}
+                        error={errors?.subcategory?.message as string}
+                        // getOptionValue={(option) => option.name}
                         placeholder="انتخاب"
                         className="col-span-full"
-                        isRequired
                     />
                 )}
             />
@@ -372,11 +312,11 @@ export default function CompanySummary({className, category}: { className?: stri
                 render={({field: {onChange, value}}) => (
                     <Select
                         options={companyTypeOptions}
-                        value={value}
+                        value={(value)}
                         onChange={onChange}
                         label="نوع شرکت"
                         error={errors?.companyType?.message as string}
-                        getOptionValue={(option) => option.name}
+                        // getOptionValue={(option) => option.name}
                         placeholder="انتخاب"
                         isRequired
                     />
@@ -444,14 +384,14 @@ export default function CompanySummary({className, category}: { className?: stri
                 className="col-span-full"
                 rows={2}
             />
-            <Textarea
-                label="عنوان محصولات (خدمات)"
-                placeholder="عنوان محصولات (خدمات)"
-                {...register('productsTitle')}
-                error={errors.productsTitle?.message as string}
-                className="col-span-full"
-                rows={3}
-            />
+            {/*<Textarea*/}
+            {/*    label="عنوان محصولات (خدمات)"*/}
+            {/*    placeholder="عنوان محصولات (خدمات)"*/}
+            {/*    {...register('productsTitle')}*/}
+            {/*    error={errors.productsTitle?.message as string}*/}
+            {/*    className="col-span-full"*/}
+            {/*    rows={3}*/}
+            {/*/>*/}
             {/*<Input*/}
             {/*    label="نام تجاری اصلی*"*/}
             {/*    placeholder=""*/}
