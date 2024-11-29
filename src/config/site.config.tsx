@@ -8,7 +8,7 @@ enum MODE {
 
 export const siteConfig = {
   title: 'مرجع صنایع غذایی و کشاورزی ایران',
-  description: 'A next js dashboard template',
+  description: 'داشبورد صنایع غذایی و کشاورزی ایران',
   logo: logoImg,
   icon: logoIconImg,
   mode: MODE.LIGHT,

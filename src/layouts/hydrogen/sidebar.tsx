@@ -21,8 +21,12 @@ export default function Sidebar({ className }: { className?: string }) {
       )}
     >
       <div className="sticky top-0 z-40 bg-gray-0/10 px-6 pb-5 pt-5 dark:bg-gray-100/5 2xl:px-8 2xl:pt-6">
-        <Link href={'/'}>
+        <Link
+          href={'/'}
+          className="flex flex-nowrap items-center justify-center gap-2 whitespace-nowrap"
+        >
           <Logo className="max-w-[155px]" />
+          <h2 className="text-sm">مرجع صنایع غذایی و کشاورزی ایران</h2>
         </Link>
       </div>
 

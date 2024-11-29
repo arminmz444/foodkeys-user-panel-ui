@@ -37,7 +37,6 @@ export default function RequestInfo({ className }: { className?: string }) {
   const [logoProgress, setLogoProgress] = useState<number>(0);
   const [logoError, setLogoError] = useState<string | null>(null);
   const [logoSuccess, setLogoSuccess] = useState<boolean>(false);
-  const logoPreview = logo ? URL.createObjectURL(logo) : null;
 
   const [backgroundImage, setBackgroundImage] = useState<File | null>(null);
   const [backgroundLoading, setBackgroundLoading] = useState<boolean>(false);
@@ -120,12 +119,18 @@ export default function RequestInfo({ className }: { className?: string }) {
     register,
     control,
     formState: { errors },
+    watch,
   } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'brands',
   });
-
+  const watchedLogo = watch('currentLogo', '');
+  const logoPreview = logo
+    ? URL.createObjectURL(logo)
+    : watchedLogo
+    ? `http://localhost:8080${watchedLogo}`
+    : null;
   // const addCustomField = useCallback(() => {
   //   if (fields.length < 3) append([...brands]);
   // }, [append, brands, fields.length]);
@@ -136,6 +141,17 @@ export default function RequestInfo({ className }: { className?: string }) {
         description="شامل نام، امکانات و ..."
         className={cn(className)}
       >
+        <LogoUpload
+          label="آپلود لوگو"
+          accept="image/*"
+          onChange={handleLogoUpload}
+          logoPreview={logoPreview || watchedLogo}
+          loading={logoLoading}
+          progress={logoProgress}
+          error={logoError}
+          success={logoSuccess}
+          wrapperClassName="flex-grow"
+        />
         <Input
           label="نام شرکت*"
           placeholder="نام شرکت"
