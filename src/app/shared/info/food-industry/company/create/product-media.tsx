@@ -1,30 +1,30 @@
 'use client';
-import PencilIcon from "@/components/icons/pencil";
-import {Textarea} from "@/components/ui/textarea";
+import PencilIcon from '@/components/icons/pencil';
+import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
-import {useEffect, useRef, useState} from 'react';
-import {Controller, useFieldArray, useFormContext} from 'react-hook-form';
-import {Input} from '@/components/ui/input';
+import { useEffect, useRef, useState } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
 import cn from '@/utils/class-names';
-import {Radio} from '@/components/ui/radio';
+import { Radio } from '@/components/ui/radio';
 import TrashIcon from '@/components/icons/trash';
 import Upload from '@/components/ui/upload';
-import {ActionIcon, Button, Checkbox, Modal, Password, Text} from 'rizzui';
-import {HiXMark} from "react-icons/hi2";
-import {PiTagBold, PiXBold} from "react-icons/pi";
-import ProductPricing from "@/app/shared/info/food-industry/company/create/product-pricing";
-import ProductAvailability from "@/app/shared/info/food-industry/company/create/product-availability";
-import {inter} from "@/app/fonts";
+import { ActionIcon, Button, Checkbox, Modal, Password, Text } from 'rizzui';
+import { HiXMark } from 'react-icons/hi2';
+import { PiTagBold, PiXBold } from 'react-icons/pi';
+import ProductPricing from '@/app/shared/info/food-industry/company/create/product-pricing';
+import ProductAvailability from '@/app/shared/info/food-industry/company/create/product-availability';
+import { inter } from '@/app/fonts';
 
 interface ProductMediaProps {
-    className?: string;
+  className?: string;
 }
 
 interface ProductSchema {
-    name: string;
-    description: string;
-    categoryType: string;
+  name: string;
+  description: string;
+  categoryType: string;
 }
 
 // export default function ProductMedia({className}: ProductMediaProps) {
@@ -206,160 +206,206 @@ interface ProductSchema {
 //         </FormGroup>
 //     );
 // }
-export default function ProductMedia({className}) {
-    const {
-        control,
-        formState: {errors},
-        register,
-        getValues,
-        watch
-    } = useFormContext();
+export default function ProductMedia({ className }) {
+  const {
+    control,
+    formState: { errors },
+    register,
+    getValues,
+    watch,
+  } = useFormContext();
 
-    const {fields: products, append, remove, update} = useFieldArray({
-        control,
-        name: 'products',
-    });
+  const {
+    fields: products,
+    append,
+    remove,
+    update,
+  } = useFieldArray({
+    control,
+    name: 'products',
+  });
 
-    const [modalState, setModalState] = useState({
-        isOpen: false,
-        size: 'md',
-    });
-    const watchedProductAvailability = watch('productAvailability', "2");
-    return (
-        <FormGroup
-            title="مدیریت محصولات و خدمات"
-            description="محصولات و خدمات شرکت خود را ثبت کنید"
-            className={cn(className)}
-        >
-            <ProductAvailability/>
-            {watchedProductAvailability === "1" ? (
-                <>
-                    <Textarea
-                        label="عنوان محصولات (خدمات)"
-                        placeholder="عنوان محصولات (خدمات)"
-                        {...register('productTitles')}
-                        error={errors.productTitles?.message as string}
-                        className="col-span-full w-full"
-                        rows={3}
-                    />
-                    <Textarea
-                        label="توضیحات محصولات (خدمات)"
-                        placeholder="توضیحات محصولات (خدمات)"
-                        {...register('productsDescription')}
-                        error={errors.productsDescription?.message as string}
-                        className="col-span-full w-full"
-                        rows={3}
-                    />
-                    <Textarea
-                        label="عنوان محصولات برون‌سپاری"
-                        placeholder="عنوان محصولات برون‌سپاری"
-                        {...register('outSourcedProductTitles')}
-                        error={errors.outSourcedProductTitles?.message as string}
-                        className="col-span-full w-full"
-                        rows={3}
-                    />
-                    <Textarea
-                        label="توضیحات محصولات برون‌سپاری"
-                        placeholder="توضیحات محصولات برون‌سپاری"
-                        {...register('outSourcedProductsDescription')}
-                        error={errors.outSourcedProductsDescription?.message as string}
-                        className="col-span-full w-full"
-                        rows={3}
-                    />
-                </>) : <>
-                <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-around gap-2 flex-wrap w-full">
-                        <Button
-                            variant="outline"
-                            color="secondary"
-                            onClick={() =>
-                                setModalState((prevState) => ({
-                                    ...prevState,
-                                    isOpen: true,
-                                    size: 'lg',
-                                }))
-                            }
-                        >
-                            مدیریت محصولات و خدمات
-                        </Button>
-                        <Text as="span" className="text-sm text-gray-500">
-                            ثبت شده: {products.length}
-                        </Text>
-                    </div>
-                    <div className="flex items-center justify-around gap-2 flex-wrap w-full">
-                        <Button
-                            variant="outline"
-                            color="secondary"
-                            onClick={() =>
-                                setModalState((prevState) => ({
-                                    ...prevState,
-                                    isOpen: true,
-                                    size: 'lg',
-                                }))
-                            }
-                        >
-                            مدیریت محصولات برون‌سپاری‌شده
-                        </Button>
-                        <Text as="span" className="text-sm text-gray-500">
-                            ثبت شده: {products.length}
-                        </Text>
-                    </div>
-                </div>
-            </>}
+  async function uploadProductPictures(files: File[]): Promise<string[]> {
+    const tempUploadFormData = new FormData();
+    files.forEach((file) => tempUploadFormData.append('files', file));
+    tempUploadFormData.append('fileServiceType', 'PRODUCT_PICTURE');
 
-
-            {/*<Modal*/}
-            {/*    isOpen={modalState.isOpen}*/}
-            {/*    size={modalState.size}*/}
-            {/*    onClose={() =>*/}
-            {/*        setModalState((prevState) => ({ ...prevState, isOpen: false }))*/}
-            {/*    }*/}
-            {/*>*/}
-            {/*    <div className="m-auto px-7 pt-6 pb-8">*/}
-            {/*        <div className="mb-7 flex items-center justify-between">*/}
-            {/*            <h3>محصولات و خدمات شرکت شما</h3>*/}
-            {/*            <Button*/}
-            {/*                size="sm"*/}
-            {/*                variant="text"*/}
-            {/*                onClick={() =>*/}
-            {/*                    setModalState((prevState) => ({ ...prevState, isOpen: false }))*/}
-            {/*                }*/}
-            {/*            >*/}
-            {/*                <HiXMark className="h-auto w-6" strokeWidth={1.8} />*/}
-            {/*            </Button>*/}
-            {/*        </div>*/}
-            {/*        <div className="mt-7 mb-10">*/}
-            {/*            <ProductAccordion*/}
-            {/*                products={products}*/}
-            {/*                append={append}*/}
-            {/*                remove={remove}*/}
-            {/*                update={update}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</Modal>*/}
-            <Modal
-                isOpen={modalState.isOpen}
-                size={modalState.size}
-                onClose={() =>
-                    setModalState((prevState) => ({...prevState, isOpen: false}))
-                }
-            >
-                <div className="m-auto px-7 pt-6 pb-8 max-h-[90vh] overflow-auto">
-                    {/* ... other modal content */}
-                    <div className="mt-7 mb-10">
-                        <ProductAccordion
-                            products={products}
-                            append={append}
-                            remove={remove}
-                            update={update}
-                        />
-                    </div>
-                    {/* ... other modal content */}
-                </div>
-            </Modal>
-        </FormGroup>
+    const response = await _axios.post(
+      'http://localhost:8080/api/v1/client/panel/company/file/temp',
+      tempUploadFormData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
+
+    if (response.status === 200 && response.data?.data) {
+      const uuids = response.data.data.map((f: any) => f.id);
+      return uuids;
+    }
+
+    return [];
+  }
+
+  const handleProductImageSelection = async (
+    productIndex: number,
+    files: File[]
+  ) => {
+    const uuids = await uploadProductPictures(files);
+
+    setData((prevData) => {
+      const updatedProducts = [...prevData.products];
+      if (!updatedProducts[productIndex].pictures) {
+        updatedProducts[productIndex].pictures = [];
+      }
+      updatedProducts[productIndex].pictures.push(...uuids);
+      return { ...prevData, products: updatedProducts };
+    });
+  };
+
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    size: 'md',
+  });
+  const watchedProductAvailability = watch('productAvailability', '2');
+  return (
+    <FormGroup
+      title="مدیریت محصولات و خدمات"
+      description="محصولات و خدمات شرکت خود را ثبت کنید"
+      className={cn(className)}
+    >
+      <ProductAvailability />
+      {watchedProductAvailability === '1' ? (
+        <>
+          <Textarea
+            label="عنوان محصولات (خدمات)"
+            placeholder="عنوان محصولات (خدمات)"
+            {...register('productTitles')}
+            error={errors.productTitles?.message as string}
+            className="col-span-full w-full"
+            rows={3}
+          />
+          <Textarea
+            label="توضیحات محصولات (خدمات)"
+            placeholder="توضیحات محصولات (خدمات)"
+            {...register('productsDescription')}
+            error={errors.productsDescription?.message as string}
+            className="col-span-full w-full"
+            rows={3}
+          />
+          <Textarea
+            label="عنوان محصولات برون‌سپاری"
+            placeholder="عنوان محصولات برون‌سپاری"
+            {...register('outSourcedProductTitles')}
+            error={errors.outSourcedProductTitles?.message as string}
+            className="col-span-full w-full"
+            rows={3}
+          />
+          <Textarea
+            label="توضیحات محصولات برون‌سپاری"
+            placeholder="توضیحات محصولات برون‌سپاری"
+            {...register('outSourcedProductsDescription')}
+            error={errors.outSourcedProductsDescription?.message as string}
+            className="col-span-full w-full"
+            rows={3}
+          />
+        </>
+      ) : (
+        <>
+          <div className="flex flex-col gap-4">
+            <div className="flex w-full flex-wrap items-center justify-around gap-2">
+              <Button
+                variant="outline"
+                color="secondary"
+                onClick={() =>
+                  setModalState((prevState) => ({
+                    ...prevState,
+                    isOpen: true,
+                    size: 'lg',
+                  }))
+                }
+              >
+                مدیریت محصولات و خدمات
+              </Button>
+              <Text as="span" className="text-sm text-gray-500">
+                ثبت شده: {products.length}
+              </Text>
+            </div>
+            <div className="flex w-full flex-wrap items-center justify-around gap-2">
+              <Button
+                variant="outline"
+                color="secondary"
+                onClick={() =>
+                  setModalState((prevState) => ({
+                    ...prevState,
+                    isOpen: true,
+                    size: 'lg',
+                  }))
+                }
+              >
+                مدیریت محصولات برون‌سپاری‌شده
+              </Button>
+              <Text as="span" className="text-sm text-gray-500">
+                ثبت شده: {products.length}
+              </Text>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/*<Modal*/}
+      {/*    isOpen={modalState.isOpen}*/}
+      {/*    size={modalState.size}*/}
+      {/*    onClose={() =>*/}
+      {/*        setModalState((prevState) => ({ ...prevState, isOpen: false }))*/}
+      {/*    }*/}
+      {/*>*/}
+      {/*    <div className="m-auto px-7 pt-6 pb-8">*/}
+      {/*        <div className="mb-7 flex items-center justify-between">*/}
+      {/*            <h3>محصولات و خدمات شرکت شما</h3>*/}
+      {/*            <Button*/}
+      {/*                size="sm"*/}
+      {/*                variant="text"*/}
+      {/*                onClick={() =>*/}
+      {/*                    setModalState((prevState) => ({ ...prevState, isOpen: false }))*/}
+      {/*                }*/}
+      {/*            >*/}
+      {/*                <HiXMark className="h-auto w-6" strokeWidth={1.8} />*/}
+      {/*            </Button>*/}
+      {/*        </div>*/}
+      {/*        <div className="mt-7 mb-10">*/}
+      {/*            <ProductAccordion*/}
+      {/*                products={products}*/}
+      {/*                append={append}*/}
+      {/*                remove={remove}*/}
+      {/*                update={update}*/}
+      {/*            />*/}
+      {/*        </div>*/}
+      {/*    </div>*/}
+      {/*</Modal>*/}
+      <Modal
+        isOpen={modalState.isOpen}
+        size={modalState.size}
+        onClose={() =>
+          setModalState((prevState) => ({ ...prevState, isOpen: false }))
+        }
+      >
+        <div className="m-auto max-h-[90vh] overflow-auto px-7 pb-8 pt-6">
+          {/* ... other modal content */}
+          <div className="mb-10 mt-7">
+            <ProductAccordion
+              products={products}
+              append={append}
+              remove={remove}
+              update={update}
+            />
+          </div>
+          {/* ... other modal content */}
+        </div>
+      </Modal>
+    </FormGroup>
+  );
 }
 // export const MultipleFiles = ({
 //                                   className,
@@ -470,116 +516,118 @@ export default function ProductMedia({className}) {
 //
 //     );
 // };
-const Swiper = dynamic(() =>
-        import('swiper/react').then((mod) => mod.Swiper),
-    {ssr: false}
-);
-const SwiperSlide = dynamic(() =>
-        import('swiper/react').then((mod) => mod.SwiperSlide),
-    {ssr: false}
+const Swiper = dynamic(() => import('swiper/react').then((mod) => mod.Swiper), {
+  ssr: false,
+});
+const SwiperSlide = dynamic(
+  () => import('swiper/react').then((mod) => mod.SwiperSlide),
+  { ssr: false }
 );
 
-import dynamic from "next/dynamic";
-import {Switch} from "@/components/ui/switch";
+import dynamic from 'next/dynamic';
+import { Switch } from '@/components/ui/switch';
+import _axios from '@/utils/axios-instance';
 
 export const MultipleFiles = ({
-                                  className,
-                                  label,
-                                  registerName,
-                              }: {
-    className?: string;
-    label?: React.ReactNode;
-    registerName: string;
+  className,
+  label,
+  registerName,
+}: {
+  className?: string;
+  label?: React.ReactNode;
+  registerName: string;
 }) => {
-    const {register, setValue, watch} = useFormContext();
-    const multiRef = useRef<HTMLInputElement>(null);
-    const [multiImages, setMultiImages] = useState<Array<File>>(watch(registerName) || []);
+  const { register, setValue, watch } = useFormContext();
+  const multiRef = useRef<HTMLInputElement>(null);
+  const [multiImages, setMultiImages] = useState<Array<File>>(
+    watch(registerName) || []
+  );
 
-    const handleMultiImageUpload = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const uploadedFiles = Array.from(event.target.files || []);
-        const imageFiles = uploadedFiles.filter((file) => file.type.includes('image'));
-        const newFiles = [...multiImages, ...imageFiles];
-        setMultiImages(newFiles);
-        setValue(registerName, newFiles);
-    };
-
-    const handleMultiImageDelete = (index: number) => {
-        const updatedFiles = multiImages.filter((_, i) => i !== index);
-        setMultiImages(updatedFiles);
-        setValue(registerName, updatedFiles);
-        if (multiRef.current) {
-            multiRef.current.value = '';
-        }
-    };
-
-    return (
-        <div className={className}>
-            <Upload
-                label={label}
-                ref={multiRef}
-                accept="image/*"
-                multiple
-                onChange={handleMultiImageUpload}
-            />
-            <p className="pt-3 text-sm text-gray-500">
-                عکس محصول خود را اینجا آپلود کنید حجم عکس باید بیشتر از{' '}
-                <strong className="font-medium text-gray-900">2 مگابایت باشد</strong>
-            </p>
-
-            {multiImages.length > 0 && (
-                <>
-                    <Swiper
-                        spaceBetween={10}
-                        slidesPerView={1}
-                        onSwiper={(swiper) => console.log(swiper)}
-                        onSlideChange={() => console.log('slide change')}
-                    >
-                        {multiImages.map((file, index) => (
-                            <SwiperSlide key={file.name}>
-                                <div className="relative mt-2">
-                                    <Image
-                                        src={URL.createObjectURL(file)}
-                                        alt={file.name}
-                                        width={500}
-                                        height={500}
-                                        objectFit="contain"
-                                    />
-                                    <button
-                                        onClick={() => handleMultiImageDelete(index)}
-                                        className="absolute top-0 right-0 m-2 text-white bg-red-500 rounded-full p-1"
-                                    >
-                                        <TrashIcon className="h-5 w-5"/>
-                                    </button>
-                                </div>
-                                <div className="mt-4">
-                                    <Input
-                                        placeholder="عنوان جایگزین"
-                                    />
-                                    {/*<div className="mt-2">*/}
-                                    {/*    <Radio*/}
-                                    {/*        value="NotTrackInventoryProduct"*/}
-                                    {/*        inputClassName="dark:checked:!bg-gray-200 dark:checked:!border-gray-200 dark:focus:ring-gray-200 dark:focus:ring-offset-gray-0"*/}
-                                    {/*    />*/}
-                                    {/*    <label className="ms-2">عکس اصلی</label>*/}
-                                    {/*</div>*/}
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                    <input type="hidden" {...register(registerName)} />
-                </>
-            )}
-        </div>
+  const handleMultiImageUpload = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const uploadedFiles = Array.from(event.target.files || []);
+    const imageFiles = uploadedFiles.filter((file) =>
+      file.type.includes('image')
     );
+    const newFiles = [...multiImages, ...imageFiles];
+    setMultiImages(newFiles);
+    setValue(registerName, newFiles);
+  };
+
+  const handleMultiImageDelete = (index: number) => {
+    const updatedFiles = multiImages.filter((_, i) => i !== index);
+    setMultiImages(updatedFiles);
+    setValue(registerName, updatedFiles);
+    if (multiRef.current) {
+      multiRef.current.value = '';
+    }
+  };
+
+  return (
+    <div className={className}>
+      <Upload
+        label={label}
+        ref={multiRef}
+        accept="image/*"
+        multiple
+        onChange={handleMultiImageUpload}
+      />
+      <p className="pt-3 text-sm text-gray-500">
+        عکس محصول خود را اینجا آپلود کنید حجم عکس باید بیشتر از{' '}
+        <strong className="font-medium text-gray-900">2 مگابایت باشد</strong>
+      </p>
+
+      {multiImages.length > 0 && (
+        <>
+          <Swiper
+            spaceBetween={10}
+            slidesPerView={1}
+            onSwiper={(swiper) => console.log(swiper)}
+            onSlideChange={() => console.log('slide change')}
+          >
+            {multiImages.map((file, index) => (
+              <SwiperSlide key={file.name}>
+                <div className="relative mt-2">
+                  <Image
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    width={500}
+                    height={500}
+                    objectFit="contain"
+                  />
+                  <button
+                    onClick={() => handleMultiImageDelete(index)}
+                    className="bg-red-500 absolute right-0 top-0 m-2 rounded-full p-1 text-white"
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="mt-4">
+                  <Input placeholder="عنوان جایگزین" />
+                  {/*<div className="mt-2">*/}
+                  {/*    <Radio*/}
+                  {/*        value="NotTrackInventoryProduct"*/}
+                  {/*        inputClassName="dark:checked:!bg-gray-200 dark:checked:!border-gray-200 dark:focus:ring-gray-200 dark:focus:ring-offset-gray-0"*/}
+                  {/*    />*/}
+                  {/*    <label className="ms-2">عکس اصلی</label>*/}
+                  {/*</div>*/}
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <input type="hidden" {...register(registerName)} />
+        </>
+      )}
+    </div>
+  );
 };
 
 interface ItemCrudProps {
-    name: string;
-    items: string[];
-    setItems: React.Dispatch<React.SetStateAction<string[]>>;
-    registerName: string;
+  name: string;
+  items: string[];
+  setItems: React.Dispatch<React.SetStateAction<string[]>>;
+  registerName: string;
 }
 
 // function ItemCrud({name, items, setItems, registerName}: ItemCrudProps): JSX.Element {
@@ -643,61 +691,61 @@ interface ItemCrudProps {
 //     );
 // }
 
-function ItemCrud({name, items, setItems, registerName}) {
-    const {setValue} = useFormContext();
-    const [itemText, setItemText] = useState('');
+function ItemCrud({ name, items, setItems, registerName }) {
+  const { setValue } = useFormContext();
+  const [itemText, setItemText] = useState('');
 
-    function handleItemAdd() {
-        if (itemText.trim() !== '') {
-            const newItem = itemText.trim();
-            const updatedItems = [...items, newItem];
-            setItems(updatedItems);
-            setValue(registerName, updatedItems);
-            setItemText('');
-        }
+  function handleItemAdd() {
+    if (itemText.trim() !== '') {
+      const newItem = itemText.trim();
+      const updatedItems = [...items, newItem];
+      setItems(updatedItems);
+      setValue(registerName, updatedItems);
+      setItemText('');
     }
+  }
 
-    function handleItemRemove(text) {
-        const updatedItems = items.filter((item) => item !== text);
-        setItems(updatedItems);
-        setValue(registerName, updatedItems);
-    }
+  function handleItemRemove(text) {
+    const updatedItems = items.filter((item) => item !== text);
+    setItems(updatedItems);
+    setValue(registerName, updatedItems);
+  }
 
-    return (
-        <div>
-            <div className="flex items-center">
-                <Input
-                    value={itemText}
-                    placeholder={`${name} وارد کنید`}
-                    onChange={(e) => setItemText(e.target.value)}
-                    prefix={<PiTagBold className="h-4 w-4"/>}
-                    className="w-full"
-                />
-                <Button onClick={handleItemAdd} className="ms-4 shrink-0 text-sm">
-                    افزودن
-                </Button>
+  return (
+    <div>
+      <div className="flex items-center">
+        <Input
+          value={itemText}
+          placeholder={`${name} وارد کنید`}
+          onChange={(e) => setItemText(e.target.value)}
+          prefix={<PiTagBold className="h-4 w-4" />}
+          className="w-full"
+        />
+        <Button onClick={handleItemAdd} className="ms-4 shrink-0 text-sm">
+          افزودن
+        </Button>
+      </div>
+
+      {items.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {items.map((text, index) => (
+            <div
+              key={index}
+              className="flex items-center rounded-full border border-gray-300 py-1 pe-2.5 ps-3 text-sm font-medium text-gray-700"
+            >
+              {text}
+              <button
+                onClick={() => handleItemRemove(text)}
+                className="ps-2 text-gray-500 hover:text-gray-900"
+              >
+                <PiXBold className="h-3.5 w-3.5" />
+              </button>
             </div>
-
-            {items.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                    {items.map((text, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center rounded-full border border-gray-300 py-1 pe-2.5 ps-3 text-sm font-medium text-gray-700"
-                        >
-                            {text}
-                            <button
-                                onClick={() => handleItemRemove(text)}
-                                className="ps-2 text-gray-500 hover:text-gray-900"
-                            >
-                                <PiXBold className="h-3.5 w-3.5"/>
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
+          ))}
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 // const ProductAccordion = ({ products, setProducts }) => {
@@ -820,150 +868,150 @@ function ItemCrud({name, items, setItems, registerName}) {
 //     );
 // };
 
-const ProductAccordion = ({products, append, remove, update}) => {
-    const {control, register} = useFormContext();
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
+const ProductAccordion = ({ products, append, remove, update }) => {
+  const { control, register } = useFormContext();
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-    const toggleAccordion = (index: number) => {
-        setOpenIndex(openIndex === index ? null : index);
-    };
+  const toggleAccordion = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
-    return (
-        <>
-            <div className="w-full max-w-full bg-white rounded-lg shadow-md">
-                {products.map((field, index) => (
-                    <div key={field.id}>
-                        <button
-                            className="flex items-center justify-between w-full p-4 focus:outline-none hover:bg-gray-50 transition"
-                            onClick={() => toggleAccordion(index)}
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                                    {/* Optional icon or image */}
-                                </div>
-                                <div>
-                                    <h3 className="text-base font-medium">
-                                        {field.name || 'محصول جدید'}
-                                    </h3>
-                                    <p className="text-sm text-gray-500">
-                                        {field.categoryType ?? 'سایر'}
-                                    </p>
-                                </div>
-                            </div>
-                            <span className="text-gray-500">
-              {openIndex === index ? '▲' : '▼'}
-            </span>
-                        </button>
-
-                        <div
-                            className={`transition-all duration-300 ease-in-out ${
-                                openIndex === index ? 'max-h-fit' : 'max-h-0 overflow-hidden'
-                            }`}
-                        >
-                            <div className="p-4">
-                                <div className="grid grid-cols-12 gap-y-6 gap-x-5">
-                                    <Input
-                                        label="عنوان محصول *"
-                                        inputClassName="border-2"
-                                        size="lg"
-                                        className="col-span-12 lg:col-span-6"
-                                        {...register(`products.${index}.name`)}
-                                    />
-                                    <Input
-                                        label="دسته بندی محصول *"
-                                        inputClassName="border-2"
-                                        size="lg"
-                                        className="col-span-12 lg:col-span-6"
-                                        {...register(`products.${index}.categoryType`)}
-                                    />
-                                    <Textarea
-                                        label="توضیحات محصول"
-                                        className="col-span-full"
-                                        rows={3}
-                                        {...register(`products.${index}.description`)}
-                                    />
-                                    {/*<Checkbox*/}
-                                    {/*    size="lg"*/}
-                                    {/*    inputClassName="border-2"*/}
-                                    {/*    className="col-span-12"*/}
-                                    {/*    label="نمایش محصول"*/}
-                                    {/*    {...register(`products.${index}.showProduct`)}*/}
-                                    {/*/>*/}
-                                    <Controller
-                                        name="showProduct"
-                                        control={control}
-                                        render={({ field: { value } }) => (
-                                            <Switch
-                                                label="نمایش محصول"
-                                                className="col-span-full"
-                                                switchClassName="dark:border-gray-400 "
-                                                handlerClassName="dark:bg-gray-400"
-                                                {...register(`products.${index}.showProduct`)}
-                                            />
-                                        )}
-                                    />
-                                    {/*<div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">*/}
-                                    {/*    <ItemCrud*/}
-                                    {/*        name="تگ"*/}
-                                    {/*        items={field.tags || []}*/}
-                                    {/*        setItems={(items) => update(index, {...field, tags: items})}*/}
-                                    {/*        registerName={`products.${index}.tags`}*/}
-                                    {/*    />*/}
-                                    {/*    <ItemCrud*/}
-                                    {/*        name="کلمه کلیدی"*/}
-                                    {/*        items={field.keywords || []}*/}
-                                    {/*        setItems={(items) => update(index, {...field, keywords: items})}*/}
-                                    {/*        registerName={`products.${index}.keywords`}*/}
-                                    {/*    />*/}
-                                    {/*</div>*/}
-                                    <MultipleFiles
-                                        className="col-span-12"
-                                        label="تصویر محصول"
-                                        registerName={`products.${index}.images`}
-                                    />
-                                    <div className="col-span-12 mt-2 flex justify-end gap-4">
-                                        <Button
-                                            size="lg"
-                                            className="col-span-2 mt-2"
-                                            onClick={() => {
-                                            }}
-                                        >
-                                            <PencilIcon className="h-4 w-4 me-1"/> ویرایش
-                                        </Button>
-                                        <Button
-                                            size="lg"
-                                            className="bg-red text-white col-span-2 mt-2"
-                                            onClick={() => remove(index)}
-                                        >
-                                            <TrashIcon className="h-4 w-4 me-1"/>حذف
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {index < products.length - 1 && <hr className="border-gray-200"/>}
-                    </div>
-                ))}
-            </div>
-            <Button
-                variant="solid"
-                color="primary"
-                onClick={() =>
-                    append({
-                        name: '',
-                        categoryType: '',
-                        description: '',
-                        display: false,
-                        tags: [],
-                        keywords: [],
-                        images: [],
-                    })
-                }
-                className="mt-4"
+  return (
+    <>
+      <div className="w-full max-w-full rounded-lg bg-white shadow-md">
+        {products.map((field, index) => (
+          <div key={field.id}>
+            <button
+              className="flex w-full items-center justify-between p-4 transition hover:bg-gray-50 focus:outline-none"
+              onClick={() => toggleAccordion(index)}
             >
-                افزودن محصول جدید
-            </Button>
-        </>
-    );
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200">
+                  {/* Optional icon or image */}
+                </div>
+                <div>
+                  <h3 className="text-base font-medium">
+                    {field.name || 'محصول جدید'}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {field.categoryType ?? 'سایر'}
+                  </p>
+                </div>
+              </div>
+              <span className="text-gray-500">
+                {openIndex === index ? '▲' : '▼'}
+              </span>
+            </button>
+
+            <div
+              className={`transition-all duration-300 ease-in-out ${
+                openIndex === index ? 'max-h-fit' : 'max-h-0 overflow-hidden'
+              }`}
+            >
+              <div className="p-4">
+                <div className="grid grid-cols-12 gap-x-5 gap-y-6">
+                  <Input
+                    label="عنوان محصول *"
+                    inputClassName="border-2"
+                    size="lg"
+                    className="col-span-12 lg:col-span-6"
+                    {...register(`products.${index}.name`)}
+                  />
+                  <Input
+                    label="دسته بندی محصول *"
+                    inputClassName="border-2"
+                    size="lg"
+                    className="col-span-12 lg:col-span-6"
+                    {...register(`products.${index}.categoryType`)}
+                  />
+                  <Textarea
+                    label="توضیحات محصول"
+                    className="col-span-full"
+                    rows={3}
+                    {...register(`products.${index}.description`)}
+                  />
+                  {/*<Checkbox*/}
+                  {/*    size="lg"*/}
+                  {/*    inputClassName="border-2"*/}
+                  {/*    className="col-span-12"*/}
+                  {/*    label="نمایش محصول"*/}
+                  {/*    {...register(`products.${index}.showProduct`)}*/}
+                  {/*/>*/}
+                  <Controller
+                    name="showProduct"
+                    control={control}
+                    render={({ field: { value } }) => (
+                      <Switch
+                        label="نمایش محصول"
+                        className="col-span-full"
+                        switchClassName="dark:border-gray-400 "
+                        handlerClassName="dark:bg-gray-400"
+                        {...register(`products.${index}.showProduct`)}
+                      />
+                    )}
+                  />
+                  {/*<div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">*/}
+                  {/*    <ItemCrud*/}
+                  {/*        name="تگ"*/}
+                  {/*        items={field.tags || []}*/}
+                  {/*        setItems={(items) => update(index, {...field, tags: items})}*/}
+                  {/*        registerName={`products.${index}.tags`}*/}
+                  {/*    />*/}
+                  {/*    <ItemCrud*/}
+                  {/*        name="کلمه کلیدی"*/}
+                  {/*        items={field.keywords || []}*/}
+                  {/*        setItems={(items) => update(index, {...field, keywords: items})}*/}
+                  {/*        registerName={`products.${index}.keywords`}*/}
+                  {/*    />*/}
+                  {/*</div>*/}
+                  <MultipleFiles
+                    className="col-span-12"
+                    label="تصویر محصول"
+                    registerName={`products.${index}.pictures`}
+                  />
+                  <div className="col-span-12 mt-2 flex justify-end gap-4">
+                    <Button
+                      size="lg"
+                      className="col-span-2 mt-2"
+                      onClick={() => {}}
+                    >
+                      <PencilIcon className="me-1 h-4 w-4" /> ویرایش
+                    </Button>
+                    <Button
+                      size="lg"
+                      className="col-span-2 mt-2 bg-red text-white"
+                      onClick={() => remove(index)}
+                    >
+                      <TrashIcon className="me-1 h-4 w-4" />
+                      حذف
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {index < products.length - 1 && <hr className="border-gray-200" />}
+          </div>
+        ))}
+      </div>
+      <Button
+        variant="solid"
+        color="primary"
+        onClick={() =>
+          append({
+            name: '',
+            categoryType: '',
+            description: '',
+            display: false,
+            tags: [],
+            keywords: [],
+            images: [],
+          })
+        }
+        className="mt-4"
+      >
+        افزودن محصول جدید
+      </Button>
+    </>
+  );
 };
