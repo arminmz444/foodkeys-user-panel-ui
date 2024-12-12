@@ -4,7 +4,16 @@ import SimpleBar from '@/components/ui/simplebar';
 
 export const formParts = {
   summary: 'summary',
+  intro: 'intro',
+  history: 'history',
+  products: 'products',
+  contact: 'contact',
+  factory: 'factory',
+  office: 'office',
+  social: 'social',
   media: 'media',
+  gallery: 'gallery',
+  supplementary: 'supplementary',
   pricingInventory: 'pricingInventory',
   productIdentifiers: 'productIdentifiers',
   shipping: 'shipping',
@@ -16,12 +25,36 @@ export const formParts = {
 
 export const menuItems = [
   {
-    label: 'خلاصه',
-    value: formParts.summary,
+    label: 'معرفی شرکت',
+    value: formParts.intro,
+  },
+  {
+    label: 'تاریخچه',
+    value: formParts.history,
+  },
+  {
+    label: 'اطلاعات تماس کارخانه',
+    value: formParts.factory,
+  },
+  {
+    label: 'اطلاعات تماس دفتر مرکزی',
+    value: formParts.office,
+  },
+  {
+    label: 'شبکه های اجتماعی و اینترنت',
+    value: formParts.social,
+  },
+  {
+    label: 'محصولات و خدمات',
+    value: formParts.products,
   },
   {
     label: 'عکس و گالری',
-    value: formParts.media,
+    value: formParts.gallery,
+  },
+  {
+    label: 'اطلاعات تکمیلی',
+    value: formParts.supplementary,
   },
   {
     label: 'قیمت',
@@ -51,31 +84,31 @@ interface FormNavProps {
 
 export default function FormNav({ className }: FormNavProps) {
   return (
-    <div
-      className={cn(
-        'sticky top-[68px] z-20 border-b border-gray-300 bg-white py-0 font-medium text-gray-500 @2xl:top-[72px] dark:bg-gray-50 2xl:top-20',
-        className
-      )}
-    >
-      <SimpleBar>
-        <div className="inline-grid grid-flow-col gap-5 md:gap-7 lg:gap-10">
-          {menuItems.map((tab, idx) => (
-            <Link
-              key={tab.value}
-              to={tab.value}
-              spy={true}
-              hashSpy={true}
-              smooth={true}
-              offset={idx === 0 ? -250 : -150}
-              duration={500}
-              className="relative cursor-pointer whitespace-nowrap py-4 hover:text-gray-1000"
-              activeClass="active before:absolute before:bottom-0 before:left-0 before:z-[1] before:h-0.5 before:w-full before:bg-gray-1000 font-semibold text-gray-1000"
-            >
-              {tab.label}
-            </Link>
-          ))}
-        </div>
-      </SimpleBar>
-    </div>
+      <div
+          className={cn(
+              'sticky top-[68px] z-20 border-b border-gray-300 bg-white py-0 font-medium text-gray-500 @2xl:top-[72px] dark:bg-gray-50 2xl:top-20',
+              className
+          )}
+      >
+        <SimpleBar>
+          <div className="inline-grid grid-flow-col gap-5 md:gap-7 lg:gap-10">
+            {menuItems.map((tab, idx) => (
+                <Link
+                    key={tab.value}
+                    to={tab.value}
+                    spy={true}
+                    hashSpy={true}
+                    smooth={true}
+                    offset={idx === 0 ? -250 : -150}
+                    duration={500}
+                    className="relative cursor-pointer whitespace-nowrap py-4 hover:text-gray-1000"
+                    activeClass="active before:absolute before:bottom-0 before:left-0 before:z-[1] before:h-0.5 before:w-full before:bg-gray-1000 font-semibold text-gray-1000"
+                >
+                  {tab.label}
+                </Link>
+            ))}
+          </div>
+        </SimpleBar>
+      </div>
   );
 }

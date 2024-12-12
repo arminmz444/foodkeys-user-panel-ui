@@ -7,9 +7,16 @@ import PageHeader from '@/app/shared/page-header';
 import { PiArrowLineDownBold, PiPlusBold } from 'react-icons/pi';
 import { productsData } from '@/data/products-data';
 import { exportToCSV } from '@/utils/export-to-csv';
-import CompaniesTable from "@/app/shared/info/food-industry/company/company-list/table";
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
-const queryClient = new QueryClient()
+import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import MapSelector from '@/components/MapSelector';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+import QuillLoader from '@/components/loader/quill-loader';
+import Spinner from '@/components/ui/spinner';
+
+const queryClient = new QueryClient();
 
 const pageHeader = {
   title: 'شرکت‌های ثبت شده شما در بانک صنعت غذا',
@@ -36,6 +43,25 @@ export default function FoodIndustryPage() {
       'product_data'
     );
   }
+
+  const MapSelector = dynamic(() => import('@/components/MapSelector'), {
+    ssr: false,
+    loading: () => <Spinner className="col-span-full h-[143px]" />,
+  });
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  const handleLocationSelect = (coords: { lat: number; lng: number }) => {
+    setSelectedLocation(coords);
+  };
+
+  const saveLocation = () => {
+    if (selectedLocation) {
+      console.log('Saved Location:', selectedLocation);
+    }
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -64,7 +90,8 @@ export default function FoodIndustryPage() {
         </div>
       </PageHeader>
 
-      <CompaniesTable />
+      <CompaniesTable category={1} />
+      <MapSelector onLocationSelect={handleLocationSelect} />
     </QueryClientProvider>
   );
 }

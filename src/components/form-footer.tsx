@@ -2,6 +2,7 @@
 
 import cn from '@/utils/class-names';
 import { Button } from '@/components/ui/button';
+import toast from 'react-hot-toast';
 
 interface FormFooterProps {
   className?: string;
@@ -26,7 +27,11 @@ export default function FormFooter({
         negMargin
       )}
     >
-      <Button type="submit" variant="outline" className="w-full @xl:w-auto">
+      <Button
+        onClick={() => toast.error('این فیچر در حال توسعه است')}
+        variant="outline"
+        className="w-full @xl:w-auto"
+      >
         {draftBtnText}
       </Button>
       <Button

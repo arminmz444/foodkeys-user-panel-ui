@@ -206,18 +206,13 @@
 //     name: 'چندتایی',
 //   },
 // ];
+import { Certificate } from 'crypto';
 import { z } from 'zod';
 
 const pictureSchema = z.object({
-  id: z.string(),
-  fileExtension: z.string(),
-  fileName: z.string(),
-  filePath: z.string(),
-  permanent: z.boolean(),
-  fileSize: z.number(),
-  contentType: z.string(),
-  fileCategory: z.string().nullable(),
-  productId: z.number().nullable(),
+  id: z.string().optional(),
+  fileName: z.string().optional(),
+  filePath: z.string().optional()
 });
 
 const productSchema = z.object({
@@ -225,6 +220,8 @@ const productSchema = z.object({
   companyType: z.string().optional(),
   description: z.string().optional(),
   pictures: z.array(pictureSchema).optional(),
+  uploadedFileIds: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional(),
   outsourced: z.boolean().optional(),
   machineUsage: z.boolean().optional(),
   showProduct: z.boolean().optional(),
@@ -248,6 +245,7 @@ const telSchema = z.object({
   telType: z.string(),
 });
 
+
 const contactSchema = z.object({
   name: z.string(),
   lastName: z.string(),
@@ -256,6 +254,111 @@ const contactSchema = z.object({
   // isCEO: z.boolean(),
   position: z.string(),
 });
+
+const galleryContactSchema = z.object({
+  name: z.string(),
+  lastName: z.string(),
+  email: z.string(),
+  phone: z.string(),
+  // isCEO: z.boolean(),
+  position: z.string(),
+  uploadedFileId: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
+  priority: z.number().optional()
+});
+
+const galleryCertificateSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  uploadedFileId: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
+  priority: z.number().optional()
+});
+
+const galleryProductSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  uploadedFileId: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
+  priority: z.number().optional()
+});
+
+const gallerySliderSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  uploadedFileId: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
+  priority: z.number().optional()
+});
+
+const galleryCatalogSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  uploadedFileId: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
+  priority: z.number().optional()
+});
+
+const galleryDocumentSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  uploadedFileId: z.array(z.string()).optional(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
+  priority: z.number().optional()
+});
+
+const gallerySchema = z.object({
+  // contacts: z.array(galleryContactSchema).superRefine((val, ctx) => {
+  //   if (new Set(val).size === val.length)
+  //     ctx.addIssue({
+  //       code: z.ZodIssueCode.custom,
+  //       message: `اولویت نباید تکراری باشد`,
+  //     });
+  // }),
+  contacts: z.array(galleryContactSchema).optional(),
+  certificates: z.array(galleryCertificateSchema).optional(),
+  products: z.array(galleryProductSchema).optional(),
+  slider: z.array(gallerySliderSchema).optional(),
+  catalog: galleryCatalogSchema.optional(),
+  documents: z.array(galleryDocumentSchema).optional(),
+});
+
+// const certificateSchema = z
+// .object({
+//   name: z.string().optional(),
+//   description: z.string().optional(),
+//   priority: z.number().optional(),
+// })
+// .array()
+// .refine((certificates) => {
+//   const priorities = certificates
+//     .filter((item) => item.priority !== undefined)
+//     .map((item) => item.priority);
+//   return new Set(priorities).size === priorities.length; // Check for unique priorities
+// }, {
+//   message: "Each certificate must have a unique priority.",
+// });
+
+// // Schema for validating contacts
+// const contactSchema = z
+// .object({
+//   name: z.string(),
+//   lastName: z.string(),
+//   email: z.string(),
+//   phone: z.string(),
+//   priority: z.number().optional(),
+//   position: z.string(),
+// })
+// .array()
+// .refine((contacts) => {
+//   const priorities = contacts
+//     .filter((item) => item.priority !== undefined)
+//     .map((item) => item.priority);
+//   return new Set(priorities).size === priorities.length; // Check for unique priorities
+// }, {
+//   message: "Each contact must have a unique priority.",
+// });
+
 
 const subcategorySchema = z.object({
   name: z.string(),
@@ -266,14 +369,24 @@ const companyTypeSchema = z.object({
   name: z.string(),
   value: z.string(),
 });
+const companyBrandSchema = z.object({
+  name: z.string(),
+  nameEn: z.string(),
+});
 
 export const companyFormSchema = z.object({
+  brands: z.array(companyBrandSchema).optional(),
+  ceo: z.string().optional(),
+  ceoPhoneNumber: z.string().optional(),
   companyName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   companyNameEn: z.string(),
-  ceo: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  ceoPhoneNumber: z.string().min(1, { message: "این فیلد اجباری می‌باشد" }),
-  owner: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  answerName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  companyStakeHolders: z.string().optional(),
+  // ceo: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  // ceoPhoneNumber: z.string().min(1, { message: "این فیلد اجباری می‌باشد" }),
+  // owner: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  // answerName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+  owner: z.string().optional(),
+  answerName: z.string().optional(),
   history: z.string().optional(),
   visit: z.number().optional(),
   buildingArea: z.string().optional(),
@@ -283,27 +396,20 @@ export const companyFormSchema = z.object({
   advertisingSlogan: z.string().optional(),
   employeesCount: z.string().optional(),
   companyType: companyTypeSchema.optional(),
+  companyTypeOther: z.string().optional(),
   // backgroundImage: z.array(z.instanceof(File)).optional(),
   logo: z.instanceof(File).refine((file) => file?.size <= 20 * 1024 * 1024, {
     message: 'حداکثر حجم فایل باید ۲۰ مگابایت باشد',
   }).nullable().optional(),
   subjectOfActivity: z.string().optional(),
-  infoStatusDescription: z.string().optional(),
-  infoStatus: z.number().optional(),
   establishDate: z.string().optional(),
-  registrant: z.string().optional(),
-  registrantUsername: z.string().optional(),
-  registrantPhone: z.string().optional(),
-  registrantTel: z.string().optional(),
   rawMaterialsOrigin: z.string().optional(),
-  record: z.string().optional(),
   keyWords: z.string().optional(),
   tags: z.string().optional(),
   companyKeyWords: z.array(z.string()).optional(),
   companyTags: z.array(z.string()).optional(),
-  relatedIndustries: z.array(z.string()).optional(),
-  companyStatus: z.string().optional(),
   products: z.array(productSchema).optional(),
+  outSourcedProducts: z.array(productSchema).optional(),
   primaryBrand: z.string().optional(),
   mainBrandEn: z.string().optional(),
   companyBrands: z.array(z.string()).optional(),
@@ -334,14 +440,26 @@ export const companyFormSchema = z.object({
   outSourcedProductsDescription: z.string().optional(),
   currentLogo: z.string().optional(),
   currentBackgroundImages: z.array(z.string()).optional(),
+  factoryCity: z.string().optional(),
+  factoryState: z.string().optional(),
+  industrialCity: z.string().optional(),
+  factoryPoBox: z.string().optional(),
+  officePoBox: z.string().optional(),
+  factoryLocation: z.string().optional(),
+  officeLocation: z.string().optional(),
+  officeCity: z.string().optional(),
+  officeState: z.string().optional(),
+  gallery: gallerySchema.optional()
 });
 
 export type CreateCompanyInput = z.infer<typeof companyFormSchema>;
 
 export function defaultValues(company?: CreateCompanyInput | null) {
   return {
+    brands: company?.companyBrands ?? [],
     companyName: company?.companyName ?? '',
     companyNameEn: company?.companyNameEn ?? '',
+    companyStakeHolders: company?.companyStakeHolders ?? "",
     ceo: company?.ceo ?? '',
     ceoPhoneNumber: company?.ceoPhoneNumber ?? '',
     owner: company?.owner ?? '',
@@ -354,17 +472,18 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     advertisingSlogan: company?.advertisingSlogan ?? '',
     employeesCount: company?.employeesCount ?? '',
     companyType: company?.companyType ?? '',
+    companyTypeOther: company?.companyTypeOther ?? '',
     // backgroundImage: company?.backgroundImage ?? '',
     // logo: company?.logo ?? '',
     subjectOfActivity: company?.subjectOfActivity ?? '',
-    establishDate: company?.establishDate ?? [],
+    establishDate: company?.establishDate ?? '',
     rawMaterialsOrigin: company?.rawMaterialsOrigin ?? '',
     keyWords: company?.keyWords ?? '',
     tags: company?.tags ?? '',
     companyKeyWords: company?.companyKeyWords ?? [],
     companyTags: company?.companyTags ?? [],
-    companyStatus: company?.companyStatus ?? '',
     products: company?.products ?? [],
+    outSourcedProducts: company?.outSourcedProducts ?? [],
     primaryBrand: company?.primaryBrand ?? '',
     mainBrandEn: company?.mainBrandEn ?? '',
     factoryCity: company?.location?.factoryCity ?? '',
@@ -392,8 +511,8 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     rubikaPhoneNo: company?.rubikaPhoneNo ?? '',
     skypeId: company?.skypeId ?? '',
     website: company?.website ?? '',
-    contacts: company?.contacts ?? '',
-    emails: company?.emails ?? '',
+    contacts: company?.contacts ?? [],
+    emails: company?.emails ?? [],
     productAvailability: company?.productAvailability ?? '2',
     subcategory: company?.subcategory ?? null,
     productTitles: company?.productTitles ?? "",
@@ -402,6 +521,14 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     outSourcedProductsDescription: company?.outSourcedProductsDescription ?? "",
     currentLogo: company?.logo ?? "",
     currentBackgroundImages: company?.currentBackgroundImages ?? [],
+    gallery: company?.gallery ?? {
+      contacts: [],
+      certificates: [],
+      products: [],
+      slider: [],
+      catalog: {},
+      documents: [],
+    }
   };
 }
 

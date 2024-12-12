@@ -5,6 +5,8 @@ import { invoiceData } from '@/data/invoice-data';
 import { exportToCSV } from '@/utils/export-to-csv';
 import InvoiceTable from '@/app/shared/invoice/invoice-list/table';
 import TableLayout from '../table-layout';
+import {QueryClient, QueryClientProvider} from "react-query";
+const queryClient = new QueryClient()
 
 const pageHeader = {
   title: 'جدول بهبود یافته',
@@ -31,6 +33,7 @@ export default function EnhancedTablePage() {
     );
   }
   return (
+      <QueryClientProvider client={queryClient}>
     <TableLayout
       title={pageHeader.title}
       breadcrumb={pageHeader.breadcrumb}
@@ -38,5 +41,6 @@ export default function EnhancedTablePage() {
     >
       <InvoiceTable data={invoiceData} />
     </TableLayout>
+      </QueryClientProvider>
   );
 }

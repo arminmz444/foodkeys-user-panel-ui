@@ -7,7 +7,7 @@ export async function redirectIfAuthenticated() {
     const jwtToken = cookieStore.get('jwtToken')?.value;
 
     if (token && jwtToken) {
-        redirect('/analytics');
+        redirect('/');
     }
     return null;
 }

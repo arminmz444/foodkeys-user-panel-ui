@@ -1,5 +1,7 @@
 import Header from '@/layouts/hydrogen/header';
 import Sidebar from '@/layouts/hydrogen/sidebar';
+import 'leaflet/dist/leaflet.css';
+import 'react-photo-view/dist/react-photo-view.css';
 
 export default function HydrogenLayout({
   children,

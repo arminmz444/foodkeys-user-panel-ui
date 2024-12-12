@@ -27,16 +27,19 @@ export default function QuillEditor({
       // [{ header: [1, 2, 3, 4, 5, 6, false] }],
 
       ['bold', 'italic', 'underline', 'strike'], // toggled buttons
-      ['blockquote', 'code-block'],
+      // ['blockquote', 'code-block'],
 
       [{ list: 'ordered' }, { list: 'bullet' }],
       [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
       [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+      ['link', 'image', 'video', 'formula'],
 
       [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
       [{ font: [] }],
       [{ align: [] }],
-
+      // { size: ['small', 'large', 'huge'] },
+      [{ direction: 'rtl' }],
       ['clean'],
     ],
   };

@@ -18,11 +18,11 @@ import {siteConfig} from '@/config/site.config';
 import cn from '@/utils/class-names';
 import Logo from '@/components/logo';
 import {BsWalletFill} from 'react-icons/bs';
-import {Modal} from 'rizzui';
+import {Button, Modal} from 'rizzui';
 import React, {RefObject, useEffect, useState} from 'react';
 import {useMedia} from '@/hooks/use-media';
 import {Popover} from '@/components/ui/popover';
-import {PiWalletFill} from 'react-icons/pi';
+import {PiArrowLeftBold, PiWalletFill} from 'react-icons/pi';
 import walletImage from '@public/wallet.png';
 import {HiXMark} from 'react-icons/hi2';
 import {Client} from '@stomp/stompjs';
@@ -40,7 +40,6 @@ import toast from "react-hot-toast";
 
 function HeaderMenuRight() {
     const [isOpen, setIsOpen] = useState(false);
-
     const [messages, setMessages] = useAtom(updateNotificationsAtom);
 
     useEffect(() => {
@@ -160,6 +159,7 @@ function WalletDropdown({
     children: JSX.Element & { ref?: RefObject<any> };
 }) {
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false)
 
     const isMobile = useMedia('(max-width: 480px)', false);
 
@@ -198,10 +198,12 @@ function WalletDropdown({
                 console.error('Failed to start payment', error);
             }
         };
+        setLoading(true)
         let response = await startPayment()
         if (response?.data?.url)
             window.location.href = response?.data?.url;
         else toast.error("خطا در افزایش اعتبار")
+        setLoading(false)
         // dispatch(addCredit(amount));
         // alert(`در حال هدایت به درگاه بانکی برای پرداخت مبلغ ${amount} تومان`);
     };
@@ -260,18 +262,18 @@ function WalletDropdown({
                                                 key={value}
                                                 onClick={() => handleDefaultAmountClick(value)}
                                                 variant="outline"
-                                                className="hover:bg-indigo-600 transition-all duration-300 hover:text-black"
+                                                className="hover:bg-indigo-600 transition-all duration-300 hover:text-black border-gray-300 p-6"
                                             >
                                                 {value.toLocaleString()} تومان
                                             </Button>
                                         ))}
                                     </div>
-                                    <Button
-                                        onClick={handleSubmit}
-                                        variant="solid"
-                                        className="hover:bg-indigo-700 w-full transform rounded-lg bg-orange py-3 font-semibold text-black transition-transform duration-300 hover:scale-105 dark:text-white"
-                                    >
-                                        افزایش اعتبار و رفتن به صفحه پرداخت
+                                    <Button onClick={handleSubmit}
+                                            size="lg"
+                                            className="group/btn hover:bg-indigo-700 w-full transform rounded-lg bg-orange py-3 font-semibold text-black transition-transform duration-300 hover:scale-105 dark:text-white"
+                                            isLoading={loading}>
+                                        <span>افزایش اعتبار و رفتن به صفحه پرداخت</span>{' '}
+                                        <PiArrowLeftBold className="ms-2 mt-0.5 h-5 w-5"/>
                                     </Button>
                                 </div>
                             </div>
@@ -301,22 +303,22 @@ type ButtonProps = {
     className?: string;
 };
 
-const Button: React.FC<ButtonProps> = ({
-                                           children,
-                                           onClick,
-                                           variant = 'solid',
-                                           className,
-                                       }) => {
-    const baseStyle =
-        'px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out focus:outline-none';
-    const styles = {
-        solid: `bg-indigo-600 text-white hover:bg-indigo-700 ${baseStyle}`,
-        outline: `border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white ${baseStyle}`,
-    };
-
-    return (
-        <button onClick={onClick} className={cn(styles[variant], className)}>
-            {children}
-        </button>
-    );
-};
+// const Button: React.FC<ButtonProps> = ({
+//                                            children,
+//                                            onClick,
+//                                            variant = 'solid',
+//                                            className,
+//                                        }) => {
+//     const baseStyle =
+//         'px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out focus:outline-none';
+//     const styles = {
+//         solid: `bg-indigo-600 text-white hover:bg-indigo-700 ${baseStyle}`,
+//         outline: `border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white ${baseStyle}`,
+//     };
+//
+//     return (
+//         <button onClick={onClick} className={cn(styles[variant], className)}>
+//             {children}
+//         </button>
+//     );
+// };

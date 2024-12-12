@@ -7,9 +7,13 @@ import PageHeader from '@/app/shared/page-header';
 import { PiArrowLineDownBold, PiPlusBold } from 'react-icons/pi';
 import { productsData } from '@/data/products-data';
 import { exportToCSV } from '@/utils/export-to-csv';
-import CompaniesTable from "@/app/shared/info/agriculture-industry/company/company-list/table";
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
-const queryClient = new QueryClient()
+import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+import Spinner from '@/components/ui/spinner';
+
+const queryClient = new QueryClient();
 
 const pageHeader = {
   title: 'شرکت‌های ثبت شده شما در بانک صنعت کشاورزی',
@@ -19,7 +23,7 @@ const pageHeader = {
       name: 'مدیریت اطلاعات',
     },
     {
-      href: routes.info.foodIndustryList,
+      href: routes.info.agricultureIndustryList,
       name: 'بانک صنعت کشاورزی',
     },
     {
@@ -28,7 +32,7 @@ const pageHeader = {
   ],
 };
 
-export default function FoodIndustryPage() {
+export default function AgricultureIndustryPage() {
   function handleExportData() {
     exportToCSV(
       productsData,
@@ -36,6 +40,25 @@ export default function FoodIndustryPage() {
       'product_data'
     );
   }
+
+  const MapSelector = dynamic(() => import('@/components/MapSelector'), {
+    ssr: false,
+    loading: () => <Spinner className="col-span-full h-[143px]" />,
+  });
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  const handleLocationSelect = (coords: { lat: number; lng: number }) => {
+    setSelectedLocation(coords);
+  };
+
+  const saveLocation = () => {
+    if (selectedLocation) {
+      console.log('Saved Location:', selectedLocation);
+    }
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -50,7 +73,7 @@ export default function FoodIndustryPage() {
             استخراج
           </Button>
           <Link
-            href={routes.info.foodIndustryAdd}
+            href={routes.info.agricultureIndustryAdd}
             className="w-full @lg:w-auto"
           >
             <Button
@@ -64,7 +87,8 @@ export default function FoodIndustryPage() {
         </div>
       </PageHeader>
 
-      <CompaniesTable />
+      <CompaniesTable category={2} />
+      {/* <MapSelector onLocationSelect={handleLocationSelect} /> */}
     </QueryClientProvider>
   );
 }

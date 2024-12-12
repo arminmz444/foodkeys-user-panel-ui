@@ -11,14 +11,14 @@ const productData = {
     {
       name: 'میهن',
       isEnglish: true,
-      isPrimary: true
+      isPrimary: true,
     },
   ],
-  companyName: "میهن",
-  companyEnglishName: "Mihan",
+  companyName: 'میهن',
+  companyEnglishName: 'Mihan',
   mainBrand: {
-    persian: "میهن",
-    english: "mihan"
+    persian: 'میهن',
+    english: 'mihan',
   },
   subcategory: 1,
   description: 'مخلوط سالاد باغی ایسبرگ فرش اکسپرس',

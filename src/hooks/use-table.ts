@@ -38,7 +38,7 @@ export function useTable<T extends AnyObject>(
     }
   };
   const handleSelectAll = () => {
-    if (selectedRowKeys.length === data.length) {
+    if (selectedRowKeys.length === data?.length) {
       setSelectedRowKeys([]);
     } else {
       setSelectedRowKeys(data.map((record) => record.id));
@@ -92,7 +92,7 @@ export function useTable<T extends AnyObject>(
     const start = (currentPage - 1) * countPerPage;
     const end = start + countPerPage;
 
-    if (data.length > start) return data.slice(start, end);
+    if (data?.length > start) return data.slice(start, end);
     return data;
   }
 
@@ -139,7 +139,7 @@ export function useTable<T extends AnyObject>(
 
     return (
       sortedData
-        .filter((item) => {
+        ?.filter((item) => {
           const isMatchingItem = Object.entries(filters).some(
             ([columnId, filterValue]) => {
               if (
@@ -230,15 +230,15 @@ export function useTable<T extends AnyObject>(
   /*
    * Set isFiltered and final filtered data
    */
-  const isFiltered = applyFilters().length > 0;
+  const isFiltered = applyFilters()?.length > 0;
   function calculateTotalItems() {
     if (isFiltered) {
       return applyFilters().length;
     }
     if (searchTerm) {
-      return searchedData().length;
+      return searchedData()?.length;
     }
-    return sortedData.length;
+    return sortedData?.length;
   }
   const filteredAndSearchedData = isFiltered ? applyFilters() : searchedData();
   const tableData = initialData//paginatedData(filteredAndSearchedData);

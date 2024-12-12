@@ -9,6 +9,8 @@ import { PiPlusBold } from 'react-icons/pi';
 import { invoiceData } from '@/data/invoice-data';
 import { exportToCSV } from '@/utils/export-to-csv';
 import ExportButton from '@/app/shared/export-button';
+import {QueryClient, QueryClientProvider} from "react-query";
+const queryClient = new QueryClient()
 
 const pageHeader = {
   title: 'لیست سفارش',
@@ -38,6 +40,7 @@ export default function InvoiceListPage() {
 
   return (
     <>
+      <QueryClientProvider client={queryClient}>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
           <ExportButton onClick={() => handleExportData()} />
@@ -52,8 +55,9 @@ export default function InvoiceListPage() {
           </Link>
         </div>
       </PageHeader>
-
+        {/*// @ts-ignore*/}
       <InvoiceTable data={invoiceData} />
+      </QueryClientProvider>
     </>
   );
 }

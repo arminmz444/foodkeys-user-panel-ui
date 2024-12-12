@@ -26,8 +26,8 @@ import {
 } from '@/data/support-inbox';
 import { LineGroup, Skeleton } from '@/components/ui/skeleton';
 import SimpleBar from '@/components/ui/simplebar';
-import useAxiosPrivate from "@/hooks/use-axios-private";
-import toast from "react-hot-toast";
+import useAxiosPrivate from '@/hooks/use-axios-private';
+import toast from 'react-hot-toast';
 
 interface MessageItemProps {
   message: MessageType;
@@ -35,7 +35,8 @@ interface MessageItemProps {
 }
 
 export const messageIdAtom = atomWithStorage('messageId', '');
-export const dataAtom = atomWithReset<MessageType[]>(messages);
+export const ticketInfoAtom = atomWithStorage('ticketInfo', '');
+export const dataAtom = atomWithReset<any>([]);
 
 export function MessageItem({ className, message }: MessageItemProps) {
   const hoverRef = useRef(null);
@@ -45,7 +46,7 @@ export function MessageItem({ className, message }: MessageItemProps) {
   const isMobile = useMedia('(max-width: 1023px)', false);
 
   const [messageId, setMessageId] = useAtom(messageIdAtom);
-
+  const [ticketInfo, setTicketInfo] = useAtom(ticketInfoAtom);
   const isActive = messageId === message.id;
 
   const handleItemChange = (itemId: string) => {
@@ -57,10 +58,10 @@ export function MessageItem({ className, message }: MessageItemProps) {
 
   const url = routes.support.messageDetails(messageId);
 
-  useEffect(() => {
-    setMessageId(data[0].id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  // useEffect(() => {
+  //   setMessageId(data[0].id);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [data]);
 
   function handleChange() {
     setMessageId(message.id);
@@ -112,9 +113,11 @@ export function MessageItem({ className, message }: MessageItemProps) {
         <div className="flex items-center justify-between lg:flex-col lg:items-start 2xl:flex-row 2xl:items-center">
           <Text tag="h4" className="flex items-center">
             {/* @ts-ignore */}
-            <span className="text-sm font-semibold dark:text-gray-700">{message.subject}
+            <span className="text-sm font-semibold dark:text-gray-700">
+              {message.subject}
               {/* @ts-ignore */}
-            </span>{message.hasAttachment && (
+            </span>
+            {message.hasAttachment && (
               <PiPaperclipLight className="mr-2 h-4 w-4 text-gray-500" />
             )}
             {!message.markedAsRead && (
@@ -122,7 +125,8 @@ export function MessageItem({ className, message }: MessageItemProps) {
             )}
           </Text>
           <span className="text-xs text-gray-500">
-            {/*{getRelativeTime(new Date(message.createdAt))}*/}{/* @ts-ignore */}
+            {/*{getRelativeTime(new Date(message.createdAt))}*/}
+            {/* @ts-ignore */}
             {message.createdAtStr}
           </span>
         </div>
@@ -142,7 +146,7 @@ const sortOptions = {
 const options = [
   {
     value: sortOptions.asc,
-    name: 'ثدیمی',
+    name: 'قدیمی',
   },
   {
     value: sortOptions.desc,
@@ -165,10 +169,14 @@ const sortByDate = (items: MessageType[], order: SortByType) => {
 
 interface InboxListProps {
   className?: string;
+  refetchTickets: number;
 }
 type SortByType = keyof typeof sortOptions;
 
-export default function MessageList({ className }: InboxListProps) {
+export default function MessageList({
+  className,
+  refetchTickets,
+}: InboxListProps) {
   const _axios = useAxiosPrivate();
   const [data, setData] = useAtom(dataAtom);
   // const resetData = useResetAtom(dataAtom);
@@ -179,7 +187,6 @@ export default function MessageList({ className }: InboxListProps) {
   const [totalItems, setTotalItems] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -196,12 +203,12 @@ export default function MessageList({ className }: InboxListProps) {
         }
       } catch (error) {
         console.error('Error fetching ticket data:', error);
-        toast.error("خطا در دریافت تیکت‌ها")
+        toast.error('خطا در دریافت تیکت‌ها');
       }
     };
 
     fetchTickets();
-  }, [_axios, currentPage, pageSize]);
+  }, [_axios, currentPage, pageSize, refetchTickets]);
 
   useEffect(() => {
     const updatedItems = messages.filter(

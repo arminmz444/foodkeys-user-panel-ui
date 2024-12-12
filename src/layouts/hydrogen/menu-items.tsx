@@ -42,13 +42,18 @@ import {
   PiContactlessPayment,
 } from 'react-icons/pi';
 import { MdEmail, MdMessage } from 'react-icons/md';
-import { CgProfile } from 'react-icons/cg';
+import { CgHome, CgProfile } from 'react-icons/cg';
 
 // Note: do not add href in the label object, it is rendering as label
 export const menuItems = [
   // label start
   {
     name: 'خانه',
+  },
+  {
+    name: 'خانه',
+    href: '/',
+    icon: <CgHome />,
   },
   {
     name: 'حساب کاربری',
@@ -170,62 +175,62 @@ export const menuItems = [
         name: 'ثبت شرکت جدید',
         href: routes.info.foodIndustryAdd,
       },
-      {
-        name: 'نمایش اطلاعات',
-        href: routes.info.foodIndustryView(1234),
-      },
-      {
-        name: 'ویرایش اطلاعات',
-        href: routes.info.foodIndustryEdit(1234),
-      },
-      {
-        name: 'ویرایش اطلاعات',
-        href: routes.eCommerce.ediProduct(DUMMY_ID),
-      },
-      {
-        name: 'دسته بندی',
-        href: routes.eCommerce.categories,
-      },
-      {
-        name: 'ساخت دسته بندی',
-        href: routes.eCommerce.createCategory,
-      },
-      {
-        name: 'ویرایش دسته بندی',
-        href: routes.eCommerce.editCategory(DUMMY_ID),
-      },
-      {
-        name: 'سفارشات',
-        href: routes.eCommerce.orders,
-      },
-      {
-        name: 'جزییات سفارش',
-        href: routes.eCommerce.orderDetails(DUMMY_ID),
-      },
-      {
-        name: 'ساخت سفارش',
-        href: routes.eCommerce.createOrder,
-      },
-      {
-        name: 'ویرایش سفارش',
-        href: routes.eCommerce.editOrder(DUMMY_ID),
-      },
-      {
-        name: 'تظرات',
-        href: routes.eCommerce.reviews,
-      },
-      {
-        name: 'خرید',
-        href: routes.eCommerce.shop,
-      },
-      {
-        name: 'سبد خرید',
-        href: routes.eCommerce.cart,
-      },
-      {
-        name: 'پرداخت و تسویه حساب',
-        href: routes.eCommerce.checkout,
-      },
+      // {
+      //   name: 'نمایش اطلاعات',
+      //   href: routes.info.foodIndustryView(1234),
+      // },
+      // {
+      //   name: 'ویرایش اطلاعات',
+      //   href: routes.info.foodIndustryEdit(1234),
+      // },
+      // {
+      //   name: 'ویرایش اطلاعات',
+      //   href: routes.eCommerce.ediProduct(DUMMY_ID),
+      // },
+      // {
+      //   name: 'دسته بندی',
+      //   href: routes.eCommerce.categories,
+      // },
+      // {
+      //   name: 'ساخت دسته بندی',
+      //   href: routes.eCommerce.createCategory,
+      // },
+      // {
+      //   name: 'ویرایش دسته بندی',
+      //   href: routes.eCommerce.editCategory(DUMMY_ID),
+      // },
+      // {
+      //   name: 'سفارشات',
+      //   href: routes.eCommerce.orders,
+      // },
+      // {
+      //   name: 'جزییات سفارش',
+      //   href: routes.eCommerce.orderDetails(DUMMY_ID),
+      // },
+      // {
+      //   name: 'ساخت سفارش',
+      //   href: routes.eCommerce.createOrder,
+      // },
+      // {
+      //   name: 'ویرایش سفارش',
+      //   href: routes.eCommerce.editOrder(DUMMY_ID),
+      // },
+      // {
+      //   name: 'تظرات',
+      //   href: routes.eCommerce.reviews,
+      // },
+      // {
+      //   name: 'خرید',
+      //   href: routes.eCommerce.shop,
+      // },
+      // {
+      //   name: 'سبد خرید',
+      //   href: routes.eCommerce.cart,
+      // },
+      // {
+      //   name: 'پرداخت و تسویه حساب',
+      //   href: routes.eCommerce.checkout,
+      // },
     ],
   },
   {
@@ -241,14 +246,14 @@ export const menuItems = [
         name: 'ثبت شرکت جدید',
         href: routes.info.agricultureIndustryAdd,
       },
-      {
-        name: 'نمایش اطلاعات',
-        href: routes.info.agricultureIndustryView(1234),
-      },
-      {
-        name: 'ویرایش اطلاعات',
-        href: routes.info.agricultureIndustryEdit(1234),
-      },
+      // {
+      //   name: 'نمایش اطلاعات',
+      //   href: routes.info.agricultureIndustryView(1234),
+      // },
+      // {
+      //   name: 'ویرایش اطلاعات',
+      //   href: routes.info.agricultureIndustryEdit(1234),
+      // },
     ],
   },
   {
@@ -258,7 +263,15 @@ export const menuItems = [
     dropdownItems: [
       {
         name: 'لیست شرکت‌های ثبت شده',
-        href: routes.info.foodIndustryList,
+        href: routes.info.machinery,
+      },
+      {
+        name: 'ثبت خریداران ماشین‌آلات',
+        href: routes.info.machineryBuyerAdd,
+      },
+      {
+        name: 'ثبت فروشندگان ماشین‌آلات',
+        href: routes.info.machinerySellerAdd,
       },
     ],
   },
@@ -269,7 +282,7 @@ export const menuItems = [
     dropdownItems: [
       {
         name: 'لیست شرکت‌های ثبت شده',
-        href: routes.info.foodIndustryList,
+        href: routes.info.serviceIndustryList,
       },
       {
         name: 'نمایشگاه‌های داخلی و خارجی',
@@ -325,7 +338,11 @@ export const menuItems = [
     dropdownItems: [
       {
         name: 'لیست شرکت‌های ثبت شده',
-        href: routes.info.foodIndustryList,
+        href: routes.info.mediaBankList,
+      },
+      {
+        name: 'ثبت شرکت جدید',
+        href: routes.info.mediaBankAdd,
       },
     ],
   },
@@ -382,11 +399,11 @@ export const menuItems = [
     icon: <PiContactlessPayment />,
     dropdownItems: [
       {
-        name: 'لیست',
+        name: 'لیست پرداخت‌ها',
         href: routes.invoice.home,
       },
       {
-        name: 'جزییات',
+        name: 'لیست تراکنش‌ها',
         href: routes.invoice.details(DUMMY_ID),
       },
       {

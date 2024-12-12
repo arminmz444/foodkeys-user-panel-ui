@@ -1,4 +1,5 @@
-export const function convertTimestampToLocalDateTime(timestamp) {
+// @ts-ignore
+export function convertTimestampToLocalDateTime(timestamp) {
     const date = new Date(timestamp); // Create a Date object from the timestamp
 
     // Format the date into "yyyy-MM-ddTHH:mm:ss" format

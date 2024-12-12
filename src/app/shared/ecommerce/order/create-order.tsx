@@ -16,7 +16,6 @@ import Image from 'next/image';
 import PencilIcon from '@/components/icons/pencil';
 import OrderProducts from './order-products/order-products';
 
-// Payment method option
 const paymentOption = [
   {
     value: 'paypal',

@@ -1,12 +1,12 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Element } from 'react-scroll';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import cn from '../../../../../../utils/class-names';
-import { Text } from 'rizzui';
+import { Button, Text } from 'rizzui';
 import FormNav, {
   formParts,
 } from '../../../../info/food-industry/company/create/form-nav';
@@ -30,10 +30,13 @@ import CompanyOffice from '@/app/shared/info/food-industry/company/create/compan
 import CompanySocial from '@/app/shared/info/food-industry/company/create/company-social';
 import CompanyComplementary from '@/app/shared/info/food-industry/company/create/company-complementary';
 import CompanyHistory from './company-history';
-import useAxiosPrivate from "@/hooks/use-axios-private";
-import {z} from "zod";
-import CompanyGallery from "@/app/shared/info/food-industry/company/create/company-gallery";
-import {useRouter} from "next/navigation";
+import useAxiosPrivate from '@/hooks/use-axios-private';
+import { z } from 'zod';
+import CompanyGallery from '@/app/shared/info/food-industry/company/create/company-gallery';
+import { useRouter } from 'next/navigation';
+import { createGlobalState } from 'react-use';
+import { socialMediaConverter } from '@/utils/social-media-converter';
+import { telConverter } from '@/utils/tel-converter';
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: CompanySummary,
@@ -52,7 +55,6 @@ const MAP_STEP_TO_COMPONENT = {
   // [formParts.variantOptions]: ProductVariants,
   // [formParts.tagsAndCategory]: ProductTaxonomies,
 };
-
 
 interface Picture {
   id: string;
@@ -89,16 +91,16 @@ interface Product {
 }
 
 interface Location {
-  officeLocation: string,
-  factoryLocation: string,
-  officePoBox: string,
-  factoryPoBox: string,
-  officeState: string,
-  officeCity: string,
-  factoryState: string,
-  factoryCity: string,
-  industrialCity: string,
-  country: string,
+  officeLocation: string;
+  factoryLocation: string;
+  officePoBox: string;
+  factoryPoBox: string;
+  officeState: string;
+  officeCity: string;
+  factoryState: string;
+  factoryCity: string;
+  industrialCity: string;
+  country: string;
 }
 
 export interface Company {
@@ -158,14 +160,18 @@ interface IndexProps {
   id?: string;
   company?: Company;
   className?: string;
-  category: number
+  category: number;
 }
 
-export default function CreateCompany({ id, className, category = 1 }: IndexProps) {
-  const router = useRouter()
+export default function CreateCompany({
+  id,
+  className,
+  category = 1,
+}: IndexProps) {
+  const router = useRouter();
   const [isLoading, setLoading] = useState(false);
   const [subcategories, setSubcategories] = useState();
-  const _axios = useAxiosPrivate()
+  const _axios = useAxiosPrivate();
   const [companyData, setCompanyData] = useState<Company | null>(null); // Company data
 
   const methods = useForm<Company>({
@@ -189,33 +195,410 @@ export default function CreateCompany({ id, className, category = 1 }: IndexProp
       fetchCompany();
     }
   }, [id, _axios]);
+
+  // const onSubmit: SubmitHandler<CreateCompanyInput> = async (data) => {
+  //   setLoading(true);
+  //   const fetchSubscriptions = async () => {
+  //     try {
+  //       const response = await _axios.get(`/subscription`);
+  //       if (response.data.status === 'SUCCESS') {
+  //         if (!response.data?.data) router.replace('/bundle/buy');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching subcategories:', error);
+  //     }
+  //   };
+  //   await fetchSubscriptions();
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     console.log('product_data', data);
+
+  //     toast.success(
+  //       <Text tag="b">
+  //         {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
+  //       </Text>
+  //     );
+  //     methods.reset();
+  //   }, 600);
+  // };
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await _axios.get(`/subscription`);
+      if (response.data.status === 'SUCCESS') {
+        if (!response.data?.data) {
+          toast.success(
+            <div>
+              <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
+              <Text>
+                {
+                  'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'
+                }
+              </Text>
+              <Button
+                className="mt-3"
+                size="sm"
+                onClick={() => console.log('DISMISS')}
+              >
+                خرید اشتراک
+              </Button>
+            </div>,
+            { duration: 5000 }
+          );
+          // toast.custom((t) => (
+          //   <div
+          //     className={`${
+          //       t.visible ? 'animate-enter' : 'animate-leave'
+          //     } pointer-events-auto flex w-full max-w-md rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5`}
+          //   >
+          //     <div className="w-0 flex-1 p-4">
+          //       <div className="flex items-start">
+          //         <div className="flex-shrink-0 pt-0.5">
+          //           <img
+          //             className="h-10 w-10 rounded-full"
+          //             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixqx=6GHAjsWpt9&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.2&w=160&h=160&q=80"
+          //             alt=""
+          //           />
+          //         </div>
+          //         <div className="ml-3 flex-1">
+          //           <p className="text-sm font-medium text-gray-900">
+          //             Emilia Gates
+          //           </p>
+          //           <p className="mt-1 text-sm text-gray-500">
+          //             Sure! 8:30pm works great!
+          //           </p>
+          //         </div>
+          //       </div>
+          //     </div>
+          //     <div className="flex border-l border-gray-200">
+          //       <button
+          //         onClick={() => toast.dismiss(t.id)}
+          //         className="text-indigo-600 hover:text-indigo-500 focus:ring-indigo-500 flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium focus:outline-none focus:ring-2"
+          //       >
+          //         Close
+          //       </button>
+          //     </div>
+          //   </div>
+          // ));
+          router.replace('/bundle/buy');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching subscription:', error);
+    }
+  };
   const onSubmit: SubmitHandler<CreateCompanyInput> = async (data) => {
     setLoading(true);
-    const fetchSubscriptions = async () => {
-      try {
-        const response = await _axios.get(`/subscription`);
-        if (response.data.status === 'SUCCESS') {
-          if (!response.data?.data)
-            router.replace("/bundle/buy")
+    const computeDataFileIds = (products) => {
+      return products.reduce((acc: string[], product) => {
+        if (product.pictures && Array.isArray(product.pictures)) {
+          acc.push(...product.pictures);
         }
-      } catch (error) {
-        console.error('Error fetching subcategories:', error);
-      }
+        return acc.map;
+      }, []);
     };
-    await fetchSubscriptions();
-    setTimeout(() => {
-      setLoading(false);
-      console.log('product_data', data);
+    // let dataFileIds = computeDataFileIds(data?.products || []);
+    let dataFileIds = [];
+    try {
+      const socialMedias = socialMediaConverter({
+        telegramPhoneNo: data.telegramPhoneNo,
+        telegramId: data.telegramId,
+        whatsAppPhoneNo: data.whatsAppPhoneNo,
+        whatsAppId: data.whatsAppId,
+        instagramId: data.instagramId,
+        linkedInId: data.linkedInId,
+        eitaaPhoneNo: data.eitaaPhoneNo,
+        rubikaPhoneNo: data.rubikaPhoneNo,
+        smsNumber: data.smsNumber,
+        hotlineNumber: data.hotlineNumber,
+        skypeId: data.skypeId,
+        website: data.website,
+        emails: data.emails,
+      });
 
-      toast.success(
-        <Text tag="b">
-          {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
-        </Text>
+      let tels: any[] = [];
+      tels = tels.concat(
+        data.factoryTels || [],
+        data.factoryFaxes || [],
+        data.officeTels || [],
+        data.officeFaxes || []
       );
-      methods.reset();
-    }, 600);
+
+      const location = {
+        officeLocation: data.officeLocation,
+        factoryLocation: data.factoryLocation,
+        factoryCity: data.factoryCity,
+        factoryState: data.factoryState,
+        officeState: data.officeState,
+        officeCity: data.officeCity,
+        country: data.country || 'ایران',
+        industrialCity: data.industrialCity,
+        factoryPoBox: data.factoryPoBox,
+        officePoBox: data.officePoBox,
+      };
+
+      const transformedData = {
+        companyName: data.companyName,
+        companyNameEn: data.companyNameEn,
+        companyStakeHolders: data.companyStakeHolders,
+        ceo: data.ceo,
+        ceoPhoneNumber: data.ceoPhoneNumber,
+        owner: data.owner,
+        history: data.history,
+        description: data.description,
+        advertisingSlogan: data.advertisingSlogan,
+        companyType: data.companyType?.value,
+        companyTypeOther: data.companyTypeOther,
+        subjectOfActivity: data.subjectOfActivity,
+        subCategoryId: data.subcategory?.value,
+        establishDate: data.establishDate,
+        tags: data.companyTags,
+        keywords: data.companyKeyWords,
+        brands: data.brands,
+        socialMedias: socialMedias,
+        contacts: data.contacts,
+        logo: data.logo,
+        tels: tels,
+        location: location,
+        employeesCount: data.employeesCount,
+        buildingArea: data.buildingArea,
+        answerName: data.answerName,
+        holding: data.holding,
+        landArea: data.landArea,
+        productAvailability: data.productAvailability,
+      };
+
+      data.products = [...data.products, ...data.outSourcedProducts];
+      const productData = data.products
+        ? data.products.map((product) => ({
+            name: product.name,
+            type: product.type,
+            description: product.description,
+            machineUsage: product.machineUsage,
+            outsourced: product.outsourced,
+            pictures: product.pictures,
+            uploadedFileIds: product.uploadedFileIds,
+            removedFileIds: product.removedFileIds,
+          }))
+        : [];
+
+      const productsDataObject = productData;
+
+      // const productFileIds = productData.reduce((acc: string[], p: any) => {
+      //   if (p.pictures && Array.isArray(p.pictures)) {
+      //     acc.push(...p.pictures);
+      //   }
+      //   return acc;
+      // }, []);
+
+      const formData = new FormData();
+
+      formData.append('jsonData', JSON.stringify(transformedData));
+      formData.append('productsData', JSON.stringify(productsDataObject));
+      // formData.append('productFileIds', JSON.stringify(productFileIds));
+
+      if (data.logo) formData.append('COMPANY_LOGO', data.logo);
+
+      if (data.backgroundImages && data.backgroundImages.length > 0) {
+        data.backgroundImages.forEach((imgFile: File) => {
+          formData.append('COMPANY_BACKGROUND_IMAGE', imgFile);
+        });
+      }
+
+      if (data.companyDocuments && data.companyDocuments.length > 0) {
+        data.companyDocuments.forEach((docFile: File) => {
+          formData.append('COMPANY_DOCUMENT', docFile);
+        });
+      }
+
+      if (data.companyLicenses && data.companyLicenses.length > 0) {
+        data.companyLicenses.forEach((licenseFile: File) => {
+          formData.append('COMPANY_LICENSE', licenseFile);
+        });
+      }
+
+      if (data.companyCertificates && data.companyCertificates.length > 0) {
+        data.companyCertificates.forEach((certFile: File) => {
+          formData.append('COMPANY_CERTIFICATE', certFile);
+        });
+      }
+
+      if (data.gallery)
+        formData.append('GALLERY', JSON.stringify(data.gallery));
+
+      console.log('productsData: ', JSON.stringify(productsDataObject));
+      // console.log('dataFileIds: ', JSON.stringify(dataFileIds));
+      console.log('companyJsonData: ', formData.get('jsonData'));
+      console.log('Logo: ', formData.get('COMPANY_LOGO'));
+      console.log(
+        `Background Images: `,
+        formData.getAll('COMPANY_BACKGROUND_IMAGE')
+      );
+      console.log(`Company Documents: `, formData.getAll('COMPANY_DOCUMENT'));
+      console.log(`Company Licenses: `, formData.getAll('COMPANY_LICENSE'));
+      console.log(`Gallery: `, formData.getAll('GALLERY'));
+      console.log(
+        `Company Certificates: `,
+        formData.getAll('COMPANY_CERTIFICATE')
+      );
+      // console.log('productFileIds: ', formData.get('productFileIds'));
+
+      // const response = await _axios.post(
+      //   `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/company/form`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       'Content-Type': 'multipart/form-data',
+      //     },
+      //   }
+      // );
+      let response = {
+        status: 200,
+      };
+
+      if (response.status === 200) {
+        // toast.success(
+        //   <Text tag="b">
+        //     {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
+        //   </Text>
+        // );
+
+        await fetchSubscriptions();
+        // toast.promise(fetchSubscriptions(), {
+        //   loading: id ? 'در حال بروزرسانی اطلاعات...' : 'در حال ثبت اطلاعات...',
+        //   success: <b>اطلاعات شرکت شما با موفقیت ثبت شد</b>,
+        //   error: <b>خطا در ثبت اطلاعات </b>,
+        // });
+        methods.reset();
+      }
+      console.log(data);
+      console.log(transformedData);
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      toast.error('خطا در ارسال اطلاعات');
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // const onSubmit: SubmitHandler<CreateCompanyInput> = async (data) => {
+  //   setLoading(true);
+
+  //   try {
+  //     const socialMedias = socialMediaConverter({
+  //       telegramPhoneNo: data.telegramPhoneNo,
+  //       telegramId: data.telegramId,
+  //       whatsAppPhoneNo: data.whatsAppPhoneNo,
+  //       whatsAppId: data.whatsAppId,
+  //       instagramId: data.instagramId,
+  //       linkedInId: data.linkedInId,
+  //       eitaaPhoneNo: data.eitaaPhoneNo,
+  //       rubikaPhoneNo: data.rubikaPhoneNo,
+  //       smsNumber: data.smsNumber,
+  //       hotlineNumber: data.hotlineNumber,
+  //       skypeId: data.skypeId,
+  //       website: data.website,
+  //       emails: data.emails
+  //     })
+
+  //     let tels: any[] = []
+  //     tels = tels.concat(data.factoryTels, data.factoryFaxes, data.officeTels, data.officeFaxes)
+  //     const location = {
+  //       officeLocation: data.officeLocation,
+  //       factoryLocation: data.factoryLocation,
+  //       factoryCity: data.factoryCity,
+  //       factoryState: data.factoryState,
+  //       officeState: data.officeState,
+  //       officeCity: data.officeCity,
+  //       // @ts-ignore
+  //       country: data.country || "ایران",
+  //       industrialCity: data.industrialCity,
+  //       factoryPoBox: data.factoryPoBox,
+  //       officePoBox: data.officePoBox
+  //     }
+  //     const transformedData = {
+  //       companyName: data.companyName,
+  //       companyNameEn: data.companyNameEn,
+  //       companyStakeHolders: data.companyStakeHolders,
+  //       ceo: data.ceo,
+  //       ceoPhoneNumber: data.ceoPhoneNumber,
+  //       owner: data.owner,
+  //       history: data.history,
+  //       description: data.description,
+  //       advertisingSlogan: data.advertisingSlogan,
+  //       companyType: data.companyType?.value, //data.companyType,
+  //       companyTypeOther: data.companyTypeOther,
+  //       subjectOfActivity: data.subjectOfActivity,
+  //       subCategoryId: data.subcategory?.value,
+  //       establishDate: data.establishmentDate,
+  //       tags: data.companyTags,
+  //       keywords: data.companyKeyWords,
+  //       brands: data.brands,
+  //       socialMedias: socialMedias,
+  //       contacts: data.contacts,
+  //       logo: data.logo,
+  //       // stakeholders: data.stakeholders,
+  //       tels: tels,
+  //       location: location,
+  //       employeesCount: data.employeesCount,
+  //       // subCompanyIds: data.subCompanyIds,
+  //       buildingArea: data.buildingArea,
+  //       answerName: data.answerName,
+  //       holding: data.holding,
+  //       landArea: data.landArea,
+  //       // parentCompanyId: data.parentCompanyId,
+  //     };
+  //     const productData = {
+  //       products: data.products,
+  //     }
+  //     //
+  //     const formData = new FormData();
+  //     formData.append("jsonData", JSON.stringify(transformedData));
+
+  //     if (data.logo) formData.append("COMPANY_LOGO", data.logo);
+
+  //     if (data.backgroundImages) formData.append("COMPANY_BACKGROUND_IMAGE", data.backgroundImages);
+
+  //     if (data.companyDocuments) formData.append("COMPANY_DOCUMENT", data.companyDocuments);
+
+  //     if (data.companyLicenses) formData.append("COMPANY_LICENSE", data.companyLicenses);
+
+  //     if (data.companyCertificates) formData.append("COMPANY_CERTIFICATE", data.companyCertificates);
+
+  //     console.log("productsData: " + JSON.stringify(productData));
+  //     console.log("companyJsonData: " + formData.get("jsonData"))
+  //     console.log("Logo: " + formData.get("COMPANY_LOGO"))
+  //     console.log(`Background Images (length = ${data.backgroundImags?.length || 0}): ` + formData.getAll("COMPANY_BACKGROUND_IMAGE"));
+  //     console.log(`Company Documents (length = ${data.companyDocuments?.length || 0}): ` + formData.getAll("COMPANY_DOCUMENTS"));
+  //     console.log(`Company Licenses (length = ${data.companyLicenses?.length || 0}): ` + formData.getAll("COMPANY_LICENSES"));
+  //     console.log(`Company Certificates (length = ${data.companyCertificates?.length || 0}): ` + formData.getAll("COMPANY_CERTIFICATES"));
+
+  //     const response = await _axios.post(
+  //         "http://localhost:8080/api/v1/client/panel/company/form",
+  //         formData,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //     );
+
+  //     if (response.status === 200) {
+  //       toast.success(
+  //           <Text tag="b">
+  //             {id ? "بروزرسانی اطلاعات" : "ثبت اطلاعات"} موفقیت آمیز بود
+  //           </Text>
+  //       );
+  //       methods.reset();
+  //     }
+  //     console.log(data)
+  //     console.log(transformedData)
+  //   } catch (error) {
+  //     console.error("Error submitting the form:", error);
+  //     toast.error("خطا در ارسال اطلاعات");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="@container">
@@ -231,7 +614,12 @@ export default function CreateCompany({ id, className, category = 1 }: IndexProp
                 key={key}
                 name={formParts[key as keyof typeof formParts]}
               >
-                {<Component className="pt-7 @2xl:pt-9 @3xl:pt-11" category={category} />}
+                {
+                  <Component
+                    className="pt-7 @2xl:pt-9 @3xl:pt-11"
+                    category={category}
+                  />
+                }
               </Element>
             ))}
           </div>

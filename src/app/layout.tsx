@@ -1,4 +1,4 @@
-import {AuthProvider, useAuth} from '@/context/AuthContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { inter, lexendDeca } from '@/app/fonts';
 import GlobalDrawer from '@/app/shared/drawer-views/container';
 import GlobalModal from '@/app/shared/modal-views/container';
@@ -7,7 +7,6 @@ import { siteConfig } from '@/config/site.config';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
 import { Toaster } from 'react-hot-toast';
-
 
 const NextProgress = dynamic(() => import('@/components/next-progress'), {
   ssr: false,
@@ -48,7 +47,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <NextProgress />
             {children}
-            <Toaster />
+            <Toaster position="top-center" reverseOrder={true} />
             <GlobalDrawer />
             <GlobalModal />
           </ThemeProvider>

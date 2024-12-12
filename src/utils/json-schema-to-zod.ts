@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-function jsonSchemaToZod(schema: any): z.ZodTypeAny {
+export function jsonSchemaToZod(schema: any): z.ZodTypeAny {
     const { type, properties, items, required, format, enum: enumValues } = schema;
 
     if (enumValues && Array.isArray(enumValues)) {
