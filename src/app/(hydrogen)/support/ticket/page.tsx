@@ -361,7 +361,7 @@ export default function SupportInboxPage() {
                     // label="موضوع *"
                     {...methods.register('subject')}
                     variant="flat"
-                    placeholder="موصوع تیکت *"
+                    placeholder="موضوع تیکت *"
                     inputClassName="border-2 bg-gray-100"
                     size="DEFAULT"
                     className="col-span-full mb-2 mt-4 bg-gray-100"

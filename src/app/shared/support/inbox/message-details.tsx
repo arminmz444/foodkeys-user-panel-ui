@@ -82,8 +82,8 @@ const priorityOptions = [
 
 const agents = [
   {
-    value: 1,
-    name: '',
+    value: 'MANAGEMENT',
+    name: 'مدیریت',
     label: (
       <div className="flex items-center gap-2">
         <Avatar
@@ -96,22 +96,8 @@ const agents = [
     ),
   },
   {
-    value: 2,
-    name: '',
-    label: (
-      <div className="flex items-center gap-2">
-        <Avatar
-          src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-11.webp"
-          name="John Doe"
-          className="!h-6 !w-6 rounded-full"
-        />
-        <span className="whitespace-nowrap text-xs sm:text-sm">زهرا</span>
-      </div>
-    ),
-  },
-  {
-    value: 3,
-    name: '',
+    value: 'SUPPORT',
+    name: 'پشتیبانی فنی',
     label: (
       <div className="flex items-center gap-2">
         <Avatar
@@ -126,8 +112,8 @@ const agents = [
     ),
   },
   {
-    value: 4,
-    name: '',
+    value: 'FINANCE',
+    name: 'مالی و اعتباری',
     label: (
       <div className="flex items-center gap-2">
         <Avatar
@@ -135,7 +121,9 @@ const agents = [
           name="John Doe"
           className="!h-6 !w-6 rounded-full"
         />
-        <span className="whitespace-nowrap text-xs sm:text-sm">مالی</span>
+        <span className="whitespace-nowrap text-xs sm:text-sm">
+          مالی و اعتباری
+        </span>
       </div>
     ),
   },
@@ -143,20 +131,16 @@ const agents = [
 
 const contactStatuses = [
   {
-    value: 'جدید',
-    name: 'عمومی',
+    value: 'عمومی',
+    name: 'GENERAL',
   },
   {
-    value: 'منتظر مخاطب',
-    name: 'فنی',
+    value: 'فنی',
+    name: 'TECHNICAL',
   },
   {
-    value: 'منتظر ما',
-    name: 'مالی',
-  },
-  {
-    value: 'بسته شده',
-    name: 'بسته شده',
+    value: 'مالی و اعتباری',
+    name: 'FINANCE',
   },
 ];
 
@@ -173,9 +157,22 @@ const supportOptionTypes = [
 
 export default function MessageDetails({ className }: { className?: string }) {
   const data = useAtomValue(dataAtom);
-  const [agent, setAgent] = useState();
   const [priority, setPriority] = useState('');
   const messageId = useAtomValue(messageIdAtom);
+  const selectedTicket = data?.find((t) => t.id === messageId);
+  const [agent, setAgent] = useState(
+    (selectedTicket &&
+      selectedTicket.department &&
+      agents.find((a) => a.value === selectedTicket?.department)) ||
+      null
+  );
+  const [contactStatus, setContactStatus] = useState(
+    (selectedTicket &&
+      selectedTicket.priority &&
+      contactStatuses.find((c) => c.value === selectedTicket?.priority)) ||
+      contactStatuses[0].value
+  );
+
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -186,7 +183,6 @@ export default function MessageDetails({ className }: { className?: string }) {
   const [supportType, setSupportType] = useState<SupportType | string>(
     supportTypes.Chat.value
   );
-  const [contactStatus, setContactStatus] = useState(contactStatuses[0].value);
   const [ref, { width }] = useElementSize();
   const isWide = useMedia('(min-width: 1280px) and (max-width: 1440px)', false);
 
@@ -326,10 +322,10 @@ export default function MessageDetails({ className }: { className?: string }) {
       <div>
         <header className="flex flex-col justify-between gap-4 border-b border-gray-200 pb-5 3xl:flex-row 3xl:items-center">
           <div className="flex flex-col items-start justify-between gap-3 xs:flex-row xs:items-center xs:gap-6 lg:justify-normal">
-            {data?.subject ? (
+            {selectedTicket ? (
               <Text tag="h4" className="font-semibold">
                 {/*@ts-ignore*/}
-                {data?.subject}
+                {selectedTicket.subject}
               </Text>
             ) : (
               <Input
@@ -340,9 +336,9 @@ export default function MessageDetails({ className }: { className?: string }) {
                 // value="مشکل نرم افزار"
               />
             )}
-            {/* <Badge variant="outline" color="danger" size="sm">
-                            مشکل نرم افزار
-                        </Badge> */}
+            <Badge variant="outline" color="danger" size="sm">
+              {selectedTicket?.statusStr || 'مشکل نرم افزار'}
+            </Badge>
           </div>
 
           <div className="jus flex flex-wrap items-center gap-2.5 sm:justify-end">
@@ -373,6 +369,7 @@ export default function MessageDetails({ className }: { className?: string }) {
             <Select
               // size="sm"
               variant="text"
+              // disSabled
               value={priority}
               onChange={setPriority}
               options={priorityOptions}
@@ -384,12 +381,12 @@ export default function MessageDetails({ className }: { className?: string }) {
             />
             <Button
               variant="outline"
-              color="secondary"
+              color="danger"
               type="submit"
               size="sm"
               className="col-span-2 ms-3"
             >
-              شروع مکالمه با پشتیبان
+              بستن تیکت
             </Button>
           </div>
         </header>

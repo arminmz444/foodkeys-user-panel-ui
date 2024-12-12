@@ -5,7 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Password } from '@/components/ui/password';
 import { SubmitHandler } from 'react-hook-form';
 import { Form } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Password } from '@/components/ui/password';
+import { SubmitHandler } from 'react-hook-form';
+import { Form } from '@/components/ui/form';
 import * as z from 'zod';
+import { useState } from 'react';
+import { Text } from '@/components/ui/text';
+import { routes } from '@/config/routes';
 import { useState } from 'react';
 import { Text } from '@/components/ui/text';
 import { routes } from '@/config/routes';
@@ -14,15 +22,25 @@ import { PinCode } from '@/components/ui/pin-code';
 import { PiArrowLeftBold, PiArrowRightBold } from 'react-icons/pi';
 import { login as reduxLogin } from '@/store/userSlice';
 import { useAuth } from '@/context/AuthContext';
+import { PinCode } from '@/components/ui/pin-code';
+import { PiArrowLeftBold, PiArrowRightBold } from 'react-icons/pi';
+import { login as reduxLogin } from '@/store/userSlice';
+import { useAuth } from '@/context/AuthContext';
 
 type VerifyFormValues = {
+  phoneNumber: string;
+  otp: string;
   phoneNumber: string;
   otp: string;
 };
 type OtpFormValues = {
   phoneNumber: string;
+  phoneNumber: string;
 };
 type FormValues = {
+  username: string;
+  password: string;
+  confirmPassword: string;
   username: string;
   password: string;
   confirmPassword: string;
@@ -31,8 +49,14 @@ const otpInitialValues = {
   phoneNumber: '',
   // password: '',
   // confirmPassword: '',
+  phoneNumber: '',
+  // password: '',
+  // confirmPassword: '',
 };
 const verifyInitialValues = {
+  phoneNumber: '',
+  otp: '',
+};
   phoneNumber: '',
   otp: '',
 };
@@ -40,8 +64,41 @@ const initialValues = {
   username: '',
   password: '',
 };
+  username: '',
+  password: '',
+};
 
 const otpFormSchema = z.object({
+  phoneNumber: z
+    .string({ required_error: 'این فیلد الزامی است' })
+    .nonempty({ message: 'نام کاربری الزامی است' })
+    .regex(/^0[0-9]{10}$/, { message: 'فرمت نام کاربری اشتباه است' }),
+  // password: z
+  //   .string()
+  //   .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
+  //   .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' })
+  //   .regex(new RegExp('.*[A-Z].*'), {
+  //     message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
+  //   })
+  //   .regex(new RegExp('.*[a-z].*'), {
+  //     message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
+  //   })
+  //   .regex(new RegExp('.*\\d.*'), {
+  //     message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
+  //   }),
+  // confirmPassword: z
+  //   .string()
+  //   .regex(new RegExp('.*[A-Z].*'), {
+  //     message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
+  //   })
+  //   .regex(new RegExp('.*[a-z].*'), {
+  //     message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
+  //   })
+  //   .regex(new RegExp('.*\\d.*'), {
+  //     message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
+  //   })
+  //   .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
+  //   .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' }),
   phoneNumber: z
     .string({ required_error: 'این فیلد الزامی است' })
     .nonempty({ message: 'نام کاربری الزامی است' })
@@ -89,43 +146,102 @@ const verifyFormSchema = z.object({
   //   .regex(new RegExp('.*\\d.*'), {
   //     message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
   //   }),
+  otp: z.string().min(6, 'این فیلد الزامی است'),
+  // password: z
+  //   .string()
+  //   .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
+  //   .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' })
+  //   .regex(new RegExp('.*[A-Z].*'), {
+  //     message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
+  //   })
+  //   .regex(new RegExp('.*[a-z].*'), {
+  //     message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
+  //   })
+  //   .regex(new RegExp('.*\\d.*'), {
+  //     message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
+  //   }),
 });
-const formSchema = z.object({
-  password: z
-    .string()
-    .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
-    .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' })
-    .regex(new RegExp('.*[A-Z].*'), {
-      message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
-    })
-    .regex(new RegExp('.*[a-z].*'), {
-      message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
-    })
-    .regex(new RegExp('.*\\d.*'), {
-      message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
-    }),
-  confirmPassword: z
-    .string()
-    .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
-    .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' })
-    .regex(new RegExp('.*[A-Z].*'), {
-      message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
-    })
-    .regex(new RegExp('.*[a-z].*'), {
-      message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
-    })
-    .regex(new RegExp('.*\\d.*'), {
-      message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
-    }),
-});
+const formSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
+      .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' })
+      .regex(new RegExp('.*[A-Z].*'), {
+        message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
+      })
+      .regex(new RegExp('.*[a-z].*'), {
+        message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
+      })
+      .regex(new RegExp('.*\\d.*'), {
+        message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
+      }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: 'رمز عبور باید حداقل ۸ یا بیشتر از کاراکترها باشد.' })
+      .max(32, { message: 'رمز عبور باید حداکثر ۳۲ کاراکتر باشد.' })
+      .regex(new RegExp('.*[A-Z].*'), {
+        message: 'حداقل یک حرف بزرگ مورد استفاده قرار گیرد.',
+      })
+      .regex(new RegExp('.*[a-z].*'), {
+        message: 'حداقل یک حرف کوچک مورد استفاده قرار گیرد.',
+      })
+      .regex(new RegExp('.*\\d.*'), {
+        message: 'حداقل یک عدد مورد استفاده قرار گیرد.',
+      }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'رمز عبور و تکرار آن باید یکسان باشند.',
+    path: ['confirmPassword'],
+  });
 
 const STEPS = {
   INITIAL: 'INITIAL',
   OTP: 'OTP',
   UPDATE: 'UPDATE',
 };
+  INITIAL: 'INITIAL',
+  OTP: 'OTP',
+  UPDATE: 'UPDATE',
+};
 
 export default function ForgetPasswordForm() {
+  const [reset, setReset] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [step, setStep] = useState<string>(STEPS.INITIAL);
+  // @ts-ignore
+  const { forgotPassword, forgotPasswordOtp, forgotPasswordVerify } = useAuth();
+  const onOtpSubmit: SubmitHandler<OtpFormValues> = async (data) => {
+    console.log(data);
+    setLoading(true);
+    // let m = { token: "", user: "" }
+    setPhoneNumber(data.phoneNumber);
+    let isOtpSent = await forgotPasswordOtp(data.phoneNumber);
+    if (isOtpSent) setStep(STEPS.OTP);
+    // @ts-ignore
+    // reduxDispatch(reduxLogin(m))
+    setLoading(false);
+  };
+  const onVerifySubmit: SubmitHandler<VerifyFormValues> = async (data) => {
+    console.log(data);
+    setLoading(true);
+    // let m = { token: "", user: "" }
+    let isVerified = await forgotPasswordVerify(data.otp, phoneNumber);
+    if (isVerified) setStep(STEPS.UPDATE);
+    // @ts-ignore
+    // reduxDispatch(reduxLogin(m))
+    setLoading(false);
+  };
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    console.log(data);
+    setLoading(true);
+    // let m = { token: "", user: "" }
+    await forgotPassword(data.password, phoneNumber);
+    // @ts-ignore
+    // reduxDispatch(reduxLogin(m))
+    setLoading(false);
+  };
   const [reset, setReset] = useState({});
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -284,7 +400,7 @@ export default function ForgetPasswordForm() {
                 label="نام کاربری"
                 placeholder="نام کاربری خود را وارد کنید"
                 className="[&>label>span]:font-medium"
-                color="success"
+                color="info"
                 inputClassName="text-sm"
                 {...register('phoneNumber')}
                 error={errors.phoneNumber?.message}
@@ -293,7 +409,7 @@ export default function ForgetPasswordForm() {
                 className="mt-2 w-full"
                 type="submit"
                 size="lg"
-                color="success"
+                color="info"
               >
                 بازنشانی رمز عبور
               </Button>
@@ -301,6 +417,15 @@ export default function ForgetPasswordForm() {
           )}
         </Form>
       )}
+      <Text className="mt-6 text-center text-[15px] leading-loose text-gray-500 lg:mt-8 lg:text-start xl:text-base">
+        نمی‌خواهید رمز عبور خود را بازنشانی کنید{' '}
+        <Link
+          href={routes.signIn}
+          className="font-bold text-gray-700 transition-colors hover:text-blue"
+        >
+          ورود
+        </Link>
+      </Text>
     </>
   );
 }
