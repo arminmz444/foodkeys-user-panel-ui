@@ -20,6 +20,7 @@ import axiosInstance from '@/utils/axios-instance';
 import Spinner from '@/components/ui/spinner';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 import toast from 'react-hot-toast';
+import { Lekton } from 'next/font/google';
 
 const FilterElement = dynamic(
   () => import('@/app/shared/ecommerce/product/product-list/filter-element'),
@@ -41,9 +42,11 @@ const fetchCompanies = async (
   pageSize: number,
   category: number
 ) => {
-  const API_URL = searchTerm
-    ? `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-    : `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=${category}`;
+  let API_URL = searchTerm
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/company/?pageNumber=${currentPage}&pageSize=${pageSize}`;
+
+  API_URL += category ? `&categoryId=${category}` : '';
 
   const response = await axiosInstance.get(API_URL);
 

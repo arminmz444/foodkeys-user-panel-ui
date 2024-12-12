@@ -181,7 +181,7 @@ export default function CreateCompany({
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const response = await _axios.get(`/client/panel/company/${id}`);
+        const response = await _axios.get(`/company/${id}`);
         if (response.data.status === 'SUCCESS') {
           setCompanyData(response.data.data);
           methods.reset(defaultValues(response.data.data));

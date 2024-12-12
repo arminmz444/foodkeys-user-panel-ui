@@ -11,11 +11,11 @@ export default async function DefaultLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const tokenStatus = await checkAndRefreshTokens();
-  // console.log('analyticsPage', tokenStatus);
+  const tokenStatus = await checkAndRefreshTokens();
+  console.log('analyticsPage', tokenStatus);
 
-  // if (tokenStatus.type === CONTEXT_ACTION.LOGOUT) {
-  // redirect('/login');
-  // }
+  if (tokenStatus.type === CONTEXT_ACTION.LOGOUT) {
+    redirect('/login');
+  }
   return <HydrogenLayout>{children}</HydrogenLayout>;
 }

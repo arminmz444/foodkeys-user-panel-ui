@@ -276,7 +276,7 @@ export default function SupportInboxPage() {
         message: data.message,
         subject: data.subject,
       };
-      const response = await _axios.post('/client/panel/ticket', payload, {
+      const response = await _axios.post('/ticket', payload, {
         headers: {
           'Content-Type': 'application/json',
         },

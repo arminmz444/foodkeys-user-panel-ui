@@ -388,7 +388,7 @@ export default function CreateCompany({
       // console.log('productFileIds: ', formData.get('productFileIds'));
 
       const response = await _axios.post(
-        `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/company/form`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/company/form`,
         formData,
         {
           headers: {

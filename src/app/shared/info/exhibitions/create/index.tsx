@@ -9,30 +9,30 @@ import { Text } from 'rizzui';
 import FormNav, { formParts } from './form-nav';
 import {
   defaultValues,
-  productFormSchema,
-  CreateProductInput,
-} from '@/app/shared/info/food-industry/company/create/form-utils';
-import ProductMedia from '@/app/shared/info/food-industry/company/create/product-media';
-import PricingInventory from '@/app/shared/info/food-industry/company/create/pricing-inventory';
-import ProductIdentifiers from '@/app/shared/info/food-industry/company/create/product-identifiers';
-import ShippingInfo from '@/app/shared/info/food-industry/company/create/shipping-info';
-import ProductSeo from '@/app/shared/info/food-industry/company/create/product-seo';
-import DeliveryEvent from '@/app/shared/info/food-industry/company/create/delivery-event';
-import ProductVariants from '@/app/shared/info/food-industry/company/create/product-variants';
-import ProductTaxonomies from '@/app/shared/info/food-industry/company/create/product-tags';
+  exhibitionFormSchema,
+  CreateEventInput,
+} from '@/app/shared/info/exhibitions/create/form-utils';
+import ProductMedia from '@/app/shared/info/exhibitions/create/product-media';
+import PricingInventory from '@/app/shared/info/exhibitions/create/pricing-inventory';
+import ProductIdentifiers from '@/app/shared/info/exhibitions/create/product-identifiers';
+import ShippingInfo from '@/app/shared/info/exhibitions/create/shipping-info';
+import ProductSeo from '@/app/shared/info/exhibitions/create/product-seo';
+import DeliveryEvent from '@/app/shared/info/exhibitions/create/delivery-event';
+import ProductVariants from '@/app/shared/info/exhibitions/create/product-variants';
+import ProductTaxonomies from '@/app/shared/info/exhibitions/create/product-tags';
 import FormFooter from '@/components/form-footer';
-import CompanyFactory from '@/app/shared/info/food-industry/company/create/company-factory';
-import CompanyOffice from '@/app/shared/info/food-industry/company/create/company-office';
-import CompanySocial from '@/app/shared/info/food-industry/company/create/company-social';
-import CompanyComplementary from '@/app/shared/info/food-industry/company/create/company-complementary';
+import CompanyFactory from '@/app/shared/info/exhibitions/create/company-factory';
+import CompanyOffice from '@/app/shared/info/exhibitions/create/company-office';
+import CompanySocial from '@/app/shared/info/exhibitions/create/company-social';
+import CompanyComplementary from '@/app/shared/info/exhibitions/create/company-complementary';
 import CompanyHistory from './company-history';
 import cn from '@/utils/class-names';
-import CompanySummary from './company-summary';
 import ExhibitionContact from './exhibition-contact';
 import ExhibitionDescription from './exhibition-description';
+import ExhibitionSummary from './exhibition-summary';
 
 const MAP_STEP_TO_COMPONENT = {
-  [formParts.intro]: CompanySummary,
+  [formParts.intro]: ExhibitionSummary,
   [formParts.contact]: ExhibitionContact,
   [formParts.description]: ExhibitionDescription,
   [formParts.logo]: ExhibitionDescription,
@@ -40,22 +40,26 @@ const MAP_STEP_TO_COMPONENT = {
 
 interface IndexProps {
   id?: string;
-  company?: CreateProductInput;
+  exhibition?: CreateEventInput;
   className?: string;
 }
 
-export default function CreateProduct({ id, company, className }: IndexProps) {
+export default function CreateExhibition({
+  id,
+  exhibition,
+  className,
+}: IndexProps) {
   const [isLoading, setLoading] = useState(false);
-  const methods = useForm<CreateProductInput>({
-    defaultValues: defaultValues(company),
-    resolver: zodResolver(productFormSchema),
+  const methods = useForm<CreateEventInput>({
+    defaultValues: defaultValues(exhibition),
+    resolver: zodResolver(exhibitionFormSchema),
   });
 
-  const onSubmit: SubmitHandler<CreateProductInput> = (data) => {
+  const onSubmit: SubmitHandler<CreateEventInput> = (data) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      console.log('product_data', data);
+      console.log('exhibition_data', data);
       toast.success(
         <Text tag="b">
           {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
@@ -86,7 +90,7 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
 
           <FormFooter
             isLoading={isLoading}
-            submitBtnText={id ? 'بروز رسانی محصول' : 'ثبت شرکت'}
+            submitBtnText={id ? 'بروز رسانی نمایشگاه' : 'ثبت نمایشگاه'}
           />
         </form>
       </FormProvider>

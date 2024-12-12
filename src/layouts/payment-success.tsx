@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Modal,
   Button,
@@ -13,9 +13,35 @@ import { HiOutlineCreditCard } from 'react-icons/hi2';
 import { LuClock4 } from 'react-icons/lu';
 import { PiNewspaperClipping } from 'react-icons/pi';
 import { FaCheck } from 'react-icons/fa6';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import useAxiosPrivate from '@/hooks/use-axios-private';
 
-export default function PaymentSuccess() {
+export default function PaymentSuccess({ query }) {
+  // const router = useRouter();
+  // const [query, setQuery] = useState({});
+  // useEffect(() => {
+  //   if (router.isReady) {
+  //     setQuery(router.query);
+  //   }
+  // }, [router.isReady, router.query]);
+  // const [paymentInfo, setPaymentInfo] = useState({});
+
   const [modalState, setModalState] = useState(true);
+  // const _axios = useAxiosPrivate();
+  // useEffect(() => {
+  //   const fetchSubscriptions = async () => {
+  //     try {
+  //       const response = await _axios.get(`/subscription`);
+  //       if (response.data.status === 'SUCCESS') {
+  //         setItems(response.data.data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching subcategories:', error);
+  //     }
+  //   };
+  //   fetchSubscriptions();
+  // }, [_axios]);
   return (
     <>
       <Modal
@@ -45,7 +71,7 @@ export default function PaymentSuccess() {
                 مبلغ:
               </span>
               <span className="font-extrabold text-green-light">
-                10,000,000 ریال
+                {query.amount || 'N/A'} ریال
               </span>
             </div>
             <div className="flex w-2/3 items-center justify-between rounded-xl bg-[#f1f5f9] p-1">
@@ -63,7 +89,7 @@ export default function PaymentSuccess() {
                 زمان تراکنش:
               </span>
               <span className="font-extrabold text-black">
-                16:15 - 1401/02/11
+                {query.transactionTime || 'N/A'}
               </span>
             </div>
             <div className="flex w-2/3 items-center justify-between rounded-xl bg-[#f1f5f9] p-1">
@@ -71,12 +97,27 @@ export default function PaymentSuccess() {
                 <PiNewspaperClipping size={20} />
                 کد رهگیری:
               </span>
-              <span className="font-extrabold text-black">596847596 </span>
+              <span className="font-extrabold text-black">
+                {query.refId || 'N/A'}
+              </span>
             </div>
           </div>
-          <Button color="info" size="lg" className="w-2/3" rounded="pill">
-            بازگشت صفحه اصلی
-          </Button>
+          <Link href={'/'}>
+            <Button
+              color="success"
+              variant="outline"
+              size="lg"
+              className="w-auto whitespace-nowrap"
+              rounded="pill"
+            >
+              بازگشت صفحه اصلی
+            </Button>
+          </Link>
+          {/* <Link href={'/'}>
+            <Button color="success" size="lg" className="w-2/3" rounded="pill">
+              بازگشت صفحه اصلی
+            </Button>
+          </Link> */}
         </div>
       </Modal>
     </>

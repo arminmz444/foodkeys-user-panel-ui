@@ -81,7 +81,8 @@ export default function SignInForm({
                 variant="outline"
                 label="شماره خود را وارد کنید"
                 placeholder="********* 09"
-                //   {...register('phoneNumber')}
+                // @ts-ignore
+                {...register('phoneNumber')}
                 // @ts-ignore
                 error={errors.phoneNumber}
                 size="lg"
@@ -141,7 +142,7 @@ export default function SignInForm({
           )}
         </Form>
       )}
-      {step === 'SIGNUP' && (
+      {step === 'PASSWORD' && (
         <Form<Login>
           validationSchema={loginSchema}
           resetValues={reset}
@@ -152,13 +153,14 @@ export default function SignInForm({
         >
           {({ register, setError, formState: { errors } }) => (
             <div className="space-y-5">
-              <Input
+              {/* <Input
                 dir="rtl"
                 type="number"
                 variant="outline"
                 label="شماره خود را وارد کنید"
                 placeholder="********* 09"
-                //   {...register('phoneNumber')}
+                // @ts-ignore
+                {...register('phoneNumber')}
                 // @ts-ignore
                 error={errors.phoneNumber}
                 size="lg"
@@ -167,28 +169,28 @@ export default function SignInForm({
                 //   helperText="(مثال: 09123456789)"
                 max={11}
                 maxLength={11}
+              /> */}
+              <Input
+                type="number"
+                size="lg"
+                label="نام کاربری"
+                placeholder="نام کاربری خود را وارد کنید"
+                color="info"
+                className="[&>label>span]:font-medium"
+                inputClassName="text-sm"
+                {...register('username')}
+                error={errors.username?.message}
               />
-              {/* <Input
-              type="number"
-              size="lg"
-              label="نام کاربری"
-              placeholder="نام کاربری خود را وارد کنید"
-              color="info"
-              className="[&>label>span]:font-medium"
-              inputClassName="text-sm"
-              {...register('username')}
-              error={errors.username?.message}
-            />
-            <Password
-              label="رمز عبور"
-              placeholder="رمز عبور خود را وارد کنید"
-              size="lg"
-              className="[&>label>span]:font-medium"
-              inputClassName="text-sm"
-              color="info"
-              {...register('password')}
-              error={errors.password?.message}
-            /> */}
+              <Password
+                label="رمز عبور"
+                placeholder="رمز عبور خود را وارد کنید"
+                size="lg"
+                className="[&>label>span]:font-medium"
+                inputClassName="text-sm"
+                color="info"
+                {...register('password')}
+                error={errors.password?.message}
+              />
               <div className="flex items-center justify-between pb-2">
                 <Checkbox
                   {...register('remember')}

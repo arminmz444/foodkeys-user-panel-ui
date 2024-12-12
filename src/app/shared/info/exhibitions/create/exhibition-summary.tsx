@@ -414,106 +414,114 @@ const categoryOption = [
   { value: 2, name: 'نمایشگاه خارجی' },
 ];
 
-export default function CompanySummary({ className }: { className?: string }) {
-  const { register, control, formState: { errors } } = useFormContext();
+export default function ExhibitionSummary({
+  className,
+}: {
+  className?: string;
+}) {
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
-      <>
-        <FormGroup
-            title="معرفی نمایشگاه"
-            description="شامل عنوان، تاریخ و ..."
-            className={cn(className)}
-        >
-          <Controller
-              name="categories"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                  <Select
-                      options={categoryOption}
-                      onChange={onChange}
-                      value={value}
-                      label="دسته‌بندی"
-                      error={errors.categories?.message as string}
-                      getOptionValue={(option) => option.name}
-                      placeholder="انتخاب"
-                      isRequired
-                  />
-              )}
-          />
-
-          <Controller
-              name="placementType"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                  <RadioGroup
-                      value={value}
-                      setValue={onChange}
-                      className="col-span-full grid gap-4"
-                  >
-                    {placementType.map((item) => (
-                        <Radio key={item.value} value={item.value} label={item.label} />
-                    ))}
-                  </RadioGroup>
-              )}
-          />
-
-          <Input
-              label="عنوان یا تیتر*"
-              placeholder="عنوان یا تیتر"
-              {...register('title')}
-              error={errors.title?.message as string}
-          />
-          <Input
-              label="برگزارکننده*"
-              placeholder="برگزارکننده"
-              {...register('organizer')}
-              error={errors.organizer?.message as string}
-          />
-          <Input
-              label="کشور / شهر*"
-              placeholder="کشور / شهر"
-              {...register('country')}
-              error={errors.country?.message as string}
-          />
-          <Input
-              label="مکان برگزاری*"
-              placeholder="مکان برگزاری"
-              {...register('venue')}
-              error={errors.venue?.message as string}
-          />
-
-          <Controller
-              name="startDate"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                  <DatePicker
-                      selected={value}
-                      onChange={onChange}
-                      placeholderText="تاریخ شروع"
-                      inputProps={{ label: 'تاریخ شروع' }}
-                  />
-              )}
-          />
-          {errors.startDate && (
-              <p className="text-red-500">{errors.startDate.message}</p>
+    <>
+      <FormGroup
+        title="معرفی نمایشگاه"
+        description="شامل عنوان، تاریخ و ..."
+        className={cn(className)}
+      >
+        <Controller
+          name="categories"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Select
+              options={categoryOption}
+              onChange={onChange}
+              value={value}
+              label="دسته‌بندی"
+              error={errors.categories?.message as string}
+              getOptionValue={(option) => option.name}
+              placeholder="انتخاب"
+              isRequired
+            />
           )}
+        />
 
-          <Controller
-              name="endDate"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                  <DatePicker
-                      selected={value}
-                      onChange={onChange}
-                      placeholderText="تاریخ پایان"
-                      inputProps={{ label: 'تاریخ پایان' }}
-                  />
-              )}
-          />
-          {errors.endDate && (
-              <p className="text-red-500">{errors.endDate.message}</p>
+        <Controller
+          name="placementType"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <RadioGroup
+              value={value}
+              setValue={onChange}
+              className="col-span-full grid gap-4"
+            >
+              {placementType.map((item) => (
+                <Radio key={item.value} value={item.value} label={item.label} />
+              ))}
+            </RadioGroup>
           )}
-        </FormGroup>
-      </>
+        />
+
+        <Input
+          label="عنوان یا تیتر*"
+          placeholder="عنوان یا تیتر"
+          {...register('title')}
+          error={errors.title?.message as string}
+        />
+        <Input
+          label="برگزارکننده*"
+          placeholder="برگزارکننده"
+          {...register('organizer')}
+          error={errors.organizer?.message as string}
+        />
+        <Input
+          label="کشور / شهر*"
+          placeholder="کشور / شهر"
+          {...register('country')}
+          error={errors.country?.message as string}
+        />
+        <Input
+          label="مکان برگزاری*"
+          placeholder="مکان برگزاری"
+          {...register('venue')}
+          error={errors.venue?.message as string}
+        />
+
+        <Controller
+          name="startDate"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <DatePicker
+              selected={value}
+              onChange={onChange}
+              placeholderText="تاریخ شروع"
+              inputProps={{ label: 'تاریخ شروع' }}
+            />
+          )}
+        />
+        {errors.startDate && (
+          <p className="text-red-500">{errors.startDate.message}</p>
+        )}
+
+        <Controller
+          name="endDate"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <DatePicker
+              selected={value}
+              onChange={onChange}
+              placeholderText="تاریخ پایان"
+              inputProps={{ label: 'تاریخ پایان' }}
+            />
+          )}
+        />
+        {errors.endDate && (
+          <p className="text-red-500">{errors.endDate.message}</p>
+        )}
+      </FormGroup>
+    </>
   );
 }

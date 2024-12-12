@@ -74,7 +74,7 @@ export default function CompanyGallery({
     );
 
     const response = await _axios.post(
-      `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file/temp`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/file/temp`,
       tempUploadFormData,
       {
         headers: {

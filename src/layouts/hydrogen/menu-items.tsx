@@ -400,11 +400,15 @@ export const menuItems = [
     dropdownItems: [
       {
         name: 'لیست پرداخت‌ها',
-        href: routes.invoice.home,
+        href: routes.finance.paymentList,
       },
       {
         name: 'لیست تراکنش‌ها',
-        href: routes.invoice.details(DUMMY_ID),
+        href: routes.finance.transactionList,
+      },
+      {
+        name: 'لیست تراکنش‌ها',
+        href: routes.finance.invoiceList,
       },
       {
         name: 'ایجاد',

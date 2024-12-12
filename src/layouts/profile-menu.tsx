@@ -7,10 +7,13 @@ import { Text } from '@/components/ui/text';
 import { routes } from '@/config/routes';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import {useAuth} from "@/context/AuthContext";
-import {RootState} from "@/store/store";
-import {useDispatch, useSelector} from "react-redux";
-
+import { useAuth } from '@/context/AuthContext';
+import { RootState } from '@/store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import useAxiosPrivate from '@/hooks/use-axios-private';
+import { IoMdRefreshCircle } from 'react-icons/io';
+import WalletSection from '../layouts/wallet-section';
 const menuItems = [
   {
     name: 'پروفایل من',
@@ -25,20 +28,40 @@ const menuItems = [
     href: '#',
   },
 ];
-const STATIC_FILES_URL= "http://localhost:8080"
+const STATIC_FILES_URL = 'http://localhost:8080';
 
 function DropdownMenu() {
-  const wallet = useSelector((state: RootState) => state.wallet);
   const user = useSelector((state: RootState) => state.user);
+  // const [actualCredit, setActualCredit] = useState(0);
+  // const _axios = useAxiosPrivate();
+
+  // useEffect(() => {
+  //   const fetchWalletCredit = async () => {
+  //     try {
+  //       const response = await _axios.get('/user/credit');
+  //       if (response.data.status === 'SUCCESS') {
+  //         setActualCredit(response.data.data);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching wallet credit:', error);
+  //     }
+  //   };
+  //   fetchWalletCredit();
+  // }, []);
   // @ts-ignore
-  const { logout } = useAuth()
+  const { logout } = useAuth();
   return (
     <div className="w-64 text-left rtl:text-right">
       <div className="flex items-center border-b border-gray-300 px-6 pb-5 pt-6">
         <Avatar
-            // @ts-ignore
-            src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "http://localhost:8080/files/USER_AVATAR/d34e81dc-1a3d-44d0-8748-019edcfa7754.jpg"}
-          name={user.firstName || "کاربر"}
+          // @ts-ignore
+          src={
+            (user.avatar &&
+              process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+                user.avatar.filePath) ||
+            ''
+          }
+          name={user.firstName || 'کاربر'}
           color="invert"
         />
         <div className="ms-3">
@@ -49,7 +72,14 @@ function DropdownMenu() {
         </div>
       </div>
       <div className="grid px-3.5 py-3.5 font-medium text-gray-700">
-        <div className="flex items-center border-b border-gray-300 px-2.5 pb-5 pt-1">کیف پول: {wallet.credit} تومان</div>
+        <WalletSection />
+        {/* <div className="flex flex-row items-center justify-between border-b border-gray-300 px-2.5 pb-5 pt-1">
+          <div>کیف پول: {wallet.credit} تومان</div>
+          <div>
+            <IoMdRefreshCircle size="30" />
+          </div>
+        </div> */}
+
         {menuItems.map((item) => (
           <Link
             key={item.name}
@@ -86,7 +116,12 @@ export default function ProfileMenu() {
     >
       <button className="w-9 shrink-0 rounded-full outline-none focus-visible:ring-[1.5px] focus-visible:ring-gray-400 focus-visible:ring-offset-2 active:translate-y-px sm:w-10">
         <Avatar
-          src={user.avatar && STATIC_FILES_URL + user.avatar.filePath || "http://localhost:8080/files/USER_AVATAR/d34e81dc-1a3d-44d0-8748-019edcfa7754.jpg"}
+          src={
+            (user.avatar &&
+              process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+                user.avatar.filePath) ||
+            ''
+          }
           name="John Doe"
           color="invert"
           className="!h-9 w-9 sm:!h-10 sm:w-10"

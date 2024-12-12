@@ -37,10 +37,6 @@ function getStatusBadge(status: string, statusColor: String) {
   );
 }
 
-const handleRequestRevision = (id: number) => {
-  console.log(id);
-};
-
 export const getColumns = ({
   data,
   sortConfig,
@@ -49,8 +45,6 @@ export const getColumns = ({
   onHeaderCellClick,
   handleSelectAll,
   onChecked,
-  handleRequestRevision,
-  revisionRequestLoading,
 }: any) => [
   {
     title: (
@@ -184,17 +178,17 @@ export const getColumns = ({
               tag="span"
               size="sm"
               variant="outline"
-              className="hover:!border-gray-900 hover:text-gray-700"
+              className="bg-red text-white hover:!border-gray-900 hover:text-gray-700"
             >
               <EyeIcon className="h-4 w-4" />
             </ActionIcon>
           </Link>
         </Tooltip>
-        <DeletePopover
+        {/* <DeletePopover
           title={`حذف فاکتور`}
           description={`آیا مطمئنید که می‌خواهید این فاکتور را پاک کنید؟`}
           onDelete={() => onDeleteItem(row.id)}
-        />
+        /> */}
       </div>
     ),
   },

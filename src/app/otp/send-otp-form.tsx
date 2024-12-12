@@ -33,10 +33,10 @@ export default function SendOtpForm() {
             تأیید کد یکبار مصرف
           </Button>
           <Button
-              className="text-base font-medium"
-              type="submit"
-              size="lg"
-              color="info"
+            className="text-base font-medium"
+            type="submit"
+            size="lg"
+            color="info"
           >
             ورود از طریق نام کاربری
           </Button>

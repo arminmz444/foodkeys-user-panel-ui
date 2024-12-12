@@ -36,7 +36,7 @@ export default function AuthWrapperOne({
   pageImage?: React.ReactNode;
   isSocialLoginActive?: boolean;
   isSignIn?: boolean;
-  setStep: (arg: 'INITIAL' | 'PASSWORD' | 'SIGNUP') => void;
+  setStep?: (arg: 'INITIAL' | 'PASSWORD' | 'SIGNUP') => void;
 }) {
   function handleSignIn() {
     // toast.error(
