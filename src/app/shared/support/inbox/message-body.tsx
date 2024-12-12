@@ -210,7 +210,9 @@ export default function MessageBody({ messages }) {
                     >
                       <button
                         type="button"
-                        onClick={() => handleCopyToClipboard(message?.id)}
+                        onClick={() =>
+                          handleCopyToClipboard(message?.ticketRefId)
+                        }
                       >
                         {isCopied ? (
                           <PiCheck className="mr-1 h-3 w-3" />
@@ -228,7 +230,10 @@ export default function MessageBody({ messages }) {
               {message.fromEmployee && (
                 <Avatar
                   name="John Doe"
-                  src={STATIC_FILES_URL + message?.senderAvatar}
+                  src={
+                    process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+                    message?.senderAvatar
+                  }
                   className="order-1 !h-8 !w-8 bg-[#70C5E0] font-medium text-white lg:order-2 xl:!h-11 xl:!w-11"
                 />
               )}
@@ -275,7 +280,7 @@ export default function MessageBody({ messages }) {
                           // />
                           <Image
                             src={imageIcon}
-                            alt="pdf icon"
+                            alt="image icon"
                             className="h-full w-full"
                             quality={100}
                           />

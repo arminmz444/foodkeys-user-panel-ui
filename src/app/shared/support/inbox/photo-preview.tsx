@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { PhotoSlider } from 'react-photo-view';
 
 const images = [
-  'http://localhost:8080/files/TICKET_ATTACHMENT/6c5f09e1-37a1-49cc-b5dc-f2d775a930a0.jpg',
+  `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}/files/TICKET_ATTACHMENT/6c5f09e1-37a1-49cc-b5dc-f2d775a930a0.jpg`,
 ];
 export default function PhotoPreview() {
   const [visible, setVisible] = useState(false);
@@ -15,7 +15,7 @@ export default function PhotoPreview() {
     <>
       {/* <Button onClick={() => setIndex(2)}>setIndex(2)</Button>
       <Button onClick={() => setIndex(4)}>setIndex(4)</Button> */}
-      <Button onClick={() => setVisible(true)}>Click</Button>
+      <button onClick={() => setVisible(true)}>مشاهده</button>
 
       <PhotoSlider
         images={images.map((item) => ({ src: item, key: item }))}
