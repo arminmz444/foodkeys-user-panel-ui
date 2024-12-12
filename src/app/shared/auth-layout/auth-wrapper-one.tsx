@@ -26,6 +26,7 @@ export default function AuthWrapperOne({
   pageImage,
   isSocialLoginActive = false,
   isSignIn = false,
+  setStep,
 }: {
   children: React.ReactNode;
   title: React.ReactNode;
@@ -35,28 +36,30 @@ export default function AuthWrapperOne({
   pageImage?: React.ReactNode;
   isSocialLoginActive?: boolean;
   isSignIn?: boolean;
+  setStep: (arg: 'INITIAL' | 'PASSWORD' | 'SIGNUP') => void;
 }) {
   function handleSignIn() {
-    toast.error(
-      <Text>
-        این مورد در مرحله آزمون است{' '}
-        <Text tag="b" className="font-semibold text-gray-900">
-          ورود
-        </Text>{' '}
-      </Text>
-    );
+    // toast.error(
+    //   <Text>
+    //     این مورد در مرحله آزمون است{' '}
+    //     <Text tag="b" className="font-semibold text-gray-900">
+    //       ورود
+    //     </Text>{' '}
+    //   </Text>
+    // );
   }
   return (
     <>
-      <Link
-        href={'/login'}
+      <Button
+        // href={'/login'}
+        onClick={() => setStep('PASSWORD')}
         className="sticky start-0 top-0 z-20 flex items-center justify-center bg-[#129974] p-3.5 text-sm font-medium text-white md:p-4 lg:hidden"
       >
         <PiArrowRightBold />
         <Text className="font-iransans font-iransans ms-1">
           ورود از طریق رمز عبور
         </Text>
-      </Link>
+      </Button>
 
       <div className="min-h-screen justify-between gap-x-8 px-4 py-8 pt-5 md:pt-6 lg:flex lg:p-6 xl:gap-x-10 xl:p-7 2xl:p-10 2xl:pt-5 [&>div]:min-h-[calc(100vh-80px)]">
         <div className="relative flex w-full items-center justify-center lg:w-5/12 2xl:justify-end 2xl:pe-24">
@@ -101,15 +104,12 @@ export default function AuthWrapperOne({
               <>
                 <div className="grid grid-cols-1 gap-4 pb-5 md:grid-cols-2 md:pb-6 xl:gap-5 xl:pb-7">
                   <Button
-                    onClick={() =>
-                      // it should be signIn('apple')
-                      handleSignIn()
-                    }
+                    onClick={() => setStep('PASSWORD')}
                     className=":bg-orange-light h-11 w-full bg-[#129974]"
                     color="success"
                   >
-                    <PiPasswordFill className="me-2 h-4 w-4 shrink-0" />
-                    <span className="truncate">ورود با کد یکبار مصرف</span>
+                    <PiPasswordFill className="me-2 h-6 w-6 shrink-0" />
+                    <span className="truncate">ورود با رمز عبور</span>
                   </Button>
                   <Button
                     variant="outline"
