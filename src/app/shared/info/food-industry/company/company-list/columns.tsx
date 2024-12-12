@@ -15,6 +15,7 @@ import { Button, Popover } from 'rizzui';
 import HandWaveIcon from '@/components/icons/hand-wave';
 import { PiHand } from 'react-icons/pi';
 import { TbExclamationMark } from 'react-icons/tb';
+import { FaRankingStar } from 'react-icons/fa6';
 
 const STATIC_FILE_URL = 'http://localhost:8080';
 const companyStatusDict: any = {
@@ -31,19 +32,56 @@ const companyStatusDict: any = {
 
 function getStatusBadge(status: string) {
   return (
-    <div className="flex items-center">
+    <div
+      className={`inline-flex items-center justify-center gap-2 rounded-full ${
+        status === 'VERIFIED' || status === 'SUBMIT' || status === 'PUBLISHED'
+          ? 'bg-green-lighter'
+          : status === 'DENIED' || status === 'ARCHIVED'
+          ? 'bg-red-lighter'
+          : status === 'PENDING'
+          ? 'bg-orange-lighter'
+          : 'bg-gray-200'
+      }  px-2.5 py-1`}
+    >
       <Badge
-        color={
-          status === 'VERIFIED'
-            ? 'success'
-            : status === 'PENDING'
-            ? 'warning'
-            : 'danger'
-        }
         renderAsDot
+        className={`${
+          status === 'VERIFIED' || status === 'SUBMIT' || status === 'PUBLISHED'
+            ? 'bg-green-dark'
+            : status === 'DENIED' || status === 'ARCHIVED'
+            ? 'bg-red-dark'
+            : status === 'PENDING'
+            ? 'bg-orange-dark'
+            : null
+        }`}
       />
-      <Text className="ms-2 font-medium">{companyStatusDict[status]}</Text>
+      <span
+        className={`text-xs font-semibold ${
+          status === 'VERIFIED' || status === 'SUBMIT' || status === 'PUBLISHED'
+            ? 'text-green-dark'
+            : status === 'DENIED' || status === 'ARCHIVED'
+            ? 'text-red-dark'
+            : status === 'PENDING'
+            ? 'text-orange-dark'
+            : null
+        }`}
+      >
+        {companyStatusDict[status]}
+      </span>
     </div>
+    // <div className="flex items-center">
+    //   <Badge
+    //     color={
+    //       status === 'VERIFIED'
+    //         ? 'success'
+    //         : status === 'PENDING'
+    //         ? 'warning'
+    //         : 'danger'
+    //     }
+    //     renderAsDot
+    //   />
+    //   <Text className="ms-2 font-medium">{companyStatusDict[status]}</Text>
+    // </div>
   );
 }
 
@@ -63,35 +101,35 @@ export const getColumns = ({
   revisionRequestLoading,
   category,
 }: any) => [
-  {
-    title: (
-      <div className="ps-3.5">
-        <Checkbox
-          title="انتخاب همه"
-          onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    dataIndex: 'checked',
-    key: 'checked',
-    width: 30,
-    render: (_: any, row: any) => (
-      <div className="inline-flex ps-3.5">
-        <Checkbox
-          className="cursor-pointer"
-          checked={checkedItems.includes(row.id)}
-          onChange={() => onChecked && onChecked(row.id)}
-        />
-      </div>
-    ),
-  },
+  // {
+  //   title: (
+  //     <div className="ps-3.5">
+  //       <Checkbox
+  //         title="انتخاب همه"
+  //         onChange={handleSelectAll}
+  //         checked={checkedItems.length === data.length}
+  //         className="cursor-pointer"
+  //       />
+  //     </div>
+  //   ),
+  //   dataIndex: 'checked',
+  //   key: 'checked',
+  //   width: 30,
+  //   render: (_: any, row: any) => (
+  //     <div className="inline-flex ps-3.5">
+  //       <Checkbox
+  //         className="cursor-pointer"
+  //         checked={checkedItems.includes(row.id)}
+  //         onChange={() => onChecked && onChecked(row.id)}
+  //       />
+  //     </div>
+  //   ),
+  // },
   {
     title: <HeaderCell title="نام شرکت" />,
     dataIndex: 'companyName',
     key: 'companyName',
-    width: 200,
+    width: 150,
     hidden: 'companyName',
 
     render: (_: string, row: any) => (
@@ -113,7 +151,7 @@ export const getColumns = ({
     title: <HeaderCell title="دسته‌بندی" />,
     dataIndex: 'subCategory',
     key: 'subCategory',
-    width: 210,
+    width: 150,
     render: (subCategory: string) => <Text>{subCategory}</Text>,
   },
   // {
@@ -127,23 +165,23 @@ export const getColumns = ({
     title: <HeaderCell title="وضعیت" />,
     dataIndex: 'companyStatus',
     key: 'companyStatus',
-    width: 80,
+    width: 30,
     render: (status: string) => getStatusBadge(status),
   },
   {
     title: <HeaderCell title="بازدیدها" />,
     dataIndex: 'visit',
     key: 'visit',
-    width: 50,
+    width: 5,
     render: (visit: number) => <Text>{visit}</Text>,
   },
   {
     title: <></>,
     dataIndex: 'action',
     key: 'action',
-    width: 100,
+    width: 20,
     render: (_: any, row: any) => (
-      <div className="flex items-center justify-end gap-3 pe-3">
+      <div className="flex h-full w-full flex-shrink-0 flex-grow-0 items-center justify-end gap-3 pe-3">
         <Tooltip
           size="sm"
           content={() => 'درخواست تجدید رتبه'}
@@ -154,10 +192,11 @@ export const getColumns = ({
           <Button
             isLoading={revisionRequestLoading}
             onClick={() => handleRequestRevision(row.id)}
-            color="secondary"
-            size="sm"
+            color="danger"
+            size="DEFAULT"
+            className="h-full"
           >
-            <PiHand className="h-4 w-4" />
+            <FaRankingStar className="h-4 w-4 shrink-0 grow-0" />
           </Button>
           {/*<RankRevisionPopover*/}
           {/*    title={`درخواست تجدید رتبه`}*/}
@@ -178,14 +217,15 @@ export const getColumns = ({
                 : routes.info.agricultureIndustryEdit(row.id)
             }
           >
-            <ActionIcon
+            <Button
               tag="span"
               size="sm"
               variant="outline"
-              className="bg-orange text-white hover:!border-gray-900 hover:text-gray-700"
+              className="bg-white text-black hover:!bg-black hover:text-white"
             >
-              <PencilIcon className="h-4 w-4" />
-            </ActionIcon>
+              ویرایش
+              {/* <PencilIcon /> */}
+            </Button>
           </Link>
         </Tooltip>
         <Tooltip
@@ -200,14 +240,15 @@ export const getColumns = ({
               row.id
             }
           >
-            <ActionIcon
+            <Button
               tag="span"
               size="sm"
               variant="outline"
-              className="bg-blue text-white hover:!border-gray-900 hover:text-gray-700"
+              className="bg-white text-black hover:!bg-black hover:text-white"
             >
-              <EyeIcon className="h-4 w-4" />
-            </ActionIcon>
+              مشاهده
+              {/* <EyeIcon className="h-4 w-4" /> */}
+            </Button>
           </a>
         </Tooltip>
         {/*<DeletePopover*/}

@@ -20,69 +20,57 @@ import { Button } from '@/components/ui/button';
 
 type DataType = {
   name: string;
-  Profit: number;
+  Visit: number;
 };
 
 const data: DataType[] = [
   {
-    name: 'روز 1',
-    Profit: 682,
+    name: 'ماه 1',
+    Visit: 682,
   },
   {
-    name: 'روز 2',
-    Profit: 690,
+    name: 'ماه 2',
+    Visit: 690,
   },
   {
-    name: 'روز 3',
-    Profit: 910,
+    name: 'ماه 3',
+    Visit: 910,
   },
   {
-    name: 'روز 4',
-    Profit: 656,
+    name: 'ماه 4',
+    Visit: 656,
   },
   {
-    name: 'روز 5',
-    Profit: 804,
+    name: 'ماه 5',
+    Visit: 804,
   },
   {
-    name: 'روز 6',
-    Profit: 747,
+    name: 'ماه 6',
+    Visit: 747,
   },
   {
-    name: 'روز 7',
-    Profit: 902,
+    name: 'ماه 7',
+    Visit: 902,
   },
   {
-    name: 'روز 8',
-    Profit: 820,
+    name: 'ماه 8',
+    Visit: 820,
   },
   {
-    name: 'روز 9',
-    Profit: 582,
+    name: 'ماه 9',
+    Visit: 582,
   },
   {
-    name: 'روز 10',
-    Profit: 775,
+    name: 'ماه 10',
+    Visit: 775,
   },
   {
-    name: 'روز 11',
-    Profit: 615,
+    name: 'ماه 11',
+    Visit: 615,
   },
   {
-    name: 'روز 12',
-    Profit: 973,
-  },
-  {
-    name: 'روز 13',
-    Profit: 873,
-  },
-  {
-    name: 'روز 14',
-    Profit: 696,
-  },
-  {
-    name: 'روز 15',
-    Profit: 977,
+    name: 'ماه 12',
+    Visit: 973,
   },
 ];
 
@@ -93,7 +81,7 @@ const formatYAxisTick = (value: number): string => {
   return value.toString(); // Keep small values as is
 };
 
-export default function ProfitChart({ className }: { className?: string }) {
+export default function VisitChart({ className }: { className?: string }) {
   const isTablet = useMedia('(max-width: 800px)', false);
 
   return (
@@ -101,9 +89,11 @@ export default function ProfitChart({ className }: { className?: string }) {
       <div className="grid grid-cols-10 gap-y-8">
         <div className="col-span-full flex flex-col @2xl:flex-row @2xl:justify-between @4xl:col-span-full @7xl:col-span-2 @7xl:flex-col">
           <div>
-            <p className="text-sm 2xl:text-base">آمار بازدید‌های شرکت‌های شما</p>
+            <p className="text-sm 2xl:text-base">
+              آمار بازدید‌های شرکت‌های شما
+            </p>
             <Text tag="h3" className="mt-2 text-2xl font-semibold">
-              105,000 بازدید
+              105,000 کل بازدید
             </Text>
             <p className="font-iransans mt-2 flex items-center gap-1 font-normal text-green 2xl:text-base">
               <PiCaretDoubleUpDuotone className="me-1 h-4 w-4" />
@@ -165,12 +155,13 @@ export default function ProfitChart({ className }: { className?: string }) {
                     tickLine={false}
                     tickMargin={15}
                     tickFormatter={formatYAxisTick}
+                    ticks={[0, 50, 100, 500, 1000]}
                   />
                   <Tooltip
                     content={
                       <CustomTooltip
                         persianTexts={{
-                          Profit: 'سود',
+                          Visit: 'بازدید',
                         }}
                       />
                     }
@@ -179,7 +170,7 @@ export default function ProfitChart({ className }: { className?: string }) {
                   <Area
                     strokeWidth={2}
                     type="monotone"
-                    dataKey="Profit"
+                    dataKey="Visit"
                     stroke="#10b981"
                     fill="url(#colorGradient)"
                   />

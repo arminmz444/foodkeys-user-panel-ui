@@ -202,7 +202,7 @@ export default function CompanySummary({
       description="شامل نام شرکت، برندها و ..."
       className={cn(className)}
     >
-      <div className="flex flex-col gap-6 xl:flex-row">
+      <div className="flex flex-col gap-6 xl:flex-row ">
         <LogoUpload
           label="آپلود لوگو"
           accept="image/*"
@@ -456,8 +456,9 @@ export default function CompanySummary({
               onClick={() => remove(index)}
               variant="flat"
               className="mt-7 shrink-0"
+              color="danger"
             >
-              <TrashIcon className="h-4 w-4" />
+              <TrashIcon className="text-red-ligh h-4 w-4" />
             </ActionIcon>
           )}
         </div>
