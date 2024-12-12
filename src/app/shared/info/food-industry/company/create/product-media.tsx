@@ -175,14 +175,14 @@ export default function ProductMedia({ className }) {
             className="col-span-full w-full"
             rows={3}
           />
-          <Textarea
+          {/* <Textarea
             label="توضیحات محصولات برون‌سپاری"
             placeholder="توضیحات محصولات برون‌سپاری"
             {...register('outSourcedProductsDescription')}
             error={errors.outSourcedProductsDescription?.message as string}
             className="col-span-full w-full"
             rows={3}
-          />
+          /> */}
         </>
       ) : (
         <>

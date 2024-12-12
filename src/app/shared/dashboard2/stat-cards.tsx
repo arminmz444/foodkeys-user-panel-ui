@@ -3,50 +3,49 @@
 import MetricCard from '@/components/cards/metric-card';
 import { Text } from '@/components/ui/text';
 import cn from '@/utils/class-names';
+import { ReactNode } from 'react';
+import { IconType } from 'react-icons';
 import {
   PiCaretDoubleUpDuotone,
   PiCaretDoubleDownDuotone,
   PiGiftDuotone,
   PiBankDuotone,
-  PiChartPieSliceDuotone, PiBuildings, PiPerson, PiEye, PiWallet,
+  PiChartPieSliceDuotone,
+  PiBuildings,
+  PiPerson,
+  PiEye,
+  PiWallet,
 } from 'react-icons/pi';
-import { BarChart, Bar, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, ResponsiveContainer, Tooltip } from 'recharts';
 
 const orderData = [
   {
     day: 'یکشنبه',
-    sale: 4000,
-    cost: 2400,
+    count: 2000,
   },
   {
     day: 'دوشنبه',
-    sale: 3000,
-    cost: 1398,
+    count: 3000,
   },
   {
     day: 'سه شنبه',
-    sale: 2000,
-    cost: 9800,
+    count: 2000,
   },
   {
     day: 'چهار شنبه',
-    sale: 2780,
-    cost: 3908,
+    count: 2780,
   },
   {
     day: 'پنج شنبه',
-    sale: 1890,
-    cost: 4800,
+    count: 1890,
   },
   {
     day: 'جمعه',
-    sale: 2390,
-    cost: 3800,
+    count: 2390,
   },
   {
     day: 'شنبه',
-    sale: 3490,
-    cost: 4300,
+    count: 3490,
   },
 ];
 
@@ -87,42 +86,65 @@ const salesData = [
     cost: 4300,
   },
 ];
+const salesData2 = [
+  {
+    day: 'یکشنبه',
+    count: 2000,
+  },
+  {
+    day: 'دوشنبه',
+    count: 3000,
+  },
+  {
+    day: 'سه شنبه',
+    count: 2000,
+  },
+  {
+    day: 'چهار شنبه',
+    count: 2780,
+  },
+  {
+    day: 'پنج شنبه',
+    count: 1890,
+  },
+  {
+    day: 'جمعه',
+    count: 2390,
+  },
+  {
+    day: 'شنبه',
+    count: 3490,
+  },
+];
 
 const revenueData = [
   {
     day: 'یکشنبه',
-    sale: 2000,
-    cost: 2400,
+    count: 2000,
   },
   {
     day: 'دوشنبه',
-    sale: 2800,
-    cost: 1398,
+    count: 3000,
   },
   {
     day: 'سه شنبه',
-    sale: 3500,
-    cost: 9800,
+    count: 2000,
   },
   {
     day: 'چهار شنبه',
-    sale: 2780,
-    cost: 3908,
+    count: 2780,
   },
   {
     day: 'پنج شنبه',
-    sale: 1890,
-    cost: 4800,
+    count: 1890,
   },
   {
     day: 'جمعه',
-    sale: 2390,
-    cost: 3800,
+    count: 2390,
   },
   {
     day: 'شنبه',
-    sale: 3490,
-    cost: 4300,
+    count: 3490,
   },
 ];
 
@@ -138,6 +160,7 @@ const eComDashboardStatData = [
     style: 'text-[#3872FA]',
     fill: '#3872FA',
     chart: orderData,
+    countName: 'شرکت‌ها',
   },
   {
     id: '2',
@@ -149,34 +172,49 @@ const eComDashboardStatData = [
     percentage: '-4.40',
     style: 'text-[#10b981]',
     fill: '#10b981',
-    chart: salesData,
+    chart: salesData2,
+    countName: 'بازدید',
   },
   {
     id: '3',
     icon: <PiWallet className="h-6 w-6" />,
     title: 'اعتبار کیف پول',
     metric: '12,390 تومان',
-    increased: true,
-    decreased: false,
-    percentage: '+32.40',
     style: 'text-[#7928ca]',
     fill: '#7928ca',
     chart: revenueData,
+    countName: 'اعتبار',
   },
 ];
 
-export default function StatCards({ className }: { className?: string }) {
+export default function StatCards({
+  className,
+  dashboardStatsData,
+}: {
+  className?: string;
+  dashboardStatsData: {
+    id: string;
+    Icon: ReactNode;
+    title: string;
+    metric: string;
+    style: string;
+    fill: string;
+    chart: { day: string; count: number }[];
+    countName: string;
+  }[];
+}) {
   return (
     <div
       className={cn('grid grid-cols-1 gap-5 3xl:gap-8 4xl:gap-9', className)}
     >
       {eComDashboardStatData.map((stat) => (
         <MetricCard
-          key={stat.title + stat.id}
+          key={stat.title}
           title={stat.title}
           metric={stat.metric}
           metricClassName="lg:text-[22px]"
           icon={stat.icon}
+          // icon={stat.Icon}
           iconClassName={cn(
             '[&>svg]:w-10 [&>svg]:h-8 lg:[&>svg]:w-11 lg:[&>svg]:h-9 w-auto h-auto p-0 bg-transparent -mx-1.5',
             stat.id === '1' &&
@@ -186,7 +224,19 @@ export default function StatCards({ className }: { className?: string }) {
           chart={
             <ResponsiveContainer width="100%" height="100%">
               <BarChart barSize={5} barGap={2} data={stat.chart}>
-                <Bar dataKey="sale" fill={stat.fill} radius={5} />
+                <Tooltip
+                  cursor={{ fill: 'rgba(200,200,200,0.3)' }}
+                  // formatter={(value) => `بازدید: ${value} units`}
+                  labelStyle={{ fontWeight: 'bold' }}
+                  wrapperClassName="relative top-10"
+                  content={<CustomTooltip countName={stat.countName} />}
+                />
+                <Bar
+                  dataKey="count"
+                  fill={stat.fill}
+                  radius={[5, 5, 0, 0]}
+                  className="hover:cursor-pointer"
+                />
               </BarChart>
             </ResponsiveContainer>
           }
@@ -218,3 +268,27 @@ export default function StatCards({ className }: { className?: string }) {
     </div>
   );
 }
+// @ts-ignore
+const CustomTooltip = ({ active, payload, label, countName }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          backgroundColor: 'white',
+          border: '1px solid #ccc',
+          padding: '10px',
+          borderRadius: '5px',
+          fontSize: '12px',
+          textAlign: 'right',
+          position: 'relative',
+          bottom: '3rem',
+        }}
+      >
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{`روز: ${label}`}</p>
+        <p style={{ margin: 0 }}>{`${countName}: ${payload[0].value}`}</p>
+      </div>
+    );
+  }
+
+  return null;
+};

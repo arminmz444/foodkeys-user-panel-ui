@@ -167,7 +167,7 @@ export default function CompaniesTable({ category }) {
   }
   return (
     <>
-      <div className="md:w-82 relative mb-4 max-w-md lg:w-72">
+      {/* <div className="md:w-82 relative mb-4 max-w-md lg:w-72">
         <Input
           ref={searchInput}
           size="lg"
@@ -186,7 +186,8 @@ export default function CompaniesTable({ category }) {
             <PiX className="text-xl text-gray-500" />
           </button>
         )}
-      </div>
+      </div> */}
+      <h2 className="mb-5 mt-10">لیست شرکت های ثبت شده شما</h2>
       <ControlledTable
         variant="modern"
         isLoading={isLoading}
