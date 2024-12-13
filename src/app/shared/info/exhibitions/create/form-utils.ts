@@ -12,7 +12,7 @@ export function defaultValues(event?: CreateEventInput) {
     country: event?.country ?? '',
     endDate: event?.endDate ?? '',
     website: event?.website ?? '',
-    category: event?.category ?? 1,
+    category: event?.category ?? null,
     keywords: event?.keywords ?? [],
     organizer: event?.organizer ?? '',
     startDate: event?.startDate ?? '',
@@ -20,23 +20,29 @@ export function defaultValues(event?: CreateEventInput) {
   };
 }
 
+const categorySchema = z.object({
+  name: z.string(),
+  value: z.number(),
+});
+
 
 export const exhibitionFormSchema = z.object({
   fax: z.array(z.string()).optional(),
   tel: z.array(z.string()).optional(),
-  logo: z.string().url({ message: 'لینک لوگو باید معتبر باشد' }),
+  logo: z.string(),
   type: z.number().min(1, { message: 'این فیلد اجباری میباشد' }),
   title: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   venue: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   address: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   country: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  endDate: z.string().min(1, { message: 'این فیلد اجباری میباشد' }), // Can also use z.date() if parsed to Date
+  endDate: z.string().min(1, { message: 'این فیلد اجباری میباشد' }), 
   website: z.string().url({ message: 'آدرس وبسایت باید معتبر باشد' }),
-  category: z.number().min(1, { message: 'این فیلد اجباری میباشد' }),
+  category: categorySchema.optional(),
   keywords: z.array(z.string()).optional(),
   organizer: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  startDate: z.string().min(1, { message: 'این فیلد اجباری میباشد' }), // Can also use z.date() if parsed to Date
+  startDate: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   description: z.string().optional(),
+  dataFileIds: z.array(z.string()).optional(),
 });
 
 export type CreateEventInput = z.infer<typeof exhibitionFormSchema>;

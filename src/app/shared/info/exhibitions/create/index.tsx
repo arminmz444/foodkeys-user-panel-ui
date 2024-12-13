@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Element } from 'react-scroll';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,21 +21,21 @@ import DeliveryEvent from '@/app/shared/info/exhibitions/create/delivery-event';
 import ProductVariants from '@/app/shared/info/exhibitions/create/product-variants';
 import ProductTaxonomies from '@/app/shared/info/exhibitions/create/product-tags';
 import FormFooter from '@/components/form-footer';
-import CompanyFactory from '@/app/shared/info/exhibitions/create/company-factory';
-import CompanyOffice from '@/app/shared/info/exhibitions/create/company-office';
-import CompanySocial from '@/app/shared/info/exhibitions/create/company-social';
-import CompanyComplementary from '@/app/shared/info/exhibitions/create/company-complementary';
-import CompanyHistory from './company-history';
 import cn from '@/utils/class-names';
 import ExhibitionContact from './exhibition-contact';
 import ExhibitionDescription from './exhibition-description';
 import ExhibitionSummary from './exhibition-summary';
+import ExhibitionGallery from './exhibition-gallery';
+import useAxiosPrivate from '@/hooks/use-axios-private';
+import { data } from 'autoprefixer';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: ExhibitionSummary,
   [formParts.contact]: ExhibitionContact,
   [formParts.description]: ExhibitionDescription,
-  [formParts.logo]: ExhibitionDescription,
+  [formParts.logo]: ExhibitionGallery,
 };
 
 interface IndexProps {
@@ -50,23 +50,130 @@ export default function CreateExhibition({
   className,
 }: IndexProps) {
   const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
+  const _axios = useAxiosPrivate();
+  const [exhibitionData, setExhibitionData] = useState<any | null>(null);
+  const [resetAll, setResetAll] = useState(false);
+
   const methods = useForm<CreateEventInput>({
-    defaultValues: defaultValues(exhibition),
+    defaultValues: defaultValues(exhibitionData),
     resolver: zodResolver(exhibitionFormSchema),
   });
 
-  const onSubmit: SubmitHandler<CreateEventInput> = (data) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      console.log('exhibition_data', data);
-      toast.success(
-        <Text tag="b">
-          {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
-        </Text>
+  useEffect(() => {
+    const fetchExhibition = async () => {
+      try {
+        const response = await _axios.get(`/service/${id}`);
+        if (response.data.status === 'SUCCESS') {
+          setExhibitionData(response.data.data);
+          methods.reset(defaultValues(response.data.data));
+        }
+      } catch (error) {
+        console.error('Error fetching exhibition:', error);
+      }
+    };
+
+    if (id) {
+      fetchExhibition();
+    }
+  }, [id, _axios]);
+
+  const fetchSubscriptions = async () => {
+    try {
+      const response = await _axios.get(`/subscription`);
+      if (response.data.status === 'SUCCESS') {
+        if (!response.data?.data) {
+          toast.success(
+            <div>
+              <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
+              <Text>
+                {
+                  'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'
+                }
+              </Text>
+              <Button
+                className="mt-3"
+                size="sm"
+                onClick={() => console.log('DISMISS')}
+              >
+                خرید اشتراک
+              </Button>
+            </div>,
+            { duration: 5000 }
+          );
+          router.replace('/bundle/buy');
+        }
+        return true;
+      }
+    } catch (error) {
+      console.error('Error fetching subscription:', error);
+      toast.error(
+        '\nشرکت شما با موفقیت ثبت شد اما هنگام دریافت وضعیت اشتراک شما، خطایی رخ داده است\n' +
+          '\nدر صورتی که اشتراک فعال برای بانک خدمات ندارید، با زدن رو دکمه زیر تهیه کنید\n' +
+          +'\n\n' +
+          '\n خرید اشتراک \n'
       );
-      methods.reset();
-    }, 600);
+    }
+  };
+  const onSubmit: SubmitHandler<CreateEventInput> = async (data) => {
+    setLoading(true);
+    try {
+      const payload = {
+        name: data.title,
+        subCategoryId: 24,
+        serviceSchemaId: 16,
+        serviceData: {
+          fax: data.fax,
+          tel: data.tel,
+          logo: data.logo,
+          type: data.type,
+          title: data.title,
+          venue: data.venue,
+          address: data.address,
+          country: data.country,
+          endDate: data.endDate,
+          website: data.website,
+          category: data.category.value,
+          keywords: data.keywords,
+          organizer: data.organizer,
+          startDate: data.startDate,
+          description: data.description,
+        },
+        serviceAdditionalData: null,
+        dataFileIds: data.dataFileIds,
+        additionalDataFileIds: null,
+      };
+
+      console.log('data: ', JSON.stringify(data));
+      console.log('payload: ', JSON.stringify(payload));
+
+      const response = await _axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/service`,
+        payload,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // toast.success(
+        //   <Text tag="b">
+        //     {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
+        //   </Text>
+        // );
+        methods.reset();
+        // router.push('/info/service');
+        let hasSubscription = await fetchSubscriptions();
+        if (hasSubscription) router.push('/info/service');
+      }
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      toast.error('خطا در ارسال اطلاعات');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -83,7 +190,12 @@ export default function CreateExhibition({
                 key={key}
                 name={formParts[key as keyof typeof formParts]}
               >
-                {<Component className="pt-7 @2xl:pt-9 @3xl:pt-11" />}
+                {
+                  <Component
+                    resetAll={resetAll}
+                    className="pt-7 @2xl:pt-9 @3xl:pt-11"
+                  />
+                }
               </Element>
             ))}
           </div>

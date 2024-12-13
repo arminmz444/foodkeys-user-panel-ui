@@ -5,7 +5,7 @@ async function uploadProductPictures(files: File[]): Promise<string[]> {
     tempUploadFormData.append("fileServiceType", "PRODUCT_PICTURE");
 
     const response = await _axios.post(
-        "http://localhost:8080/api/v1/client/panel/company/file/temp",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/company/file/temp`,
         tempUploadFormData,
         {
             headers: {

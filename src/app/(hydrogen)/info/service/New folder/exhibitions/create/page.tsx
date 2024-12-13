@@ -3,7 +3,7 @@ import { routes } from '@/config/routes';
 import { Button } from '@/components/ui/button';
 import { PiPlusBold } from 'react-icons/pi';
 import PageHeader from '@/app/shared/page-header';
-import CreateExhibition from '@/app/shared/info/exhibitions/create';
+import CreateProduct from '@/app/shared/info/exhibitions/create';
 
 const pageHeader = {
   title: 'ثبت نمایشگاه جدید',
@@ -27,7 +27,7 @@ export default function CreateProductPage() {
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <Link
-          href={routes.info.exhibitionAdd}
+          href={routes.eCommerce.createProduct}
           className="mt-4 w-full @lg:mt-0 @lg:w-auto"
         >
           <Button
@@ -35,12 +35,12 @@ export default function CreateProductPage() {
             className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
           >
             <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-            ثبت نمایشگاه جدید
+            اضافه کردن محصول
           </Button>
         </Link>
       </PageHeader>
 
-      <CreateExhibition />
+      <CreateProduct />
     </>
   );
 }

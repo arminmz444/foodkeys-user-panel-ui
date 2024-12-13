@@ -122,76 +122,137 @@
 import FormGroup from '@/app/shared/form-group';
 import TrashIcon from '@/components/icons/trash';
 import cn from '@/utils/class-names';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActionIcon } from '@/components/ui/action-icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { PiPlusBold } from 'react-icons/pi';
 
-export default function ExhibitionContact({ className }: { className?: string }) {
-  const { register, formState: { errors } } = useFormContext();
+export default function ExhibitionContact({
+  className,
+  resetAll,
+}: {
+  className?: string;
+}) {
+  const {
+    register,
+    control,
+    watch,
+    formState: { errors },
+    setValue,
+  } = useFormContext();
   const [exhibitionPhones, setExhibitionPhones] = useState<string[]>([]);
   const [exhibitionFaxes, setExhibitionFaxes] = useState<string[]>([]);
+  const watchedTels = watch('tel', []);
 
+  useEffect(() => {
+    setExhibitionFaxes([]);
+    setExhibitionPhones([]);
+  }, [resetAll]);
+  useEffect(() => {
+    if (watchedTels && watchedTels?.length) setExhibitionPhones(watchedTels);
+  }, [watchedTels]);
+  // const { telFields, telAppend, telRemove } = useFieldArray({
+  //   control,
+  //   name: 'tel',
+  // });
+  // const addCustomField = useCallback(() => {
+  //   if (telFields.length < 3) telAppend([...tel]);
+  // }, [telAppend, tel, telFields.length]);
   return (
-      <FormGroup
-          title="اطلاعات تماس نمایشگاه"
-          description="شامل تلفن‌ها، سایت و ..."
-          className={cn(className)}
-      >
-        <div>
-          <label>تلفن‌های نمایشگاه</label>
-          {exhibitionPhones.map((phone, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Input
-                    value={phone}
-                    placeholder={`تلفن ${index + 1}`}
-                    onChange={(e) => {
-                      const updatedPhones = [...exhibitionPhones];
-                      updatedPhones[index] = e.target.value;
-                      setExhibitionPhones(updatedPhones);
-                    }}
-                />
-                <ActionIcon onClick={() => setExhibitionPhones(exhibitionPhones.filter((_, i) => i !== index))}>
-                  <TrashIcon />
-                </ActionIcon>
-              </div>
-          ))}
-          <Button onClick={() => setExhibitionPhones([...exhibitionPhones, ''])}>
-            اضافه کردن تلفن جدید
+    <FormGroup
+      title="اطلاعات تماس نمایشگاه"
+      description="شامل تلفن‌ها، سایت و ..."
+      className={cn(className)}
+    >
+      <div className="flex flex-col space-y-2">
+        <label className="font-medium text-gray-700 dark:text-gray-600">
+          تلفن‌های نمایشگاه
+        </label>
+        {exhibitionPhones.map((phone, index) => (
+          <div key={index} className="flex items-center gap-2 space-x-2">
+            <Input
+              value={phone}
+              placeholder={`تلفن ${index + 1}`}
+              onChange={(e) => {
+                const updatedPhones = [...exhibitionPhones];
+                updatedPhones[index] = e.target.value;
+                setExhibitionPhones(updatedPhones);
+                setValue('tel', updatedPhones);
+              }}
+              className="flex-grow"
+            />
+            <ActionIcon
+              onClick={() => {
+                let tmp = exhibitionPhones.filter((_, i) => i !== index);
+                setExhibitionPhones(tmp);
+                setValue('tel', tmp);
+              }}
+              variant="flat"
+              color="danger"
+            >
+              <TrashIcon className="h-4 w-4 text-red-light" />
+            </ActionIcon>
+          </div>
+        ))}
+        {exhibitionPhones.length < 3 && (
+          <Button
+            variant="outline"
+            onClick={() => setExhibitionPhones([...exhibitionPhones, ''])}
+          >
+            <PiPlusBold className="me-2 h-4 w-4" /> اضافه کردن تلفن جدید
           </Button>
-        </div>
+        )}
+      </div>
 
-        <div>
-          <label>فکس‌های نمایشگاه</label>
-          {exhibitionFaxes.map((fax, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Input
-                    value={fax}
-                    placeholder={`فکس ${index + 1}`}
-                    onChange={(e) => {
-                      const updatedFaxes = [...exhibitionFaxes];
-                      updatedFaxes[index] = e.target.value;
-                      setExhibitionFaxes(updatedFaxes);
-                    }}
-                />
-                <ActionIcon onClick={() => setExhibitionFaxes(exhibitionFaxes.filter((_, i) => i !== index))}>
-                  <TrashIcon />
-                </ActionIcon>
-              </div>
-          ))}
-          <Button onClick={() => setExhibitionFaxes([...exhibitionFaxes, ''])}>
-            اضافه کردن فکس جدید
+      <div className="flex flex-col space-y-2">
+        <label className="font-medium text-gray-700 dark:text-gray-600">
+          فکس‌های نمایشگاه
+        </label>
+        {exhibitionFaxes.map((phone, index) => (
+          <div key={index} className="flex items-center gap-2 space-x-2">
+            <Input
+              value={phone}
+              placeholder={`فکس ${index + 1}`}
+              onChange={(e) => {
+                const updatedFaxes = [...exhibitionFaxes];
+                updatedFaxes[index] = e.target.value;
+                setExhibitionFaxes(updatedFaxes);
+                setValue('fax', updatedFaxes);
+              }}
+              className="flex-grow"
+            />
+            <ActionIcon
+              onClick={() => {
+                let tmp = exhibitionFaxes.filter((_, i) => i !== index);
+                setExhibitionFaxes(tmp);
+                setValue('fax', tmp);
+              }}
+              variant="flat"
+              color="danger"
+            >
+              <TrashIcon className="h-4 w-4 text-red-light" />
+            </ActionIcon>
+          </div>
+        ))}
+        {exhibitionFaxes.length < 3 && (
+          <Button
+            variant="outline"
+            onClick={() => setExhibitionFaxes([...exhibitionFaxes, ''])}
+          >
+            <PiPlusBold className="me-2 h-4 w-4" /> اضافه کردن فکس جدید
           </Button>
-        </div>
+        )}
+      </div>
 
-        <Input
-            type="url"
-            label="وب‌سایت"
-            placeholder="وب‌سایت"
-            {...register('website')}
-            error={errors.website?.message as string}
-        />
-      </FormGroup>
+      <Input
+        type="url"
+        label="وب‌سایت"
+        placeholder="وب‌سایت"
+        {...register('website')}
+        error={errors.website?.message as string}
+      />
+    </FormGroup>
   );
 }

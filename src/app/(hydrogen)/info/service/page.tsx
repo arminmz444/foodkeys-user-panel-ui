@@ -1,59 +1,93 @@
-"use client"
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import DynamicForm from '../../../../components/DynamicForm';
-import { jsonSchemaToZod } from '@/utils/json-schema-to-zod';
+'use client';
 
-interface ServicePageProps {
-    schema: any;
-    serviceId: string;
-}
-//
-// export const getServerSideProps: GetServerSideProps<ServicePageProps> = async (context) => {
-//     const { id } = context.params as { id: string };
-//
-//     const res = await fetch(`http://localhost:8080/api/services/${id}/schema`);
-//     if (!res.ok) {
-//         return {
-//             notFound: true,
-//         };
-//     }
-//
-//     const schema = await res.json();
-//
-//     return {
-//         props: {
-//             schema,
-//             serviceId: id,
-//         },
-//     };
-// };
+import Link from 'next/link';
+import { routes } from '@/config/routes';
+import { Button } from '@/components/ui/button';
+import PageHeader from '@/app/shared/page-header';
+import { PiArrowLineDownBold, PiPlusBold } from 'react-icons/pi';
+import { productsData } from '@/data/products-data';
+import { exportToCSV } from '@/utils/export-to-csv';
+import CompaniesTable from '@/app/shared/info/service-bank/service/service-list/table';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import dynamic from 'next/dynamic';
+import React, { useState } from 'react';
+import Spinner from '@/components/ui/spinner';
 
-// @ts-ignore
-const ServicePage = ({ schema, serviceId }) => {
-    const zodSchema = jsonSchemaToZod(schema);
+const queryClient = new QueryClient();
 
-    const { register, handleSubmit, formState: { errors }, control } = useForm({
-        resolver: zodResolver(zodSchema),
-        defaultValues: {},
-        mode: 'onSubmit',
-    });
-
-    const onSubmit = (data: any) => {
-        console.log('Form submitted data:', data);
-    };
-
-    return (
-        <div>
-            <h1>Dynamic Form for Service {serviceId}</h1>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <DynamicForm schema={schema} register={register} errors={errors} control={control}/>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    );
+const pageHeader = {
+  title: 'شرکت‌های ثبت شده شما در بانک خدمات',
+  breadcrumb: [
+    {
+      href: routes.info.dashboard,
+      name: 'مدیریت اطلاعات',
+    },
+    {
+      href: routes.info.foodIndustryList,
+      name: 'بانک خدمات',
+    },
+    {
+      name: 'لیست',
+    },
+  ],
 };
 
-export default ServicePage;
+export default function ServiceBankPage() {
+  function handleExportData() {
+    exportToCSV(
+      productsData,
+      'ID,Name,Category,Product Thumbnail,SKU,Stock,Price,Status,Rating',
+      'product_data'
+    );
+  }
+
+  const MapSelector = dynamic(() => import('@/components/MapSelector'), {
+    ssr: false,
+    loading: () => <Spinner className="col-span-full h-[143px]" />,
+  });
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  const handleLocationSelect = (coords: { lat: number; lng: number }) => {
+    setSelectedLocation(coords);
+  };
+
+  const saveLocation = () => {
+    if (selectedLocation) {
+      console.log('Saved Location:', selectedLocation);
+    }
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
+        <div className="mt-4 flex items-center gap-3 @lg:mt-0">
+          <Button
+            variant="outline"
+            className="w-full @lg:w-auto"
+            onClick={() => handleExportData()}
+          >
+            <PiArrowLineDownBold className="me-1.5 h-[17px] w-[17px]" />
+            استخراج
+          </Button>
+          <Link
+            href={routes.info.foodIndustryAdd}
+            className="w-full @lg:w-auto"
+          >
+            <Button
+              tag="span"
+              className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
+            >
+              <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
+              ثبت شرکت جدید
+            </Button>
+          </Link>
+        </div>
+      </PageHeader>
+
+      <CompaniesTable category={1} />
+    </QueryClientProvider>
+  );
+}

@@ -98,6 +98,7 @@ export default function EditCompanyPage({
       // },
     ],
   };
+
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>

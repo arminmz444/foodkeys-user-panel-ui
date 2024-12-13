@@ -91,39 +91,53 @@
 // export default AdditionalDescription;
 
 import FormGroup from '@/app/shared/form-group';
-import QuillLoader from '@/components/loader/quill-loader';
+import ItemCrud from '@/app/shared/item-crud';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { Textarea } from 'rizzui';
 
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-    ssr: false,
-    loading: () => <QuillLoader />,
-});
+export default function ExhibitionDescription({
+  className,
+}: {
+  className?: string;
+}) {
+  const {
+    control,
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext();
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const watchedKeywords = watch('keywords', []);
 
-export default function ExhibitionDescription({ className }: { className?: string }) {
-    const { control, formState: { errors } } = useFormContext();
-
-    return (
-        <FormGroup
-            title="توضیحات نمایشگاه"
-            description="شامل توضیحات نمایشگاه"
-            className={cn(className)}
-        >
-            <Controller
-                name="description"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                    <QuillEditor
-                        value={value}
-                        onChange={onChange}
-                        label="توضیحات نمایشگاه*"
-                    />
-                )}
-            />
-            {errors.description && (
-                <p className="text-red-500">{errors.description.message}</p>
-            )}
-        </FormGroup>
-    );
+  useEffect(() => {
+    if (watchedKeywords && watchedKeywords?.length)
+      setKeywords(watchedKeywords);
+  }, [watchedKeywords]);
+  return (
+    <FormGroup
+      title="توضیحات نمایشگاه"
+      description="شامل توضیحات نمایشگاه و کلمات کلیدی ..."
+      className={cn(className)}
+    >
+      <Textarea
+        label="توضیحات*"
+        placeholder="توضیحات"
+        {...register('description')}
+        error={errors.description?.message as string}
+        rows={5}
+        className="col-span-full"
+      />
+      <div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <ItemCrud
+          name="کلمه کلیدی"
+          items={keywords}
+          setItems={setKeywords}
+          registerName="keywords"
+        />
+      </div>
+    </FormGroup>
+  );
 }

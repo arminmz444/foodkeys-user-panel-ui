@@ -98,7 +98,6 @@ export default function EditCompanyPage({
       // },
     ],
   };
-  // @ts-ignore
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
