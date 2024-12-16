@@ -12,7 +12,7 @@ const reviewData = [
     id: 1,
     rating: 4,
     description: 'رضایت‌بخش در هر لحاظ. خدمات و کیفیت بهترین مراتب بود.',
-    name: 'صادق قاسم نژاد',
+    name: 'آرمین مظفری',
     date: '7 فروردین, 1402',
     images: [
       'https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/products/review/1.webp',

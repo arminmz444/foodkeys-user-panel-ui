@@ -8,7 +8,7 @@ export default async function AnalyticsPage() {
     // console.log('analyticsPage', tokenStatus);
     //
     // if (tokenStatus.type === CONTEXT_ACTION.LOGOUT) {
-    //     redirect('/login');
+    //     // redirect('/login');
     // }
     return (
         <>

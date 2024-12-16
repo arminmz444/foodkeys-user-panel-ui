@@ -4,5 +4,6 @@ import MainDashboard from '@/app/shared/dashboard2';
 
 export default function FileDashboardPage() {
   // return <FileDashboard />;
-  return <MainDashboard name="آرمین" />;
+
+  return <MainDashboard/>;
 }

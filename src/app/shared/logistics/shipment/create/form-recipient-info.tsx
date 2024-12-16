@@ -25,7 +25,7 @@ export default function FormRecipientInfo({
     >
       <Input
         label="نام"
-        placeholder="صادق قاسم نژاد"
+        placeholder="آرمین مظفری"
         labelClassName="font-medium text-gray-900"
         {...register('recipientName')}
         error={errors.recipientName?.message as string}

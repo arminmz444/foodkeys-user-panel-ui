@@ -1,13 +1,16 @@
-import ProfileHeader from '@/app/shared/profile/profile-header';
-import ProfileDetails from '@/app/shared/profile/profile-details';
-import PersonalInfoView from "@/app/shared/account-settings/personal-info";
+import ProfileSettingsView from '@/app/shared/account-settings/profile-settings';
 
-export default function ProfilePage() {
+export default function ProfileSettingsFormPage() {
   return (
-    <div className="@container">
-      <ProfileHeader />
-        <PersonalInfoView />
-      {/*<ProfileDetails />*/}
-    </div>
+    <ProfileSettingsView
+      settings={{
+        first_name: 'آرمین',
+        website: 'www.foodkeys.com',
+        email: 'dev@foodkeys.com',
+        role: 'software_engineer',
+        description:
+          '<p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و  .</p>',
+      }}
+    />
   );
 }

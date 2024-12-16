@@ -108,10 +108,21 @@ export default function CreateExhibition({
     } catch (error) {
       console.error('Error fetching subscription:', error);
       toast.error(
-        '\nشرکت شما با موفقیت ثبت شد اما هنگام دریافت وضعیت اشتراک شما، خطایی رخ داده است\n' +
-          '\nدر صورتی که اشتراک فعال برای بانک خدمات ندارید، با زدن رو دکمه زیر تهیه کنید\n' +
-          +'\n\n' +
-          '\n خرید اشتراک \n'
+        <div>
+          <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
+          <Text>
+            {'اما هنگام دریافت وضعیت اشتراک شما، خطایی رخ داده است.\n' +
+              'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'}
+          </Text>
+          <Button
+            className="mt-3"
+            size="sm"
+            onClick={() => console.log('DISMISS')}
+          >
+            خرید اشتراک
+          </Button>
+        </div>,
+        { duration: 60000 }
       );
     }
   };

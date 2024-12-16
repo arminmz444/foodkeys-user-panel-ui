@@ -78,7 +78,7 @@ export default function CompanySummary({
   useEffect(() => {
     const fetchCompanyTypes = async () => {
       try {
-        const response = await _axios.get(`/company/type`);
+        const response = await _axios.get(`/company/fetch/type`);
         if (response.data.status === 'SUCCESS') {
           setCompanyTypeOptions(response.data.data);
         }

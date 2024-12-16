@@ -18,7 +18,7 @@ export default function SignUp() {
       description="بازدید کننده گرامی از حسن نظر حضرتعالی سپاسگزاریم، خواهشمند است جهت استفاده از امکانات سایت و معرفی کسب و کار خود در حوضه صنایع غذایی و کشاورزی، فرم زیر را تکمیل نمایید."
       bannerTitle="ساده‌ترین روش برای مدیریت فضای کاری خود."
       bannerDescription="لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و "
-      isSocialLoginActive={true}
+      isSocialLoginActive={false}
       pageImage={
         <div className="absolute right-0 top-1/2 aspect-[3/1.484] w-[320px] -translate-y-1/2 translate-x-1/2 xl:w-[420px] 2xl:w-[520px]">
           <Image

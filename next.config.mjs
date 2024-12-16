@@ -20,6 +20,7 @@ const nextConfig = {
     ignoreBuildErrors: true
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -69,11 +70,66 @@ const nextConfig = {
       },
       {
         protocol: 'http',
+        hostname: 'foodkeys-api-dev:8080',
+      },
+      {
+        protocol: 'http',
+        hostname: 'foodkeys-api-dev',
+        port: '8080',
+        pathname: '/files/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.foodkeys-api-dev.liara.run',
+        port: '80',
+        pathname: '/files/**',
+      },
+      {
+        protocol: 'http',
         hostname: 'localhost',
         port: '8080',
         pathname: '/files/**',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000'
+      },
+      {
+        protocol: 'http',
+        hostname: 'foodkeys-userpanel-dev',
+        port: '3000'
+      },
+      {
+        protocol: 'http',
+        hostname: 'foodkeys-userpanel-dev:3000'
+      },
+      {
+        protocol: 'https',
+        hostname: 'foodkeys-userpanel-dev.liara.run',
+      },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Authorization, Content-Type',
+          },
+        ],
+      },
+    ];
   },
 };
 

@@ -50,16 +50,16 @@ export default function AuthWrapperOne({
   }
   return (
     <>
-      <Button
-        // href={'/login'}
-        onClick={() => setStep('PASSWORD')}
-        className="sticky start-0 top-0 z-20 flex items-center justify-center bg-[#129974] p-3.5 text-sm font-medium text-white md:p-4 lg:hidden"
-      >
-        <PiArrowRightBold />
-        <Text className="font-iransans font-iransans ms-1">
-          ورود از طریق رمز عبور
-        </Text>
-      </Button>
+      {/*<Button*/}
+      {/*  // href={'/login'}*/}
+      {/*  onClick={() => setStep('PASSWORD')}*/}
+      {/*  className="sticky start-0 top-0 z-20 flex items-center justify-center bg-[#129974] p-3.5 text-sm font-medium text-white md:p-4 lg:hidden"*/}
+      {/*>*/}
+      {/*  <PiArrowRightBold />*/}
+      {/*  <Text className="font-iransans font-iransans ms-1">*/}
+      {/*    ورود از طریق رمز عبور*/}
+      {/*  </Text>*/}
+      {/*</Button>*/}
 
       <div className="min-h-screen justify-between gap-x-8 px-4 py-8 pt-5 md:pt-6 lg:flex lg:p-6 xl:gap-x-10 xl:p-7 2xl:p-10 2xl:pt-5 [&>div]:min-h-[calc(100vh-80px)]">
         <div className="relative flex w-full items-center justify-center lg:w-5/12 2xl:justify-end 2xl:pe-24">

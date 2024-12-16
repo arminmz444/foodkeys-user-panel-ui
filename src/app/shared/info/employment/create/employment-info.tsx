@@ -20,20 +20,6 @@ import { PhotoProvider, PhotoView } from 'react-photo-view';
 import { DatePicker } from '@/components/ui/datepicker';
 import { RadioGroup } from '@/components/ui/radio-group';
 
-const Select = dynamic(() => import('@/components/ui/select'), {
-  ssr: false,
-  loading: () => <SelectLoader />,
-});
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
-
-// const fetchSubcategories = async () => {
-//   const { data } = await axios.get('http://localhost:8080/api/v1/category/1/subcategory');
-//   return data;
-// };
-
 const placementType = [
   {
     value: '1',
@@ -49,8 +35,6 @@ const placementType = [
   },
 ];
 export default function EmploymentInfo({ className }: { className?: string }) {
-  // const { data: subcategories, isLoading, error } = useQuery('subcategories', fetchSubcategories);
-
   const [logo, setLogo] = useState<File | null>(null);
   const [logoLoading, setLogoLoading] = useState<boolean>(false);
   const [logoProgress, setLogoProgress] = useState<number>(0);
@@ -145,9 +129,6 @@ export default function EmploymentInfo({ className }: { className?: string }) {
     name: 'brands',
   });
 
-  // const addCustomField = useCallback(() => {
-  //   if (fields.length < 3) append([...brands]);
-  // }, [append, brands, fields.length]);
   return (
     <>
       <FormGroup

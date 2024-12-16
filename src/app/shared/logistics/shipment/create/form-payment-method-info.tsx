@@ -112,7 +112,7 @@ export default function FormPaymentMethodInfo({
       />
       <Input
         label="پرداخت کننده"
-        placeholder="صادق قاسم نژاد"
+        placeholder="آرمین مظفری"
         labelClassName="font-medium text-gray-900"
         {...register('payeeName')}
         error={errors.payeeName?.message as string}

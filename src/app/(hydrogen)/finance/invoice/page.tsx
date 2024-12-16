@@ -13,7 +13,7 @@ import {QueryClient, QueryClientProvider} from "react-query";
 const queryClient = new QueryClient()
 
 const pageHeader = {
-  title: 'لیست سفارش',
+  title: 'لیست فاکتور‌ها (در دست ساخت)',
   breadcrumb: [
     {
       href: routes.finance.dashboard,

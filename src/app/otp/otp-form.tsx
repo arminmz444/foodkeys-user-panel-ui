@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
+import {SEND_OTP_SCENARIOS} from "@/core/dto/enums/send-otp-scenarios";
 
 type FormValues = {
   phoneNumber: string;
@@ -21,7 +22,8 @@ type SendOtpFormValues = {
   phoneNumber: string;
 };
 
-export default function OtpForm() {
+// @ts-ignore
+export default function OtpForm({ setStep }) {
   // @ts-ignore
   const { loginOtp, requestOtp } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -49,11 +51,17 @@ export default function OtpForm() {
       setLoading(true);
       // setOtpSent(true);
       // setOtpValues(['', '', '', '', '', '']);
-      const isOtpSent = await requestOtp(data.phoneNumber);
-      if (isOtpSent) {
+      const sendOtpScenario = await requestOtp(data.phoneNumber);
+      if (sendOtpScenario === SEND_OTP_SCENARIOS.REGISTERED) {
         setOtpSent(true);
         setPhoneNumber(data.phoneNumber);
-      }
+      } else if (sendOtpScenario === SEND_OTP_SCENARIOS.NEED_TO_REGISTER)
+        setStep("SIGNUP")
+      else if (sendOtpScenario === SEND_OTP_SCENARIOS.IS_BLOCKED) {
+        setOtpSent(true);
+        setPhoneNumber(data.phoneNumber);
+        setStep("BLOCKED")
+      } else throw new Error("Failed to send otp");
     } catch (error) {
       console.error(error);
       toast.error('خطا در ارسال کد یکبار مصرف');

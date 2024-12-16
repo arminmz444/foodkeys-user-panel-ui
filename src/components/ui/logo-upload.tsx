@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Progressbar } from 'rizzui';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 
-const STATIC_FILE_URL = 'http://localhost:8080';
+const STATIC_FILE_URL = 'https://foodkeys-api-dev.liara.run';
 const inputClasses = {
   base: 'p-5 md:ps-10 relative border rounded-xl cursor-pointer duration-75 ease-in-out focus:ring',
   flex: 'flex flex-col items-center gap-4',

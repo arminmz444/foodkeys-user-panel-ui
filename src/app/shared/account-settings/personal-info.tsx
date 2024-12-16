@@ -29,6 +29,9 @@ import useAxiosPrivate from "@/hooks/use-axios-private";
 import {AuthContext} from "@/context/AuthContext";
 import {CONTEXT_ACTION} from "@/core/dto/enums/context-action";
 import {CLIENT_STATIC_FILES_PATH} from "next/constants";
+import * as process from "node:process";
+import {login} from "@/store/userSlice";
+import {useDispatch} from "react-redux";
 
 const SelectBox = dynamic(() => import('@/components/ui/select'), {
     ssr: false,
@@ -113,11 +116,12 @@ const personalInfoFormSchema = z.object({
 // generate form types from zod validation schema
 type PersonalInfoFormTypes = z.infer<typeof personalInfoFormSchema>;
 
-export default function PersonalInfoView() {
+// @ts-ignore
+export default function PersonalInfoView({ user }) {
     // @ts-ignore
-    const {state, dispatch} = useContext(AuthContext);
+    const dispatch = useDispatch()
     const _axios = useAxiosPrivate();
-    const STATIC_FILE_PATH = "http://localhost:8080"
+    const STATIC_FILE_PATH = 'https://foodkeys-api-dev.liara.run'
     const imageRef = useRef<HTMLInputElement>(null);
     const userImgRef = useRef<HTMLInputElement>(null);
     const [isLoading, setLoading] = useState(false);
@@ -127,7 +131,7 @@ export default function PersonalInfoView() {
     const [provinces, setProvinces] = useState([]);
     const [cities, setCities] = useState([]);
     const [selectedProvince, setSelectedProvince] = useState(null);
-    const {user} = state;
+    // const {user} = state;
     useEffect(() => {
         const fetchProvinces = async () => {
             try {
@@ -245,9 +249,9 @@ export default function PersonalInfoView() {
 
             data['provinceId'] = data['provinceId']['value'];
             data['cityId'] = data['cityId']['value'];
-            const response = await _axios.put('/user', data);
+            const response = await _axios.put('/user/profile', data);
             if (response.data.statusCode === 200) {
-                dispatch({type: CONTEXT_ACTION.SET_USER, payload: response.data.data});
+                dispatch(login(response.data.data))
                 toast.success(<Text tag="b">پروفایل با موفقیت بروزرسانی شد!</Text>);
             }
         } catch (error) {

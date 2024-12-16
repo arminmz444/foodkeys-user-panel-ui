@@ -45,7 +45,7 @@ const p7 = `'لورم ایپسوم متن ساختگی با تولید سادگ�
 
 // @ts-ignore
 export default function MessageBody({ messages }) {
-  const STATIC_FILES_URL = 'http://localhost:8080';
+  const STATIC_FILES_URL = 'https://foodkeys-api-dev.liara.run';
   const _axios = useAxiosPrivate();
   // const data = useAtomValue(dataAtom);
   const messageId = useAtomValue(messageIdAtom);
@@ -140,8 +140,8 @@ export default function MessageBody({ messages }) {
         const sanitizedContent = DOMPurify.sanitize(message.messageContent);
         const downloadFile = async () => {
           const fileUrl =
-            // 'http://localhost:8080/files/TICKET_ATTACHMENT/6c5f09e1-37a1-49cc-b5dc-f2d775a930a0.jpg';
-            'http://localhost:8080/files/RESELLER_SERVICE_FILE/1733819338012d7948648-8426-4f1f-901e-591f90172b08.pdf';
+            // 'https://foodkeys-api-dev.liara.run/files/TICKET_ATTACHMENT/6c5f09e1-37a1-49cc-b5dc-f2d775a930a0.jpg';
+            'https://foodkeys-api-dev.liara.run/files/RESELLER_SERVICE_FILE/1733819338012d7948648-8426-4f1f-901e-591f90172b08.pdf';
           const fileName = 'attachment.pdf';
 
           try {

@@ -380,7 +380,7 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
         break;
     }
     const createSubscription = async () => {
-      const API_URL = `http://localhost:8080/api/v1/subscription`
+      const API_URL = `https://foodkeys-api-dev.liara.run/api/v1/subscription`
       let data = {
         "bundleId": bundleId,
       }
@@ -423,7 +423,7 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
         break;
     }
     const applyDiscount = async () => {
-      const API_URL = `http://localhost:8080/api/v1/discount/${encodeURIComponent(discountCode)}/use`
+      const API_URL = `https://foodkeys-api-dev.liara.run/api/v1/discount/${encodeURIComponent(discountCode)}/use`
       try {
         const response = await axiosInstance.post(API_URL, {});
 

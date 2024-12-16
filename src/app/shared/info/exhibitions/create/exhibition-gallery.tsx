@@ -66,7 +66,7 @@ export default function ExhibitionGallery({
       ]);
       if (fileIds.length > 0) {
         setValue('logo', fileIds[0]);
-        setDataFileIds((prev) => [...prev, ...fileIds]); // Add new file ID to the list
+        setDataFileIds((prev) => [...prev, ...fileIds]);
         setValue('dataFileIds', [...dataFileIds, ...fileIds]);
         setImages((prev) => [...prev, uploadedFile]);
         // toast.success('فایل با موفقیت آپلود شد.');

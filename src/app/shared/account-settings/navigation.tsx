@@ -9,34 +9,34 @@ import { usePathname } from 'next/navigation';
 import cn from '@/utils/class-names';
 
 const menuItems = [
-  {
-    label: 'جزییات من',
-    value: '/forms/profile-settings',
-  },
+  // {
+  //   label: 'جزییات من',
+  //   value: '/forms/profile-settings',
+  // },
   {
     label: 'پروفایل',
-    value: '/forms/profile-settings/profile',
+    value: '/profile',
   },
   {
     label: 'رمز عبور',
-    value: '/forms/profile-settings/password',
+    value: '/profile/password',
   },
-  {
-    label: 'تیم',
-    value: '/forms/profile-settings/team',
-  },
-  {
-    label: 'پرداخت',
-    value: '/forms/profile-settings/billing',
-  },
+  // {
+  //   label: 'تیم',
+  //   value: '/forms/profile-settings/team',
+  // },
+  // {
+  //   label: 'پرداخت',
+  //   value: '/forms/profile-settings/billing',
+  // },
   {
     label: 'پیام ها',
-    value: '/forms/profile-settings/notification',
+    value: '/profile/notification',
   },
-  {
-    label: 'تعاملات',
-    value: '/forms/profile-settings/integration',
-  },
+  // {
+  //   label: 'تعاملات',
+  //   value: '/forms/profile-settings/integration',
+  // },
 ];
 
 export default function ProfileSettingsNav() {

@@ -42,7 +42,7 @@ export default function Login() {
             </div>
           }
         >
-          <OtpForm />
+          <OtpForm setStep={setStep}/>
         </AuthWrapperOne>
       )}
       {step === 'SIGNUP' && (

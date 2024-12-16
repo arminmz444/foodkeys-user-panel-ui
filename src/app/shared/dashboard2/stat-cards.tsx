@@ -150,7 +150,7 @@ const revenueData = [
 
 const eComDashboardStatData = [
   {
-    id: '1',
+    id: 'companyCount',
     icon: <PiBuildings className="h-6 w-6" />,
     title: 'تعداد شرکت‌ها',
     metric: '2',
@@ -163,7 +163,7 @@ const eComDashboardStatData = [
     countName: 'شرکت‌ها',
   },
   {
-    id: '2',
+    id: 'visitCount',
     icon: <PiEye className="h-6 w-6" />,
     title: 'تعداد بازدید‌ها',
     metric: '57,890',
@@ -176,7 +176,7 @@ const eComDashboardStatData = [
     countName: 'بازدید',
   },
   {
-    id: '3',
+    id: 'credit',
     icon: <PiWallet className="h-6 w-6" />,
     title: 'اعتبار کیف پول',
     metric: '12,390 تومان',
@@ -193,14 +193,17 @@ export default function StatCards({
 }: {
   className?: string;
   dashboardStatsData: {
-    id: string;
-    Icon: ReactNode;
-    title: string;
-    metric: string;
-    style: string;
-    fill: string;
-    chart: { day: string; count: number }[];
-    countName: string;
+    companyCount: number,
+    visitCount: number,
+    credit: number
+    // id: string;
+    // Icon: ReactNode;
+    // title: string;
+    // metric: string;
+    // style: string;
+    // fill: string;
+    // chart: { day: string; count: number }[];
+    // countName: string;
   }[];
 }) {
   return (
@@ -211,13 +214,13 @@ export default function StatCards({
         <MetricCard
           key={stat.title}
           title={stat.title}
-          metric={stat.metric}
+          metric={dashboardStatsData[stat.id] || 'در حال بروزرسانی ...'}
           metricClassName="lg:text-[22px]"
           icon={stat.icon}
           // icon={stat.Icon}
           iconClassName={cn(
             '[&>svg]:w-10 [&>svg]:h-8 lg:[&>svg]:w-11 lg:[&>svg]:h-9 w-auto h-auto p-0 bg-transparent -mx-1.5',
-            stat.id === '1' &&
+            stat.id === 'companyCount' &&
               '[&>svg]:w-9 [&>svg]:h-7 lg:[&>svg]:w-[42px] lg:[&>svg]:h-[34px]',
             stat.style
           )}

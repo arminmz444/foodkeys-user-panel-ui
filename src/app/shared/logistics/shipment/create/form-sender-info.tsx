@@ -23,7 +23,7 @@ export default function FormSenderInfo({ className }: FormSenderInfoProps) {
     >
       <Input
         label="نام"
-        placeholder="صادق قاسم نژاد"
+        placeholder="آرمین مظفری"
         labelClassName="font-medium text-gray-900"
         {...register('senderName')}
         error={errors.senderName?.message as string}

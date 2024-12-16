@@ -5,7 +5,7 @@ import {CONTEXT_ACTION} from '@/core/dto/enums/context-action';
 
 const useRefreshToken = () => {
     // @ts-ignore
-    const { dispatch } = useAuth()
+    const { dispatch, logout } = useAuth()
 
     return async () => {
         try {
@@ -19,7 +19,8 @@ const useRefreshToken = () => {
             return newToken;
         } catch (error) {
             console.error('Error refreshing token', error);
-            dispatch({type: CONTEXT_ACTION.LOGOUT});
+            // dispatch({type: CONTEXT_ACTION.LOGOUT});
+            logout()
             throw error;
         }
     };

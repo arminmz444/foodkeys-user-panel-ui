@@ -37,6 +37,7 @@ const useAxiosPrivate = () => {
                         originalRequest.headers.Authorization = `Bearer ${newToken}`;
                         return axiosInstance(originalRequest);
                     } catch (err) {
+
                         dispatch({ type: 'LOGOUT' });
                         return Promise.reject(err);
                     }

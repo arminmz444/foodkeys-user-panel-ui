@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT ||
-  'http://localhost:8080/api/v1/client/panel';
+  'https://foodkeys-api-dev.liara.run/api/v1/client/panel';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,

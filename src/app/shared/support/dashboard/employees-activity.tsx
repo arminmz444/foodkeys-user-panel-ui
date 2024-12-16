@@ -19,7 +19,7 @@ import DropdownAction from '@/components/charts/dropdown-action';
 
 const dailyData = [
   {
-    label: 'صادق قاسم نژاد',
+    label: 'آرمین مظفری',
     delivered: 56,
     overdue: 49,
     assigned: 35,
@@ -52,7 +52,7 @@ const dailyData = [
 
 const monthlyData = [
   {
-    label: 'صادق قاسم نژاد',
+    label: 'آرمین مظفری',
     delivered: 685,
     overdue: 180,
     assigned: 1242,

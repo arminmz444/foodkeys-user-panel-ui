@@ -1,14 +1,8 @@
 import FormGroup from '@/app/shared/form-group';
-import QuillLoader from '@/components/loader/quill-loader';
 import cn from '@/utils/class-names';
-import dynamic from 'next/dynamic';
 import React from 'react';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { Textarea } from 'rizzui';
 
 const EmploymentDescription = ({ className }: { className?: string }) => {
   const {
@@ -26,18 +20,13 @@ const EmploymentDescription = ({ className }: { className?: string }) => {
       description="شامل متن آگهی"
       className={cn(className)}
     >
-      <Controller
-        control={control}
-        name="description"
-        render={({ field: { onChange, value } }) => (
-          <QuillEditor
-            value={value}
-            onChange={onChange}
-            label="متن آگهی*"
-            className="col-span-full [&_.ql-editor]:min-h-[100px]"
-            labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-          />
-        )}
+      <Textarea
+        label="توضیحات*"
+        placeholder="توضیحات"
+        {...register('description')}
+        error={errors.description?.message as string}
+        rows={5}
+        className="col-span-full"
       />
     </FormGroup>
   );

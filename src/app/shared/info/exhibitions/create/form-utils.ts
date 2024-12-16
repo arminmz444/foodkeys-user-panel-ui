@@ -12,7 +12,7 @@ export function defaultValues(event?: CreateEventInput) {
     country: event?.country ?? '',
     endDate: event?.endDate ?? '',
     website: event?.website ?? '',
-    category: event?.category ?? null,
+    category: event?.category ?? {},
     keywords: event?.keywords ?? [],
     organizer: event?.organizer ?? '',
     startDate: event?.startDate ?? '',

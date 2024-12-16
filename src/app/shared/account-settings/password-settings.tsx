@@ -119,8 +119,8 @@ export default function PasswordSettingsView({
             return (
                 <>
                   <ProfileHeader
-                      title="صادق قاسم نژاد"
-                      description="olivia@example.com"
+                      title="آرمین مظفری"
+                      description="dev@foodkeys.com"
                   />
 
                   <div className="mx-auto w-full max-w-screen-2xl">

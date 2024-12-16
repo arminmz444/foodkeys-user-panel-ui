@@ -17,7 +17,7 @@ import { PiHand } from 'react-icons/pi';
 import { TbExclamationMark } from 'react-icons/tb';
 import { FaRankingStar } from 'react-icons/fa6';
 
-const STATIC_FILE_URL = 'http://localhost:8080';
+const STATIC_FILE_URL = 'https://foodkeys-api-dev.liara.run';
 const companyStatusDict: any = {
   PENDING: 'در انتظار تایید',
   VERIFIED: 'تایید شده',

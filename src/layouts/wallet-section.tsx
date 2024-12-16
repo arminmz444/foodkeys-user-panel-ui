@@ -9,13 +9,13 @@ const WalletSection = () => {
   const _axios = useAxiosPrivate();
   const wallet = useSelector((state: RootState) => state.wallet);
   const [isLoading, setIsLoading] = useState(false);
-  const [actualCredit, setActualCredit] = useState(0);
+  // const [actualCredit, setActualCredit] = useState(0);
   const dispatch = useDispatch();
   const fetchWalletCredit = async () => {
     try {
       const response = await _axios.get('/user/credit');
       if (response.data.status === 'SUCCESS') {
-        setActualCredit(response.data.data);
+        // setActualCredit(response.data.data);
         dispatch(setCredit(response.data.data));
       }
     } catch (error) {

@@ -22,13 +22,39 @@ import ProfitChart from '@/app/shared/dashboard2/profit';
 import FleetStatus from '@/app/shared/logistics/dashboard/fleet-status';
 import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import {useEffect, useState} from "react";
+import useAxiosPrivate from "@/hooks/use-axios-private";
+import toast from "react-hot-toast";
+import {useSelector} from "react-redux";
+import {RootState} from "@/store/store";
 
 const queryClient = new QueryClient();
 
 interface Props {
   name: string;
 }
-export default function MainDashboard({ name }: Props) {
+export default function MainDashboard() {
+  const user = useSelector((state: RootState) => state.user);
+  const name = user?.firstName || 'کاربر'
+  const _axios = useAxiosPrivate()
+  const [loading, setLoading] = useState(true)
+  const [dashboardData, setDashboardData] = useState({})
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        setLoading(true)
+        const response = await _axios.get("/dashboard", {headers: {"Content-Type": "application/json"}})
+        if (response.status === 200) {
+          setLoading(false)
+          setDashboardData(response.data.data)
+        }
+      } catch (e) {
+        console.log('Error fetching dashboard info: ', e)
+        toast.error('خطا در دریافت اطلاعات از سرور')
+      }
+    }
+fetchDashboard()
+  }, [_axios]);
   return (
     <div className="@container">
       <div className="grid grid-cols-1 gap-6 @4xl:grid-cols-2 @7xl:grid-cols-12 3xl:gap-8">
@@ -67,6 +93,7 @@ export default function MainDashboard({ name }: Props) {
         </WelcomeBanner>
 
         <StatCards
+            dashboardStatsData={dashboardData}
           // dashboardStatsData={}
           className="@2xl:grid-cols-3 @3xl:gap-6 @4xl:col-span-2 @7xl:col-span-8"
         />

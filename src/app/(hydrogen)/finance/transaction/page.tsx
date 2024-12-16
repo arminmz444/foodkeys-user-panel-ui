@@ -14,15 +14,15 @@ import TransactionsTable from '@/app/shared/finance/transaction/transaction-list
 const queryClient = new QueryClient();
 
 const pageHeader = {
-  title: 'لیست سفارش',
+  title: 'لیست تراکنشات شما در سایت',
   breadcrumb: [
     {
       href: routes.finance.dashboard,
       name: 'مدیریت مالی',
     },
     {
-      href: routes.invoice.home,
-      name: 'فاکتور',
+      href: routes.finance.transactionList,
+      name: 'تراکنش',
     },
     {
       name: 'لیست',

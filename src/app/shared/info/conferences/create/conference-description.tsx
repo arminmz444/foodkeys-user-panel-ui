@@ -1,46 +1,51 @@
 import FormGroup from '@/app/shared/form-group';
-import QuillLoader from '@/components/loader/quill-loader';
+import ItemCrud from '@/app/shared/item-crud';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
-import React from 'react';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import { Textarea } from 'rizzui';
 
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
-
-const ConferenceDescription = ({ className }: { className?: string }) => {
+export default function ConferenceDescription({
+  className,
+}: {
+  className?: string;
+}) {
   const {
-    register,
     control,
+    register,
+    watch,
     formState: { errors },
   } = useFormContext();
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'brands',
-  });
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const watchedKeywords = watch('keywords', []);
+
+  useEffect(() => {
+    if (watchedKeywords && watchedKeywords?.length)
+      setKeywords(watchedKeywords);
+  }, [watchedKeywords]);
   return (
     <FormGroup
-      title="توضیحات"
-      description="شامل توضیحات همایش"
+      title="توضیحات همایش"
+      description="شامل توضیحات همایش و کلمات کلیدی ..."
       className={cn(className)}
     >
-      <Controller
-        control={control}
-        name="description"
-        render={({ field: { onChange, value } }) => (
-          <QuillEditor
-            value={value}
-            onChange={onChange}
-            label="توضیحات همایش*"
-            className="col-span-full [&_.ql-editor]:min-h-[100px]"
-            labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-          />
-        )}
+      <Textarea
+        label="توضیحات*"
+        placeholder="توضیحات همایش"
+        {...register('description')}
+        error={errors.description?.message as string}
+        rows={5}
+        className="col-span-full"
       />
+      <div className="col-span-full grid grid-cols-1 gap-4 xl:grid-cols-2">
+        <ItemCrud
+          name="کلمه کلیدی"
+          items={keywords}
+          setItems={setKeywords}
+          registerName="keywords"
+        />
+      </div>
     </FormGroup>
   );
-};
-
-export default ConferenceDescription;
+}

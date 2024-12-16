@@ -61,104 +61,104 @@ export const menuItems = [
     icon: <CgProfile />,
   },
   // label end
-  {
-    name: 'مدیریت فایل ها',
-    href: '/',
-    // href: routes.file.dashboard,
-    icon: <PiFileImageDuotone />,
-  },
-  {
-    name: 'آمار و حساب',
-    href: routes.logistics.dashboard,
-    icon: <PiPackageDuotone />,
-  },
-  {
-    name: 'ایکامرس',
-    href: routes.eCommerce.dashboard,
-    icon: <PiShoppingCartDuotone />,
-  },
-  {
-    name: 'آنالیز',
-    href: routes.analytics,
-    icon: <PiChartBarDuotone />,
-  },
-  {
-    name: 'پشتیبانی',
-    href: routes.support.dashboard,
-    icon: <PiHeadsetDuotone />,
-  },
+  // {
+  //   name: 'مدیریت فایل ها',
+  //   href: '/',
+  //   // href: routes.file.dashboard,
+  //   icon: <PiFileImageDuotone />,
+  // },
+  // {
+  //   name: 'آمار و حساب',
+  //   href: routes.logistics.dashboard,
+  //   icon: <PiPackageDuotone />,
+  // },
+  // {
+  //   name: 'ایکامرس',
+  //   href: routes.eCommerce.dashboard,
+  //   icon: <PiShoppingCartDuotone />,
+  // },
+  // {
+  //   name: 'آنالیز',
+  //   href: routes.analytics,
+  //   icon: <PiChartBarDuotone />,
+  // },
+  // {
+  //   name: 'پشتیبانی',
+  //   href: routes.support.dashboard,
+  //   icon: <PiHeadsetDuotone />,
+  // },
   // label start
-  {
-    name: 'بسته نرم‌افزاری (Apps Kit)',
-  },
-  // label end
-  {
-    name: 'ایکامرس',
-    href: '#',
-    icon: <PiShoppingCartDuotone />,
-    dropdownItems: [
-      {
-        name: 'محصولات',
-        href: routes.eCommerce.products,
-      },
-      {
-        name: 'جزییات محصول',
-        href: routes.eCommerce.productDetails(DUMMY_ID),
-      },
-      {
-        name: 'ساخت محصول',
-        href: routes.eCommerce.createProduct,
-      },
-      {
-        name: 'ویرایش محصول',
-        href: routes.eCommerce.ediProduct(DUMMY_ID),
-      },
-      {
-        name: 'دسته بندی',
-        href: routes.eCommerce.categories,
-      },
-      {
-        name: 'ساخت دسته بندی',
-        href: routes.eCommerce.createCategory,
-      },
-      {
-        name: 'ویرایش دسته بندی',
-        href: routes.eCommerce.editCategory(DUMMY_ID),
-      },
-      {
-        name: 'سفارشات',
-        href: routes.eCommerce.orders,
-      },
-      {
-        name: 'جزییات سفارش',
-        href: routes.eCommerce.orderDetails(DUMMY_ID),
-      },
-      {
-        name: 'ساخت سفارش',
-        href: routes.eCommerce.createOrder,
-      },
-      {
-        name: 'ویرایش سفارش',
-        href: routes.eCommerce.editOrder(DUMMY_ID),
-      },
-      {
-        name: 'تظرات',
-        href: routes.eCommerce.reviews,
-      },
-      {
-        name: 'خرید',
-        href: routes.eCommerce.shop,
-      },
-      {
-        name: 'سبد خرید',
-        href: routes.eCommerce.cart,
-      },
-      {
-        name: 'پرداخت و تسویه حساب',
-        href: routes.eCommerce.checkout,
-      },
-    ],
-  },
+  // {
+  //   name: 'بسته نرم‌افزاری (Apps Kit)',
+  // },
+  // // label end
+  // {
+  //   name: 'ایکامرس',
+  //   href: '#',
+  //   icon: <PiShoppingCartDuotone />,
+  //   dropdownItems: [
+  //     {
+  //       name: 'محصولات',
+  //       href: routes.eCommerce.products,
+  //     },
+  //     {
+  //       name: 'جزییات محصول',
+  //       href: routes.eCommerce.productDetails(DUMMY_ID),
+  //     },
+  //     {
+  //       name: 'ساخت محصول',
+  //       href: routes.eCommerce.createProduct,
+  //     },
+  //     {
+  //       name: 'ویرایش محصول',
+  //       href: routes.eCommerce.ediProduct(DUMMY_ID),
+  //     },
+  //     {
+  //       name: 'دسته بندی',
+  //       href: routes.eCommerce.categories,
+  //     },
+  //     {
+  //       name: 'ساخت دسته بندی',
+  //       href: routes.eCommerce.createCategory,
+  //     },
+  //     {
+  //       name: 'ویرایش دسته بندی',
+  //       href: routes.eCommerce.editCategory(DUMMY_ID),
+  //     },
+  //     {
+  //       name: 'سفارشات',
+  //       href: routes.eCommerce.orders,
+  //     },
+  //     {
+  //       name: 'جزییات سفارش',
+  //       href: routes.eCommerce.orderDetails(DUMMY_ID),
+  //     },
+  //     {
+  //       name: 'ساخت سفارش',
+  //       href: routes.eCommerce.createOrder,
+  //     },
+  //     {
+  //       name: 'ویرایش سفارش',
+  //       href: routes.eCommerce.editOrder(DUMMY_ID),
+  //     },
+  //     {
+  //       name: 'تظرات',
+  //       href: routes.eCommerce.reviews,
+  //     },
+  //     {
+  //       name: 'خرید',
+  //       href: routes.eCommerce.shop,
+  //     },
+  //     {
+  //       name: 'سبد خرید',
+  //       href: routes.eCommerce.cart,
+  //     },
+  //     {
+  //       name: 'پرداخت و تسویه حساب',
+  //       href: routes.eCommerce.checkout,
+  //     },
+  //   ],
+  // },
   {
     name: 'مدیریت اطلاعات',
   },
@@ -364,32 +364,32 @@ export const menuItems = [
     href: '/support/message',
     icon: <MdMessage />,
   },
-  {
-    name: 'پشتیبانی قدیمی',
-  },
-  {
-    name: 'پشتیبانی قدیمی',
-    href: '#',
-    icon: <PiHeadsetDuotone />,
-    dropdownItems: [
-      {
-        name: 'صندوق ورودی',
-        href: routes.support.inbox,
-      },
-      {
-        name: 'فراگیرها(snippets)',
-        href: routes.support.snippets,
-      },
-      {
-        name: 'قالب ها',
-        href: routes.support.templates,
-      },
-      {
-        name: 'تیکت‌ها',
-        href: routes.support.ticket,
-      },
-    ],
-  },
+  // {
+  //   name: 'پشتیبانی قدیمی',
+  // },
+  // {
+  //   name: 'پشتیبانی قدیمی',
+  //   href: '#',
+  //   icon: <PiHeadsetDuotone />,
+  //   dropdownItems: [
+  //     {
+  //       name: 'صندوق ورودی',
+  //       href: routes.support.inbox,
+  //     },
+  //     {
+  //       name: 'فراگیرها(snippets)',
+  //       href: routes.support.snippets,
+  //     },
+  //     {
+  //       name: 'قالب ها',
+  //       href: routes.support.templates,
+  //     },
+  //     {
+  //       name: 'تیکت‌ها',
+  //       href: routes.support.ticket,
+  //     },
+  //   ],
+  // },
   {
     name: 'مدیریت مالی',
   },
@@ -407,17 +407,17 @@ export const menuItems = [
         href: routes.finance.transactionList,
       },
       {
-        name: 'لیست تراکنش‌ها',
-        href: routes.finance.invoiceList,
+        name: 'مدیریت اشتراک',
+        href: routes.subscription,
       },
       {
         name: 'ایجاد',
         href: routes.invoice.create,
       },
-      {
-        name: 'ویرایش',
-        href: routes.invoice.edit(DUMMY_ID),
-      },
+      // {
+      //   name: 'ویرایش',
+      //   href: routes.invoice.edit(DUMMY_ID),
+      // },
     ],
   },
   {
@@ -430,51 +430,70 @@ export const menuItems = [
         href: routes.invoice.home,
       },
       {
-        name: 'جزییات',
+        name: 'جزییات (تنها برای محیط آزمایشی)',
         href: routes.invoice.details(DUMMY_ID),
       },
       {
         name: 'ایجاد',
         href: routes.invoice.create,
       },
-      {
-        name: 'ویرایش',
-        href: routes.invoice.edit(DUMMY_ID),
-      },
+      // {
+      //   name: 'ویرایش',
+      //   href: routes.invoice.edit(DUMMY_ID),
+      // },
     ],
   },
   {
-    name: 'آمار و حساب',
+    name: 'بخش مدیریت (موقت)',
     href: '#',
-    icon: <PiPackageDuotone />,
+    icon: <PiCurrencyDollarDuotone />,
     dropdownItems: [
       {
-        name: 'لیست حمل‌ونقل',
-        href: routes.logistics.shipmentList,
+        name: 'داشبورد',
+        href: routes.management.dashboard,
       },
       {
-        name: 'جزئیات حمل‌ونقل',
-        href: routes.logistics.shipmentDetails,
+        name: 'درخواست‌های کاربران',
+        href: routes.management.requestList,
       },
-      {
-        name: 'ایجاد حمل‌ونقل',
-        href: routes.logistics.createShipment,
-      },
-      {
-        name: 'پروفایل مشتری',
-        href: routes.logistics.customerProfile,
-      },
-      {
-        name: 'ردیابی',
-        href: routes.logistics.tracking(DUMMY_ID),
-      },
+      // {
+      //   name: 'ویرایش',
+      //   href: routes.invoice.edit(DUMMY_ID),
+      // },
     ],
   },
-  {
-    name: 'مدیریت فایل ها',
-    href: routes.file.manager,
-    icon: <PiFileImageDuotone />,
-  },
+  // {
+  //   name: 'آمار و حساب',
+  //   href: '#',
+  //   icon: <PiPackageDuotone />,
+  //   dropdownItems: [
+  //     {
+  //       name: 'لیست حمل‌ونقل',
+  //       href: routes.logistics.shipmentList,
+  //     },
+  //     {
+  //       name: 'جزئیات حمل‌ونقل',
+  //       href: routes.logistics.shipmentDetails,
+  //     },
+  //     {
+  //       name: 'ایجاد حمل‌ونقل',
+  //       href: routes.logistics.createShipment,
+  //     },
+  //     {
+  //       name: 'پروفایل مشتری',
+  //       href: routes.logistics.customerProfile,
+  //     },
+  //     {
+  //       name: 'ردیابی',
+  //       href: routes.logistics.tracking(DUMMY_ID),
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: 'مدیریت فایل ها',
+  //   href: routes.file.manager,
+  //   icon: <PiFileImageDuotone />,
+  // },
   //   // label start
   //   {
   //     name: 'ویجت ها',

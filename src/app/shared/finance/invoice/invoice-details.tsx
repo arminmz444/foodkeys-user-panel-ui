@@ -139,7 +139,7 @@ export default function InvoiceDetails() {
           <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
             شرکت کامپیژن
           </Text>
-          <Text className="mb-1.5">صادق قاسم نژاد</Text>
+          <Text className="mb-1.5">آرمین مظفری</Text>
           <Text className="mb-1.5">شیراز</Text>
           <Text className="mb-4 sm:mb-6 md:mb-8">09123456789</Text>
           <div>

@@ -38,7 +38,7 @@ const activities = [
     threads: [
       {
         avatar: 'https://randomuser.me/api/portraits/women/75.jpg',
-        username: 'محمد صادق قاسم نژاد',
+        username: 'محمد آرمین مظفری',
         logMessage: 'فایل جدید افزوده شد',
         alias: 'عکس ها',
         date: '06:44 PM',
