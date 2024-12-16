@@ -1,8 +1,10 @@
 'use client';
+import { numberToWords } from '@persian-tools/persian-tools';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { ActionIcon } from '@/components/ui/action-icon';
 import RingBellSolidIcon from '@/components/icons/ring-bell-solid';
 import ChatSolidIcon from '@/components/icons/chat-solid';
@@ -35,6 +37,8 @@ import PaymentSuccess from '../payment-success';
 import PaymentReject from '../payment-reject';
 import toast from 'react-hot-toast';
 import useAxiosPrivate from '@/hooks/use-axios-private';
+import addCreditImg from 'public/addCredit.svg';
+import addCreditImg2 from 'public/addCreditLogo.webp';
 
 // export const notificationsAtom = atom([]);
 
@@ -52,7 +56,8 @@ function HeaderMenuRight() {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () => new SockJS('https://foodkeys-api-dev.liara.run/ws'),
+      webSocketFactory: () =>
+        new SockJS('https://foodkeys-api-dev.liara.run/ws'),
     });
 
     client.onConnect = () => {
@@ -163,10 +168,10 @@ function WalletDropdown({
 
   const isMobile = useMedia('(max-width: 480px)', false);
 
-  const [amount, setAmount] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(1_000_000);
 
   const handleDefaultAmountClick = (value: number) => {
-    setAmount(value);
+    setAmount(value * 1_000_000);
   };
 
   const handleSubmit = async () => {
@@ -206,12 +211,17 @@ function WalletDropdown({
     // dispatch(addCredit(amount));
     // alert(`در حال هدایت به درگاه بانکی برای پرداخت مبلغ ${amount} تومان`);
   };
-  const defaultAmounts = [50000, 100000, 250000, 500000];
+  const defaultAmounts = [1, 5, 10];
 
   return (
     <>
-      <Modal size="lg" isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <div className="m-auto px-7 pt-6 dark:bg-gray-100 dark:text-white">
+      <Modal
+        // size="xl"
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        customSize="1080px"
+      >
+        <div className="m-auto rounded-xl bg-gray-50 px-7 pt-8 dark:bg-gray-100 dark:text-white">
           <div className="flex items-center justify-between">
             <h3>افزایش اعتبار کیف پول</h3>
             <ActionIcon
@@ -222,8 +232,55 @@ function WalletDropdown({
               <HiXMark className="h-auto w-6" strokeWidth={1.8} />
             </ActionIcon>
           </div>
-          <div className="from-blue-500 to-indigo-700 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br p-4 text-black dark:bg-gray-100">
-            <div
+          <div className="from-blue-500 to-indigo-700 flex max-h-screen items-center justify-center gap-5 bg-gradient-to-br px-1 py-6 text-black dark:bg-gray-100 sm:px-4 lg:gap-20">
+            <div className="flex w-full flex-col items-start justify-center md:w-3/5">
+              <Input
+                label="مبلغ"
+                suffix="تومان"
+                placeholder="10,000,000"
+                inputClassName="text-center"
+                dir="ltr"
+                className="w-full  dark:text-white"
+                value={amount !== 0 ? amount : amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+              />
+              <div className="flex w-full items-center justify-center gap-1">
+                {defaultAmounts.map((value) => (
+                  <button
+                    key={value}
+                    className="mt-7 w-full rounded-md border border-black px-[2px] py-2 text-xs shadow-lg transition-all duration-100 ease-in-out hover:bg-gray-200 active:scale-95 dark:bg-[#fff1] dark:text-white dark:hover:bg-[#ffffff34] sm:px-2 sm:text-base lg:px-5"
+                    onClick={() => handleDefaultAmountClick(value)}
+                  >
+                    {value} میلیون تومان
+                  </button>
+                ))}
+              </div>
+              <hr className="mt-7 h-[2px] w-full bg-gray-100 " />
+              <div className="mt-7 flex items-center justify-center gap-3">
+                <Badge color="success" rounded="md">
+                  به حروف
+                </Badge>
+                <p className="font-bold dark:text-white">
+                  {numberToWords(Number(amount))} تومان
+                </p>
+              </div>
+              <Button
+                className="mt-7 w-full  rounded-md  bg-gradient-to-r from-[#a8ff78] to-[#78ffd6] px-5 py-2 text-xl text-black transition-all duration-200 ease-in-out hover:scale-105 active:scale-100"
+                onClick={handleSubmit}
+                isLoading={loading}
+              >
+                پرداخت
+              </Button>
+            </div>
+            <div className="hidden w-2/5 items-center justify-center md:flex">
+              <Image
+                src={addCreditImg2 || null}
+                alt="افزایش اعتبار"
+                className="w-64"
+              />
+            </div>
+
+            {/* <div
               // style={{ backgroundColor: "#f5deb369" }}
               className="w-full max-w-lg transform rounded-lg bg-white p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 dark:bg-gray-200 dark:text-white"
             >
@@ -277,7 +334,7 @@ function WalletDropdown({
                   </Button>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </Modal>

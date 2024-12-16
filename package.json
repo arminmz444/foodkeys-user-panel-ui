@@ -16,6 +16,7 @@
     "@floating-ui/react": "^0.25.4",
     "@googlemaps/js-api-loader": "^1.16.2",
     "@headlessui/react": "^1.7.17",
+    "@persian-tools/persian-tools": "^3.6.0",
     "@react-email/button": "0.0.10",
     "@react-email/container": "0.0.8",
     "@react-email/html": "0.0.4",
