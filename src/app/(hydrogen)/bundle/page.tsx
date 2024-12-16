@@ -55,9 +55,9 @@ export default function ProfileSettingsFormPage() {
   const [items, setItems] = useState()
   const _axios = useAxiosPrivate()
   useEffect(() => {
-    const fetchSubscriptions = async () => {
+    const fetchSubscriptions = async (subCategoryId: number) => {
       try {
-        const response = await _axios.get(`/subscription`);
+        const response = await _axios.get(`/subscription/${subCategoryId}`);
         if (response.data.status === 'SUCCESS') {
           setItems(response.data.data);
         }

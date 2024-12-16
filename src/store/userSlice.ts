@@ -129,12 +129,45 @@ const userSlice = createSlice({
             state.online = user.online;
             state.token = token;
         },
+        setUserInfo: (state, action: PayloadAction<any>) => {
+            const user = action.payload;
+            state.id = user.id;
+            state.firstName = user.firstName;
+            state.lastName = user.lastName;
+            state.credit = user.credit;
+            state.email = user.email;
+            state.username = user.username;
+            state.phone = user.phone;
+            state.status = user.status;
+            state.roles = user.roles;
+            state.roleIds = user.roleIds;
+            state.accesses = user.accesses;
+            state.accessIds = user.accessIds;
+            state.active = user.active;
+            state.avatar = user.avatar;
+            state.lastLogin = user.lastLogin;
+            state.lastLogout = user.lastLogout;
+            state.address = user.address;
+            state.cityId = user.cityId;
+            state.provinceId = user.provinceId;
+            state.city = user.city;
+            state.province = user.province;
+            state.postalCode = user.postalCode;
+            state.individualType = user.individualType;
+            state.jobPosition = user.jobPosition;
+            state.birthDate = user.birthDate;
+            state.pelak = user.pelak;
+            state.nationalCode = user.nationalCode;
+            state.shenasCode = user.shenasCode;
+            state.profileIncomplete = user.profileIncomplete;
+            state.online = user.online;
+        },
         logout: (state) => {
             Object.assign(state, initialState);
         },
     },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout, setUserInfo } = userSlice.actions;
 
 export default userSlice.reducer;

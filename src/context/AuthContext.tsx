@@ -311,7 +311,7 @@ export const AuthProvider = ({children}) => {
             return response.data?.registered ? SEND_OTP_SCENARIOS.REGISTERED : SEND_OTP_SCENARIOS.NEED_TO_REGISTER
 
         } catch (error) {
-            toast.error('خطا در ارسال رمز یکبار مصرف');
+            // toast.error('خطا در ارسال رمز یکبار مصرف');
             return SEND_OTP_SCENARIOS.ERROR
         }
     }, []);

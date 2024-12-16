@@ -78,9 +78,9 @@ export default function CreateExhibition({
     }
   }, [id, _axios]);
 
-  const fetchSubscriptions = async () => {
+  const fetchSubscriptions = async (subCategoryId: number) => {
     try {
-      const response = await _axios.get(`/subscription`);
+      const response = await _axios.get(`/subscription/${subCategoryId}`);
       if (response.data.status === 'SUCCESS') {
         if (!response.data?.data) {
           toast.success(
@@ -176,7 +176,7 @@ export default function CreateExhibition({
         // );
         methods.reset();
         // router.push('/info/service');
-        let hasSubscription = await fetchSubscriptions();
+        let hasSubscription = await fetchSubscriptions(data.subcategory?.value);
         if (hasSubscription) router.push('/info/service');
       }
     } catch (error) {

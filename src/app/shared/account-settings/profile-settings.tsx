@@ -25,14 +25,11 @@ import Link from 'next/link';
 import { routes } from '@/config/routes';
 import toast from 'react-hot-toast';
 import PersonalInfoView from "@/app/shared/account-settings/personal-info";
-import userSlice, {login} from "@/store/userSlice";
+import {setUserInfo} from "@/store/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store/store";
 import useAxiosPrivate from "@/hooks/use-axios-private";
 import {setCredit} from "@/store/walletSlice";
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-  ssr: false,
-});
 
 const role = [
   {
@@ -95,7 +92,8 @@ export default function ProfileSettingsView() {
         const response = await _axios.get(`/user/me`);
         if (response.data.status === 'SUCCESS') {
           setUser(response.data.data);
-          dispatch(login(response.data.data));
+          // @ts-ignore
+          dispatch(setUserInfo(response.data.data));
           dispatch(setCredit(response.data.data.credit))
         }
       } catch (error) {

@@ -198,9 +198,9 @@ export default function CreateCompany({
 
   // const onSubmit: SubmitHandler<CreateCompanyInput> = async (data) => {
   //   setLoading(true);
-  //   const fetchSubscriptions = async () => {
+  //   const fetchSubscriptions = async (subCategoryId: number) => {
   //     try {
-  //       const response = await _axios.get(`/subscription`);
+  //       const response = await _axios.get(`/subscription/${subCategoryId}`);
   //       if (response.data.status === 'SUCCESS') {
   //         if (!response.data?.data) router.replace('/bundle/buy');
   //       }
@@ -208,7 +208,7 @@ export default function CreateCompany({
   //       console.error('Error fetching subcategories:', error);
   //     }
   //   };
-  //   await fetchSubscriptions();
+  //   await fetchSubscriptions(data.subcategory?.value);
   //   setTimeout(() => {
   //     setLoading(false);
   //     console.log('product_data', data);
@@ -221,9 +221,9 @@ export default function CreateCompany({
   //     methods.reset();
   //   }, 600);
   // };
-  const fetchSubscriptions = async () => {
+  const fetchSubscriptions = async (subCategoryId: number) => {
     try {
-      const response = await _axios.get(`/subscription`);
+      const response = await _axios.get(`/subscription/${subCategoryId}`);
       if (response.data.status === 'SUCCESS') {
         if (!response.data?.data) router.replace('/bundle/buy');
       }
@@ -403,7 +403,7 @@ export default function CreateCompany({
             {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
           </Text>
         );
-        await fetchSubscriptions();
+        await fetchSubscriptions(data.subcategory?.value);
         methods.reset();
       }
       console.log(data);

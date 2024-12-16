@@ -236,7 +236,7 @@ export const getColumns = ({
         >
           <a
             href={
-              `${process.env.NEXT_PUBLIC_CLIENT_WEBSITE_URL}/view/producers/details?id=` +
+              `${process.env.NEXT_PUBLIC_CLIENT_WEBSITE_URL}/view/${row.subCategoryNameEn}/details?id=` +
               row.id
             }
           >

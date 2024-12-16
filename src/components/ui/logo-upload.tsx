@@ -65,7 +65,7 @@ function LogoUpload(
           className="absolute top-0 h-full w-full opacity-0 disabled:cursor-not-allowed"
           {...props}
         />
-        {!success && <span>فایل خود را انتخاب کنید.</span>}
+        {!success && !logoPreview && <span>فایل خود را انتخاب کنید.</span>}
         {loading ? (
           <div className="relative h-24 w-24">
             <Progressbar rounded="md" value={progress} size="lg" />

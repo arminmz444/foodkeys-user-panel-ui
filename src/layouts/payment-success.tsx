@@ -30,9 +30,9 @@ export default function PaymentSuccess({ query }) {
   const [modalState, setModalState] = useState(true);
   // const _axios = useAxiosPrivate();
   // useEffect(() => {
-  //   const fetchSubscriptions = async () => {
+  //   const fetchSubscriptions = async (subCategoryId: number) => {
   //     try {
-  //       const response = await _axios.get(`/subscription`);
+  //       const response = await _axios.get(`/subscription/${subCategoryId}`);
   //       if (response.data.status === 'SUCCESS') {
   //         setItems(response.data.data);
   //       }

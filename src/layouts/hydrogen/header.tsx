@@ -44,7 +44,7 @@ function HeaderMenuRight() {
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: 'ws://localhost:8080/ws',
+      brokerURL: 'ws://foodkeys-api-dev.liara.run/ws',
       connectHeaders: {},
       debug: function (str) {
         console.log(str);

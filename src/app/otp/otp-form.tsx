@@ -64,7 +64,7 @@ export default function OtpForm({ setStep }) {
       } else throw new Error("Failed to send otp");
     } catch (error) {
       console.error(error);
-      toast.error('خطا در ارسال کد یکبار مصرف');
+      toast.error('خطا در ارسال کد یکبار مصرف\n لطفا از طریق رمزعبور وارد شوید');
     } finally {
       setLoading(false);
     }
