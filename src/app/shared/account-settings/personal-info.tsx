@@ -31,7 +31,8 @@ import {CONTEXT_ACTION} from "@/core/dto/enums/context-action";
 import {CLIENT_STATIC_FILES_PATH} from "next/constants";
 import * as process from "node:process";
 import {login} from "@/store/userSlice";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "@/store/store";
 
 const SelectBox = dynamic(() => import('@/components/ui/select'), {
     ssr: false,
@@ -119,7 +120,8 @@ type PersonalInfoFormTypes = z.infer<typeof personalInfoFormSchema>;
 // @ts-ignore
 export default function PersonalInfoView({ user }) {
     // @ts-ignore
-    const dispatch = useDispatch()
+    // const dispatch = useDispatch()
+    // const user = useSelector((state: RootState) => state.user);
     const _axios = useAxiosPrivate();
     const STATIC_FILE_PATH = 'https://foodkeys-api-dev.liara.run'
     const imageRef = useRef<HTMLInputElement>(null);
@@ -480,34 +482,31 @@ export default function PersonalInfoView({ user }) {
                                             />
                                         )}
                                     />
-                                    <Controller
-                                        /* @ts-ignore */
-                                        name="birthDate"
-                                        control={control}
-                                        render={({field: {onChange, value, onBlur}}) => (
-                                            <DatePicker
-                                                /* @ts-ignore */
-                                                selected={value}
-                                                onChange={onChange}
-                                                onBlur={onBlur}
-                                                dateFormat="yyyy/MM/dd"
-                                                maxDate={new Date()}
-                                                // @ts-ignore
-                                                helperText="تاریخ تولد"
-                                                placeholderText="تاریخ تولد"
-                                                inputProps={{
-                                                    variant: 'outline',
-                                                    inputClassName: 'p-4 border border-gray-300 rounded-md',
-                                                }}
-                                                popperPlacement="bottom-end"
-                                                className="flex-grow"
-                                            />
-                                        )}
-                                    />
-                                    {errors.birthDate && (
-                                        // @ts-ignore
-                                        <p className="text-red-500 text-sm">{errors.birthDate.message}</p>
-                                    )}
+                                    {/*<Controller*/}
+                                    {/*    name="birthDate"*/}
+                                    {/*    control={control}*/}
+                                    {/*    render={({field: {onChange, value, onBlur}}) => (*/}
+                                    {/*        <DatePicker*/}
+                                    {/*            selected={value}*/}
+                                    {/*            onChange={onChange}*/}
+                                    {/*            onBlur={onBlur}*/}
+                                    {/*            dateFormat="yyyy/MM/dd"*/}
+                                    {/*            maxDate={new Date()}*/}
+                                    {/*            // @ts-ignore*/}
+                                    {/*            helperText="تاریخ تولد"*/}
+                                    {/*            placeholderText="تاریخ تولد"*/}
+                                    {/*            inputProps={{*/}
+                                    {/*                variant: 'outline',*/}
+                                    {/*                inputClassName: 'p-4 border border-gray-300 rounded-md',*/}
+                                    {/*            }}*/}
+                                    {/*            popperPlacement="bottom-end"*/}
+                                    {/*            className="flex-grow"*/}
+                                    {/*        />*/}
+                                    {/*    )}*/}
+                                    {/*/>*/}
+                                    {/*{errors.birthDate && (*/}
+                                    {/*    <p className="text-red-500 text-sm">{errors.birthDate.message}</p>*/}
+                                    {/*)}*/}
                                 </HorizontalFormBlockWrapper>
 
                                 <HorizontalFormBlockWrapper title="آدرس" titleClassName="text-base font-medium">
@@ -529,6 +528,7 @@ export default function PersonalInfoView({ user }) {
                                                     // @ts-ignore
                                                     setSelectedProvince(e);
                                                 }}
+                                                getOptionValue={(option) => option.name}
                                                 placeholder="انتخاب استان"
                                                 error={errors?.provinceId?.message as string}
                                             />
@@ -545,6 +545,7 @@ export default function PersonalInfoView({ user }) {
                                                 value={value}
                                                 onChange={onChange}
                                                 placeholder="انتخاب شهر"
+                                                getOptionValue={(option) => option.name}
                                                 error={errors?.cityId?.message as string}
                                             />
                                         )}

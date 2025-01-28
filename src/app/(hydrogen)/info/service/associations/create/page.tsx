@@ -3,17 +3,17 @@ import { routes } from '@/config/routes';
 import { Button } from '@/components/ui/button';
 import { PiPlusBold } from 'react-icons/pi';
 import PageHeader from '@/app/shared/page-header';
-import CreateProduct from '@/app/shared/info/associations/create';
+import CreateAssociation from "@/app/shared/info/associations/create";
 
 const pageHeader = {
   title: 'ثبت اطلاعات انجمن جدید',
   breadcrumb: [
     {
-      href: routes.eCommerce.dashboard,
+      href: routes.info.serviceIndustryList,
       name: 'بانک خدمات',
     },
     {
-      href: routes.eCommerce.products,
+      href: routes.info.associationsCreate,
       name: 'انجمن های عملی و صنفی',
     },
     {
@@ -27,7 +27,7 @@ export default function CreateProductPage() {
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <Link
-          href={routes.eCommerce.createProduct}
+          href={routes.info.associationsCreate}
           className="mt-4 w-full @lg:mt-0 @lg:w-auto"
         >
           <Button
@@ -35,12 +35,12 @@ export default function CreateProductPage() {
             className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
           >
             <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-            اضافه کردن محصول
+            ثبت انجمن جدید
           </Button>
         </Link>
       </PageHeader>
 
-      <CreateProduct />
+      <CreateAssociation />
     </>
   );
 }

@@ -26,6 +26,8 @@ import {PiCheck} from 'react-icons/pi';
 import {notificationsAtom} from "@/store/notificationStore";
 import {useAtom} from "jotai";
 import useAxiosPrivate from "@/hooks/use-axios-private";
+import {useSelector} from "react-redux";
+import {RootState} from "@/store/store";
 
 dayjs.extend(relativeTime);
 
@@ -147,7 +149,7 @@ function NotificationsList({
                 </div>
                 <div className="ms-auto flex-shrink-0">
                   {/* @ts-ignore */}
-                  {!item.read ? (
+                  {!item.isRead ? (
                     <Badge
                       renderAsDot
                       size="lg"
@@ -178,11 +180,10 @@ function NotificationsList({
 
 export default function NotificationDropdown({
   children,
-                                               // @ts-ignore
-                                               messages,
                                              }: {
   children: JSX.Element & { ref?: RefObject<any> };
 }) {
+  const messages = useSelector((state: RootState) => state.notifications);
   const isMobile = useMedia('(max-width: 480px)', false);
   const [isOpen, setIsOpen] = useState(false);
   return (

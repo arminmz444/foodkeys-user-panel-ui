@@ -4,11 +4,11 @@ import {
   CreateProductInput,
   defaultValues,
   productFormSchema,
-} from '@/app/shared/info/food-industry/company/create/form-utils';
+} from '@/app/shared/info/associations/create/form-utils';
 import FormFooter from '@/components/form-footer';
 import cn from '@/utils/class-names';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { Element } from 'react-scroll';
@@ -17,24 +17,31 @@ import FormNav, { formParts } from './form-nav';
 import CompanyInfo from './company-info';
 import CompanyDescription from './company-description';
 import CompanyContact from './company-contact';
+import {useRouter} from "next/navigation";
+import useAxiosPrivate from "@/hooks/use-axios-private";
+import AssociationGallery from "@/app/shared/info/associations/create/association-gallery";
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: CompanyInfo,
   [formParts.description]: CompanyDescription,
   [formParts.contact]: CompanyContact,
-  [formParts.logo]: CompanyDescription,
+  [formParts.logo]: AssociationGallery,
 };
 
 interface IndexProps {
   id?: string;
-  company?: CreateProductInput;
+  association?: CreateProductInput;
   className?: string;
 }
 
-export default function CreateProduct({ id, company, className }: IndexProps) {
+export default function CreateAssociation({ id, association, className }: IndexProps) {
   const [isLoading, setLoading] = useState(false);
+  const router = useRouter();
+  const _axios = useAxiosPrivate();
+  const [associationData, setAssociationData] = useState<any | null>(null);
+
   const methods = useForm<CreateProductInput>({
-    defaultValues: defaultValues(company),
+    defaultValues: defaultValues(associationData),
     resolver: zodResolver(productFormSchema),
   });
 
@@ -52,6 +59,23 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
     }, 600);
   };
 
+  useEffect(() => {
+    const fetchAssociation = async () => {
+      try {
+        const response = await _axios.get(`/service/${id}`);
+        if (response.data.status === 'SUCCESS') {
+          setAssociationData(response.data.data);
+          methods.reset(defaultValues(response.data.data));
+        }
+      } catch (error) {
+        console.error('Error fetching exhibition:', error);
+      }
+    };
+
+    if (id) {
+      fetchAssociation();
+    }
+  }, [id, _axios]);
   return (
     <div className="@container">
       <FormNav />
@@ -73,7 +97,7 @@ export default function CreateProduct({ id, company, className }: IndexProps) {
 
           <FormFooter
             isLoading={isLoading}
-            submitBtnText={id ? 'بروز رسانی محصول' : 'ثبت شرکت'}
+            submitBtnText={id ? 'بروز رسانی انجمن' : 'ثبت انجمن'}
           />
         </form>
       </FormProvider>

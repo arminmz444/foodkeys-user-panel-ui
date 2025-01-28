@@ -4,6 +4,7 @@ import { routes } from '@/config/routes';
 import { Button } from '@/components/ui/button';
 import PageHeader from '@/app/shared/page-header';
 import CreateCompany from '@/app/shared/info/food-industry/company/create';
+import CreateExhibition from "@/app/shared/info/exhibitions/create";
 
 
 
@@ -69,53 +70,46 @@ const productData = {
   tags: ['آیفون', 'موبایل'],
 };
 
-export default function EditCompanyPage({
+export default function EditExhibitionPage({
   params,
 }: {
   params: { id: string };
 }) {
   const pageHeader = {
-    title: 'ویرایش اطلاعات شرکت',
+    title: 'ویرایش نمایشگاه',
     breadcrumb: [
       {
-        href: routes.info.dashboard,
-        name: 'مدیریت اطلاعات',
+        href: routes.info.serviceIndustryList,
+        name: 'بانک خدمات',
       },
       {
-        href: routes.info.foodIndustryList,
-        name: 'بانک صنعت غذا',
+        href: routes.info.serviceIndustryList,
+        name: 'نمایشگاه های داخلی و خارجی',
       },
       {
-        href: routes.info.foodIndustryList,
-        name: 'لیست شرکت‌ها',
+        href: routes.info.exhibitionEdit(Number(params.id)),
+        name: 'ویرایش اطلاعات نمایشگاه',
       },
-      {
-        href: routes.info.foodIndustryEdit(Number(params.id)),
-        name: 'ویرایش اطلاعات شرکت',
-      },
-      // {
-      //   name: params.id,
-      // },
     ],
   };
   return (
-    <>
-      <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-        <Link
-          href={routes.info.foodIndustryAdd}
+  <>
+    <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
+      <Link
+          href={routes.info.exhibitionAdd}
           className="mt-4 w-full @lg:mt-0 @lg:w-auto"
-        >
-          <Button
+      >
+        <Button
             tag="span"
             className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
-          >
-            <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-            ثبت شرکت جدید
-          </Button>
-        </Link>
-      </PageHeader>
-      {/*// @ts-ignore*/}
-      <CreateCompany id={params.id} company={productData}  category={1}/>
-    </>
+        >
+          <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
+          ثبت نمایشگاه جدید
+        </Button>
+      </Link>
+    </PageHeader>
+
+    <CreateExhibition id={params.id} />
+  </>
   );
 }

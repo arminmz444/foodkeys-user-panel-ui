@@ -1,14 +1,10 @@
 import FormGroup from '@/app/shared/form-group';
-import QuillLoader from '@/components/loader/quill-loader';
 import cn from '@/utils/class-names';
-import dynamic from 'next/dynamic';
 import React from 'react';
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import {Textarea} from "rizzui";
 
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
+
 
 const CompanyDescription = ({ className }: { className?: string }) => {
   const {
@@ -26,18 +22,13 @@ const CompanyDescription = ({ className }: { className?: string }) => {
       description="شامل توضیحات انجمن"
       className={cn(className)}
     >
-      <Controller
-        control={control}
-        name="description"
-        render={({ field: { onChange, value } }) => (
-          <QuillEditor
-            value={value}
-            onChange={onChange}
-            label="توضیحات"
-            className="col-span-full [&_.ql-editor]:min-h-[100px]"
-            labelClassName="font-medium text-gray-700 dark:text-gray-600 mb-1.5"
-          />
-        )}
+      <Textarea
+          label="توضیحات*"
+          placeholder="توضیحات"
+          {...register('description')}
+          error={errors.description?.message as string}
+          rows={5}
+          className="col-span-full"
       />
     </FormGroup>
   );

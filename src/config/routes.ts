@@ -2,6 +2,7 @@ import TransactionsList from "@/app/(hydrogen)/widgets/cards/transactions-list";
 
 export const routes = {
   dashboard: "/",
+  activities: "/activities",
   notifications: "/profile/notifications",
   management: {
     dashboard: "/management",
@@ -76,7 +77,7 @@ export const routes = {
     serviceIndustryList: '/info/service',
     serviceIndustryAdd: '/info/service/create',
     serviceIndustryView: (id: number) => `/info/service/${id}`,
-    serviceIndustryEdit: (id: number) => `/info/service/${id}/edit`,
+    serviceIndustryEdit: (subCategory: string, id: number) => `/info/service/${subCategory}/${id}/edit`,
     serviceIndustrySubCategoryList: (id: number) => `/info/service/subcategory/${id}`,
     media: '/info/media',
     machineryIndustry: '/info/machinery-industry',
@@ -109,8 +110,11 @@ export const routes = {
     resellerCreate: '/info/service/reseller/create',
     labsCreate: '/info/service/labs/create',
     certificationsCreate: '/info/service/certification/create',
+    saleFactoryEdit: (id: number) => `/info/service/sale_factory/${id}/edit`,
     saleFactoryCreate: '/info/service/sale_factory/create',
+    surplusEdit: (id: number) => `/info/service/surplus/${id}/edit`,
     surplusCreate: '/info/service/surplus/create',
+    associationsEdit: (id: number) => `/info/service/associations/${id}/edit`,
     associationsCreate: '/info/service/associations/create',
   },
   finance: {
@@ -237,8 +241,9 @@ export const routes = {
     otp4: '/auth/otp-4',
     otp5: '/auth/otp-5',
   },
-  subscription: '/bundle',
-  bundle: '/bundle/buy',
+  subscriptionList: '/bundle/subscription-list',
+  subscription: (id: number) => `/bundle/${id}`,
+  bundle: (id: number) => `/bundle/${id}/buy`,
   signIn: '/login',
   otp: '/login/otp',
 };

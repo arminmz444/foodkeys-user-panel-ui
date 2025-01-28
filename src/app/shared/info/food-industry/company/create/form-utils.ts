@@ -216,12 +216,13 @@ const pictureSchema = z.object({
 });
 
 const productSchema = z.object({
+  id: z.any().optional(),
   name: z.string(),
-  companyType: z.string().optional(),
+  type: z.string().optional(),
   description: z.string().optional(),
-  pictures: z.array(pictureSchema).optional(),
-  uploadedFileIds: z.array(z.string()).optional(),
-  removedFileIds: z.array(z.string()).optional(),
+  pictures: z.array(pictureSchema).optional().nullable(),
+  uploadedFileIds: z.array(z.string()).optional().nullable(),
+  removedFileIds: z.array(z.string()).optional().nullable(),
   outsourced: z.boolean().optional(),
   machineUsage: z.boolean().optional(),
   showProduct: z.boolean().optional(),
@@ -247,28 +248,28 @@ const telSchema = z.object({
 
 
 const contactSchema = z.object({
-  name: z.string(),
-  lastName: z.string(),
-  email: z.string(),
-  phone: z.string(),
+  name: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
   // isCEO: z.boolean(),
-  position: z.string(),
+  position: z.string().optional(),
 });
 
 const galleryContactSchema = z.object({
-  name: z.string(),
-  lastName: z.string(),
-  email: z.string(),
-  phone: z.string(),
+  name: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
   // isCEO: z.boolean(),
-  position: z.string(),
+  position: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
   priority: z.number().optional()
 });
 
 const galleryCertificateSchema = z.object({
-  name: z.string().optional(),
+  title: z.string().optional(),
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
@@ -276,7 +277,7 @@ const galleryCertificateSchema = z.object({
 });
 
 const galleryProductSchema = z.object({
-  name: z.string().optional(),
+  title: z.string().optional(),
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
@@ -318,8 +319,8 @@ const gallerySchema = z.object({
   contacts: z.array(galleryContactSchema).optional(),
   certificates: z.array(galleryCertificateSchema).optional(),
   products: z.array(galleryProductSchema).optional(),
-  slider: z.array(gallerySliderSchema).optional(),
-  catalog: galleryCatalogSchema.optional(),
+  sliders: z.array(gallerySliderSchema).optional(),
+  catalogs: z.array(galleryCatalogSchema).optional(),
   documents: z.array(galleryDocumentSchema).optional(),
 });
 

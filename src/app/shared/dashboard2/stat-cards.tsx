@@ -214,7 +214,7 @@ export default function StatCards({
         <MetricCard
           key={stat.title}
           title={stat.title}
-          metric={dashboardStatsData[stat.id] || 'در حال بروزرسانی ...'}
+          metric={(dashboardStatsData[stat.id] !== undefined || dashboardStatsData[stat.id] !== null) ? dashboardStatsData[stat.id] : 'در حال بروزرسانی ...'}
           metricClassName="lg:text-[22px]"
           icon={stat.icon}
           // icon={stat.Icon}

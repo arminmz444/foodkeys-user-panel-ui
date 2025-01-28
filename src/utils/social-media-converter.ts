@@ -1,15 +1,15 @@
 export const socialMediaConverter = (formValues: { [x: string]: any; }) => {
     const socialMediaKeys = [
-        { key: 'telegramPhoneNo', type: 'TELEGRAM' },
-        { key: 'telegramId', type: 'TELEGRAM' },
-        { key: 'whatsAppPhoneNo', type: 'WHATSAPP' },
-        { key: 'whatsAppId', type: 'WHATSAPP' },
-        { key: 'instagramId', type: 'INSTAGRAM' },
-        { key: 'linkedInId', type: 'LINKEDIN' },
-        { key: 'skypeId', type: 'SKYPE' },
-        { key: 'eitaaPhoneNo', type: 'EITAA' },
-        { key: 'rubikaPhoneNo', type: 'RUBIKA' },
-        { key: 'website', type: 'WEBSITE' },
+        {key: 'telegramPhoneNo', type: 'TELEGRAM_PHONE_NO'},
+        {key: 'telegramId', type: 'TELEGRAM_ID'},
+        {key: 'whatsAppPhoneNo', type: 'WHATSAPP_PHONE_NO'},
+        {key: 'whatsAppId', type: 'WHATSAPP_ID'},
+        {key: 'instagramId', type: 'INSTAGRAM_ID'},
+        {key: 'linkedInId', type: 'LINKEDIN_ID'},
+        {key: 'skypeId', type: 'SKYPE_ID'},
+        {key: 'eitaaPhoneNo', type: 'EITAA_PHONE_NO'},
+        {key: 'rubikaPhoneNo', type: 'RUBIKA_PHONE_NO'},
+        {key: 'website', type: 'WEBSITE'}
     ];
 
     const socialMediaList = socialMediaKeys

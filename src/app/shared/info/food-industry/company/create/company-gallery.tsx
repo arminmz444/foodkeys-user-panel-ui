@@ -151,7 +151,8 @@ export default function CompanyGallery({
         }
         registerName="gallery.certificates"
         fields={[
-          { name: 'certificateName', label: 'نام گواهینامه', type: 'text' },
+          { name: 'title', label: 'نام گواهینامه', type: 'text' },
+          { name: 'description', label: 'توضیحات گواهینامه', type: 'text' }
         ]}
         onUpload={handleGalleryFileSelection}
         fileServiceType={'COMPANY_GALLERY_CERTIFICATE'}
@@ -191,10 +192,13 @@ export default function CompanyGallery({
             </strong>
           </>
         }
-        registerName="gallery.slider"
-        fields={[{ name: 'caption', label: 'متن زیرنویس ', type: 'text' }]}
+        registerName="gallery.sliders"
+        fields={[
+            { name: 'title', label: 'متن زیرنویس', type: 'text' },
+          { name: 'description', label: 'توضیحات بیشتر', type: 'text' }
+        ]}
         onUpload={handleGalleryFileSelection}
-        fileServiceType={'COMPANY_BACKGROUND_IMAGE'}
+        fileServiceType={'COMPANY_GALLERY_SLIDER'}
       />
       <MultipleFiles
         className="col-span-2"
@@ -227,7 +231,10 @@ export default function CompanyGallery({
           </>
         }
         registerName="gallery.documents"
-        fields={[{ name: 'documentName', label: 'نام سند', type: 'text' }]}
+        fields={[
+            { name: 'title', label: 'نام سند', type: 'text' },
+          { name: 'description', label: 'توضیحات سند', type: 'text' }
+        ]}
         onUpload={handleGalleryFileSelection}
         fileServiceType={'COMPANY_GALLERY_DOCUMENT'}
       />

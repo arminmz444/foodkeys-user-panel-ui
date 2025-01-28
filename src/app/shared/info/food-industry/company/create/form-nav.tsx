@@ -56,26 +56,6 @@ export const menuItems = [
     label: 'اطلاعات تکمیلی',
     value: formParts.supplementary,
   },
-  {
-    label: 'قیمت',
-    value: formParts.pricingInventory,
-  },
-  {
-    label: 'شخصی سازی فیلد ها',
-    value: formParts.productIdentifiers,
-  },
-  {
-    label: 'سفارش',
-    value: formParts.shipping,
-  },
-  {
-    label: 'بازاریابی',
-    value: formParts.seo,
-  },
-  {
-    label: 'تنظیمات دیگر',
-    value: formParts.variantOptions,
-  },
 ];
 
 interface FormNavProps {

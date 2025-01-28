@@ -27,7 +27,7 @@ interface ProductMediaProps {
 interface ProductSchema {
   name: string;
   description: string;
-  categoryType: string;
+  type: string;
 }
 
 export default function ProductMedia({ className }) {
@@ -103,7 +103,7 @@ export default function ProductMedia({ className }) {
       uploadedFileIds: [
         ...(products[productIndex]?.uploadedFileIds || []),
         ...uuids,
-      ]?.map((p) => p.id),
+      ]?.map((p) => p?.id ? p.id : p),
       outsourced: false,
       removedFileIds: [],
       pictures: [...(products[productIndex].pictures || []), ...uuids],
@@ -122,7 +122,7 @@ export default function ProductMedia({ className }) {
       uploadedFileIds: [
         ...(outSourcedProducts[productIndex]?.uploadedFileIds || []),
         ...uuids,
-      ]?.map((p) => p.id),
+      ]?.map((p) => p?.id ? p.id : p),
       removedFileIds: [],
       outsourced: true,
       pictures: [
@@ -457,7 +457,7 @@ const ProductAccordion = ({
   const [tempProductData, setTempProductData] = useState(
     products.map((product: { pictures: any }) => ({
       ...product,
-      uploadedFileIds: [...(product?.uploadedFileIds || [])]?.map((p) => p.id),
+      uploadedFileIds: [...(product?.uploadedFileIds || [])]?.map((p) => p?.id ? p.id : p),
       removedFileIds: [],
       pictures: product.pictures || [],
     }))
@@ -487,7 +487,7 @@ const ProductAccordion = ({
         uploadedFileIds: [
           ...(updatedData[index]?.uploadedFileIds || []),
           ...uuids,
-        ]?.map((p) => p.id),
+        ]?.map((p) => p?.id ? p.id : p),
         removedFileIds: [],
         pictures: [...(updatedData[index].pictures || []), ...uuids],
       };
@@ -525,7 +525,7 @@ const ProductAccordion = ({
                     {tempProductData[index]?.name || 'محصول جدید'}
                   </h3>
                   <p className="text-sm text-gray-500">
-                    {tempProductData[index]?.categoryType || 'سایر'}
+                    {tempProductData[index]?.type || 'سایر'}
                   </p>
                 </div>
               </div>
@@ -557,9 +557,9 @@ const ProductAccordion = ({
                     inputClassName="border-2"
                     size="lg"
                     className="col-span-12 lg:col-span-6"
-                    value={tempProductData[index]?.categoryType || ''}
+                    value={tempProductData[index]?.type || ''}
                     onChange={(e) =>
-                      handleInputChange(index, 'categoryType', e.target.value)
+                      handleInputChange(index, 'type', e.target.value)
                     }
                     // {...register(`${dataObjectName}.${index}.categoryType`)}
                   />
@@ -609,7 +609,7 @@ const ProductAccordion = ({
                       className="col-span-2 mt-2"
                       onClick={() => handleSaveChanges(index)}
                     >
-                      <PencilIcon className="me-1 h-4 w-4" /> ویرایش
+                      <PencilIcon className="me-1 h-4 w-4" /> ثبت
                     </Button>
                     <Button
                       size="lg"

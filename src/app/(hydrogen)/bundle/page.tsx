@@ -1,8 +1,8 @@
 "use client"
 import { routes } from '@/config/routes';
-import UpgradeStorage from "@/app/shared/bundle/upgrade-storage";
-import {useEffect, useState} from "react";
-import useAxiosPrivate from "@/hooks/use-axios-private";
+import ProfileSettingsLayout from '@/app/(hydrogen)/bundle/subscription-list/layout'
+import ProfileSettingsFormPage from "@/app/(hydrogen)/bundle/subscription-list/page";
+
 const pageHeader = {
   title: 'مدیریت اشتراک',
   breadcrumb: [
@@ -51,21 +51,6 @@ const items = [
   //   color: "#22a5dc"
   // },
 ]
-export default function ProfileSettingsFormPage() {
-  const [items, setItems] = useState()
-  const _axios = useAxiosPrivate()
-  useEffect(() => {
-    const fetchSubscriptions = async (subCategoryId: number) => {
-      try {
-        const response = await _axios.get(`/subscription/${subCategoryId}`);
-        if (response.data.status === 'SUCCESS') {
-          setItems(response.data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching subcategories:', error);
-      }
-    };
-    fetchSubscriptions();
-  }, [_axios]);
-  return <UpgradeStorage items={items || []}/>
+export default function BundleRedirectPage() {
+  return <ProfileSettingsLayout><ProfileSettingsFormPage /></ProfileSettingsLayout>
 }

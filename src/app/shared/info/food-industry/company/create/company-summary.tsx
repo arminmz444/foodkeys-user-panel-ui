@@ -363,7 +363,7 @@ export default function CompanySummary({
               // setEstablishDateValue(e.target.value)
             }
             // onBlur={onBlur}
-            dateFormat="YYYY-MM-DDTHH:mm"
+            dateFormat="yyyy-MM-dd'T'HH:mm:ss"
             maxDate={new Date()}
             placeholderText="تاریخ تاسیس"
             inputProps={{

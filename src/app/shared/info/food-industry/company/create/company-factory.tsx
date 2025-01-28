@@ -52,7 +52,6 @@ export default function CompanyFactory({
       position: string;
       phone: string;
       email: string;
-      isCEO: boolean;
     }[]
   >([]);
 
@@ -351,7 +350,7 @@ export default function CompanyFactory({
             onClick={() =>
               setContacts([
                 ...contacts,
-                { name: '', lastName: '', position: '', phoneNumber: '' },
+                { name: '', lastName: '', email: '', position: '', phone: '' },
               ])
             }
             variant="outline"

@@ -16,16 +16,20 @@ import { IoMdRefreshCircle } from 'react-icons/io';
 import WalletSection from '../layouts/wallet-section';
 const menuItems = [
   {
-    name: 'پروفایل من',
+    name: 'تنطیمات حساب کاربری',
     href: routes.profile,
   },
+  // {
+  //   name: 'تنطیمات حساب کاربری',
+  //   href: routes.forms.profileSettings,
+  // },
   {
-    name: 'تنطیمات حساب کاربری',
-    href: routes.forms.profileSettings,
+    name: 'پیام‌ها و اعلانات',
+    href: routes.notifications,
   },
   {
     name: 'تاریخچه فعالیت',
-    href: '#',
+    href: routes.activities,
   },
 ];
 const STATIC_FILES_URL = 'https://foodkeys-api-dev.liara.run';

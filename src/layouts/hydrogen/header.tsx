@@ -32,20 +32,23 @@ import SockJS from 'sockjs-client';
 import { atom, useAtom } from 'jotai';
 import { updateNotificationsAtom } from '@/store/notificationStore';
 import { useDispatch } from 'react-redux';
-import { addCredit } from '@/store/walletSlice'; // Import atoms from the store
+import { addCredit } from '@/store/walletSlice';
 import PaymentSuccess from '../payment-success';
 import PaymentReject from '../payment-reject';
 import toast from 'react-hot-toast';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 import addCreditImg from 'public/addCredit.svg';
 import addCreditImg2 from 'public/addCreditLogo.webp';
+import {dispatch} from "react-hot-toast/src/core/store";
+import {login as reduxLogin} from "@/store/userSlice";
+import {addNotification} from "@/store/notificationSlice";
 
 // export const notificationsAtom = atom([]);
 
 function HeaderMenuRight() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useAtom(updateNotificationsAtom);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const client = new Client({
       brokerURL: 'ws://foodkeys-api-dev.liara.run/ws',
@@ -66,7 +69,9 @@ function HeaderMenuRight() {
         // const notification = message.body;
         console.log(notification);
         // @ts-ignore
-        setMessages((prev) => [...prev, notification]);
+        dispatch(addNotification(notification))
+        // @ts-ignore
+        // setMessages((prev) => [...prev, notification]);
         // setNo
       });
     };
@@ -96,7 +101,7 @@ function HeaderMenuRight() {
       {/*  </ActionIcon>*/}
       {/*</MessagesDropdown>*/}
       {/*// @ts-ignore*/}
-      <NotificationDropdown messages={messages}>
+      <NotificationDropdown >
         <ActionIcon
           aria-label="Notification"
           variant="text"

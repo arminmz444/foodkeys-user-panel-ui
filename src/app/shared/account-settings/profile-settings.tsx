@@ -30,6 +30,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store/store";
 import useAxiosPrivate from "@/hooks/use-axios-private";
 import {setCredit} from "@/store/walletSlice";
+import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
+import user = mockSession.user;
 
 const role = [
   {
@@ -104,7 +106,7 @@ export default function ProfileSettingsView() {
     fetchUserInfo();
   }, [_axios]);
 
-
+  const userInfo = useSelector((state: RootState) => state.user);
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFiles = (event.target as HTMLInputElement).files;
     const newFiles = Object.entries(uploadedFiles as object)
@@ -151,19 +153,19 @@ export default function ProfileSettingsView() {
           return (
             <>
               <ProfileHeader
-                title="آرمین مظفری"
+                userInfo={userInfo}
                 description="ویرایش عکس و اطلاعات شخصی"
               >
-                <div className="w-full sm:w-auto md:ms-auto">
-                  <Link href={routes.profile}>
-                    <Button
-                      tag="span"
-                      className="dark:bg-gray-100 dark:text-white dark:focus:bg-gray-100"
-                    >
-                      تغییر عکس پروفایل
-                    </Button>
-                  </Link>
-                </div>
+                {/*<div className="w-full sm:w-auto md:ms-auto">*/}
+                {/*  <Link href={routes.profile}>*/}
+                {/*    <Button*/}
+                {/*      tag="span"*/}
+                {/*      className="dark:bg-gray-100 dark:text-white dark:focus:bg-gray-100"*/}
+                {/*    >*/}
+                {/*      تغییر عکس پروفایل*/}
+                {/*    </Button>*/}
+                {/*  </Link>*/}
+                {/*</div>*/}
               </ProfileHeader>
 
               {/*<div className="mx-auto w-full max-w-screen-2xl">*/}
@@ -388,7 +390,7 @@ export default function ProfileSettingsView() {
               {/*    ذخیره*/}
               {/*  </Button>*/}
               {/*</div>*/}
-              <PersonalInfoView user={user}/>
+              <PersonalInfoView user={userInfo}/>
             </>
           );
         }}
@@ -398,11 +400,11 @@ export default function ProfileSettingsView() {
 }
 
 export function ProfileHeader({
-  title,
+  userInfo,
   description,
   children,
-}: React.PropsWithChildren<{ title: string; description?: string }>) {
-  const user = useSelector((state: RootState) => state.user);
+}: React.PropsWithChildren<{ userInfo: any; description?: string }>) {
+
 
   return (
     <div className="relative z-0 -mx-4 px-4 pt-28 before:absolute before:left-0 before:top-0 before:h-40 before:w-full before:bg-gradient-to-r before:from-[#F8E1AF] before:to-[#F6CFCF] @3xl:pt-[190px] @3xl:before:h-[calc(100%-120px)] dark:before:from-[#bca981] dark:before:to-[#cbb4b4] md:-mx-5 md:px-5 lg:-mx-8 lg:px-8 xl:-mx-6 xl:px-6 3xl:-mx-[33px] 3xl:px-[33px] 4xl:-mx-10 4xl:px-10">
@@ -410,9 +412,9 @@ export function ProfileHeader({
         <div className="relative -top-1/3 aspect-square w-[110px] overflow-hidden rounded-full border-[6px] border-white bg-gray-100 shadow-profilePic @2xl:w-[130px] @5xl:-top-2/3 @5xl:w-[150px] dark:border-gray-50 3xl:w-[200px]">
           <Image
             src={
-                (user.avatar &&
+                (userInfo.avatar &&
                     process.env.NEXT_PUBLIC_STATIC_FILES_URL +
-                    user.avatar.filePath) ||
+                    userInfo.avatar.filePath) ||
                 ''
             }
             alt="profile-pic"
@@ -426,7 +428,7 @@ export function ProfileHeader({
             tag="h2"
             className="mb-2 inline-flex items-center gap-3 text-xl font-bold text-gray-900"
           >
-            {title}
+            {userInfo.firstName + " " + userInfo.lastName}
             <PiSealCheckFill className="h-5 w-5 text-primary md:h-6 md:w-6" />
           </Text>
           {description ? (

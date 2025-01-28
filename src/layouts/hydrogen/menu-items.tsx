@@ -41,7 +41,7 @@ import {
   PiMessengerLogo,
   PiContactlessPayment,
 } from 'react-icons/pi';
-import { MdEmail, MdMessage } from 'react-icons/md';
+import {MdAccountBalance, MdEmail, MdMessage, MdSubscriptions} from 'react-icons/md';
 import { CgHome, CgProfile } from 'react-icons/cg';
 
 // Note: do not add href in the label object, it is rendering as label
@@ -57,8 +57,13 @@ export const menuItems = [
   },
   {
     name: 'حساب کاربری',
-    href: '/info/profile',
+    href: '/profile',
     icon: <CgProfile />,
+  },
+  {
+    name: 'مدیریت اشتراک',
+    href: routes.subscriptionList,
+    icon: <MdAccountBalance />,
   },
   // label end
   // {
@@ -405,10 +410,6 @@ export const menuItems = [
       {
         name: 'لیست تراکنش‌ها',
         href: routes.finance.transactionList,
-      },
-      {
-        name: 'مدیریت اشتراک',
-        href: routes.subscription,
       },
       {
         name: 'ایجاد',

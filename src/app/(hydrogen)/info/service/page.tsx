@@ -12,6 +12,8 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import Spinner from '@/components/ui/spinner';
+import ServicesTable from "@/app/shared/info/service-bank/service/service-list/table";
+import {Input} from "@/components/ui/input";
 
 const queryClient = new QueryClient();
 
@@ -64,30 +66,36 @@ export default function ServiceBankPage() {
     <QueryClientProvider client={queryClient}>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
         <div className="mt-4 flex items-center gap-3 @lg:mt-0">
-          <Button
-            variant="outline"
-            className="w-full @lg:w-auto"
-            onClick={() => handleExportData()}
-          >
-            <PiArrowLineDownBold className="me-1.5 h-[17px] w-[17px]" />
-            استخراج
-          </Button>
-          <Link
-            href={routes.info.foodIndustryAdd}
-            className="w-full @lg:w-auto"
-          >
-            <Button
-              tag="span"
-              className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
-            >
-              <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
-              ثبت شرکت جدید
-            </Button>
-          </Link>
+          {/*<Button*/}
+          {/*  variant="outline"*/}
+          {/*  className="w-full @lg:w-auto"*/}
+          {/*  onClick={() => handleExportData()}*/}
+          {/*>*/}
+          {/*  <PiArrowLineDownBold className="me-1.5 h-[17px] w-[17px]" />*/}
+          {/*  استخراج*/}
+          {/*</Button>*/}
+          {/*<Link*/}
+          {/*  href={routes.info.serviceIndustryAdd}*/}
+          {/*  className="w-full @lg:w-auto"*/}
+          {/*>*/}
+          {/*  <Button*/}
+          {/*    tag="span"*/}
+          {/*    className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"*/}
+          {/*  >*/}
+          {/*    <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />*/}
+          {/*    ثبت شرکت جدید*/}
+          {/*  </Button>*/}
+          {/*</Link>*/}
+          {/*<Input*/}
+          {/*    className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"*/}
+          {/*  >*/}
+          {/*    <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />*/}
+          {/*    ثبت شرکت جدید*/}
+          {/*  </Input>*/}
         </div>
       </PageHeader>
 
-      <CompaniesTable category={1} />
+      <ServicesTable category={4} />
     </QueryClientProvider>
   );
 }

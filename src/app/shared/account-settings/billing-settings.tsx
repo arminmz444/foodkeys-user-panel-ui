@@ -91,7 +91,8 @@ const cardsOptions = [
   },
 ];
 
-export default function BillingSettingsView() {
+// @ts-ignore
+export default function BillingSettingsView({ id }) {
   const [currentPlan, setCurrentPlan] = useState<string>('premium');
   function handleExportData() {
     exportToCSV(
@@ -175,7 +176,7 @@ export default function BillingSettingsView() {
         </div>
       </HorizontalFormBlockWrapper>
       <ConfirmationCard currentPlan={currentPlan} />
-      <TotalCard currentPlan={currentPlan} />
+      <TotalCard currentPlan={currentPlan} id={id}/>
     </>
   );
 }
@@ -345,7 +346,7 @@ const ConfirmationCard = ({
   );
 };
 
-const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
+const TotalCard = ({ currentPlan, id }: { currentPlan: string, id: any }) => {
   const [discountCode, setDiscountCode] = useState("");
   const [discount, setDiscount] = useState(0);
   // @ts-ignore
@@ -370,13 +371,13 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
     let bundleId: number;
     switch (currentPlan) {
       case 'free':
-        bundleId = 1;
+        bundleId = (id - 1) * 3 + 1;
         break;
       case 'basic':
-        bundleId = 2;
+        bundleId = (id - 1) * 3 + 2;
         break;
       case 'premium':
-        bundleId = 3;
+        bundleId = (id - 1) * 3 + 3;
         break;
     }
     const createSubscription = async () => {
@@ -405,7 +406,7 @@ const TotalCard = ({ currentPlan }: { currentPlan: string }) => {
     };
     let response = await createSubscription()
     if (response?.data)
-      router.push("/bundle")
+      router.push(`/bundle/${id}`)
 
     // dispatch(addCredit(amount));
   };

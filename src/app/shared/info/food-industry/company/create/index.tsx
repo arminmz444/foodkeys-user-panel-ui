@@ -37,6 +37,8 @@ import { useRouter } from 'next/navigation';
 import { createGlobalState } from 'react-use';
 import { socialMediaConverter } from '@/utils/social-media-converter';
 import { telConverter } from '@/utils/tel-converter';
+import { routes } from '@/config/routes';
+import Link from 'next/link';
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: CompanySummary,
@@ -225,7 +227,7 @@ export default function CreateCompany({
     try {
       const response = await _axios.get(`/subscription/${subCategoryId}`);
       if (response.data.status === 'SUCCESS') {
-        if (!response.data?.data) {
+        if (!response.data?.data || !response.data?.data?.length) {
           toast.success(
             <div>
               <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
@@ -234,13 +236,15 @@ export default function CreateCompany({
                   'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'
                 }
               </Text>
-              <Button
-                className="mt-3"
-                size="sm"
-                onClick={() => console.log('DISMISS')}
-              >
-                خرید اشتراک
-              </Button>
+              <Link href={`/bundle/${subCategoryId}/buy`}>
+                <Button
+                  className="mt-3"
+                  size="sm"
+                  // onClick={() => router.replace()}
+                >
+                  خرید اشتراک
+                </Button>
+              </Link>
             </div>,
             { duration: 5000 }
           );
@@ -279,7 +283,19 @@ export default function CreateCompany({
           //     </div>
           //   </div>
           // ));
-          router.replace('/bundle/buy');
+          router.replace(`/bundle/${subCategoryId}/buy`);
+        } else {
+          toast.success(
+            <>
+              <Text tag="b">
+                {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
+              </Text>
+              <Text>{'\n'}</Text>
+              <Text>
+                بعد از تایید اطلاعات ثبت شده، شرکت شما در سایت بروزرسانی می‌شود
+              </Text>
+            </>
+          );
         }
       }
     } catch (error) {
@@ -356,7 +372,6 @@ export default function CreateCompany({
         brands: data.brands,
         socialMedias: socialMedias,
         contacts: data.contacts,
-        logo: data.logo,
         tels: tels,
         location: location,
         employeesCount: data.employeesCount,
@@ -365,13 +380,29 @@ export default function CreateCompany({
         holding: data.holding,
         landArea: data.landArea,
         productAvailability: data.productAvailability,
+        productTitles: data.productTitles,
+        productsDescription: data.productsDescription,
+        outSourcedProductTitles: data.outSourcedProductTitles,
+        outSourcedProductsDescription: data.outSourcedProductsDescription,
       };
 
+      if (data.products && data.products.length) {
+        data.products.map((product: any) => {
+          product['outsourced'] = false;
+          return product;
+        });
+      }
+      if (data.outSourcedProducts && data.outSourcedProducts.length) {
+        data.outSourcedProducts.map((product: any) => {
+          product['outsourced'] = true;
+          return product;
+        });
+      }
       data.products = [...data.products, ...data.outSourcedProducts];
       const productData = data.products
         ? data.products.map((product) => ({
             name: product.name,
-            type: product.type,
+            type: product.type || '',
             description: product.description,
             machineUsage: product.machineUsage,
             outsourced: product.outsourced,
@@ -396,12 +427,16 @@ export default function CreateCompany({
       formData.append('productsData', JSON.stringify(productsDataObject));
       // formData.append('productFileIds', JSON.stringify(productFileIds));
 
-      if (data.logo) formData.append('COMPANY_LOGO', data.logo);
+      if (data.logo) {
+        formData.append('COMPANY_LOGO', data.logo);
+        delete data.logo;
+      }
 
       if (data.backgroundImages && data.backgroundImages.length > 0) {
         data.backgroundImages.forEach((imgFile: File) => {
           formData.append('COMPANY_BACKGROUND_IMAGE', imgFile);
         });
+        delete data.backgroundImages;
       }
 
       if (data.companyDocuments && data.companyDocuments.length > 0) {
@@ -435,25 +470,34 @@ export default function CreateCompany({
       );
       console.log(`Company Documents: `, formData.getAll('COMPANY_DOCUMENT'));
       console.log(`Company Licenses: `, formData.getAll('COMPANY_LICENSE'));
-      console.log(`Gallery: `, formData.getAll('GALLERY'));
+      console.log(`Gallery: `, formData.get('GALLERY'));
       console.log(
         `Company Certificates: `,
         formData.getAll('COMPANY_CERTIFICATE')
       );
       // console.log('productFileIds: ', formData.get('productFileIds'));
 
-      // const response = await _axios.post(
-      //   `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/company/form`,
-      //   formData,
-      //   {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      //   }
-      // );
-      let response = {
-        status: 200,
-      };
+      let response;
+      let url = `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/company`;
+      if (id) {
+        url += '/' + id + '/form';
+        response = await _axios.put(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } else {
+        url += '/form';
+        response = await _axios.post(url, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
+
+      // let response = {
+      //   status: 200,
+      // };
 
       if (response.status === 200) {
         // toast.success(
@@ -468,13 +512,14 @@ export default function CreateCompany({
         //   success: <b>اطلاعات شرکت شما با موفقیت ثبت شد</b>,
         //   error: <b>خطا در ثبت اطلاعات </b>,
         // });
-        methods.reset();
+
+        // methods.reset();
       }
       console.log(data);
       console.log(transformedData);
     } catch (error) {
       console.error('Error submitting the form:', error);
-      toast.error('خطا در ارسال اطلاعات');
+      toast.error('خطا در ثبت اطلاعات');
     } finally {
       setLoading(false);
     }

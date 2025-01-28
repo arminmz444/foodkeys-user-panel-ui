@@ -81,7 +81,7 @@ export default function JalaliDatePicker({
           },
         ]}
         onBlur={onBlur}
-        dateFormat={dateFormat}
+        dateFormat={"yyyy-MM-dd'T'HH:mm:ss"}
         maxDate={maxDate}
         inputProps={inputProps}
         popperPlacement={popperPlacement}

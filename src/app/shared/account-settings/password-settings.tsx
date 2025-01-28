@@ -13,6 +13,11 @@ import {Password} from '@/components/ui/password';
 import HorizontalFormBlockWrapper from './horiozontal-block';
 import toast from "react-hot-toast";
 import useAxiosPrivate from "@/hooks/use-axios-private";
+import {useSelector} from "react-redux";
+import {RootState} from "@/store/store";
+import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
+import user = mockSession.user;
+import Spinner from "@/components/ui/spinner";
 
 // form zod validation schema
 const passwordFormSchema = z.object({
@@ -33,6 +38,7 @@ export default function PasswordSettingsView({
                                              }: {
   settings?: PasswordFormTypes;
 }) {
+  const userInfo = useSelector((state: RootState) => state.user);
   const _axios = useAxiosPrivate()
   const [isLoading, setLoading] = useState(false);
   const [reset, setReset] = useState({});
@@ -119,8 +125,8 @@ export default function PasswordSettingsView({
             return (
                 <>
                   <ProfileHeader
-                      title="آرمین مظفری"
-                      description="dev@foodkeys.com"
+                      userInfo={userInfo}
+                      description={userInfo && userInfo.email || ''}
                   />
 
                   <div className="mx-auto w-full max-w-screen-2xl">

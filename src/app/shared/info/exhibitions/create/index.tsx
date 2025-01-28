@@ -30,6 +30,7 @@ import useAxiosPrivate from '@/hooks/use-axios-private';
 import { data } from 'autoprefixer';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import {fetchSubscriptions} from "@/utils/fetch-subscriptions";
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: ExhibitionSummary,
@@ -78,54 +79,54 @@ export default function CreateExhibition({
     }
   }, [id, _axios]);
 
-  const fetchSubscriptions = async (subCategoryId: number) => {
-    try {
-      const response = await _axios.get(`/subscription/${subCategoryId}`);
-      if (response.data.status === 'SUCCESS') {
-        if (!response.data?.data) {
-          toast.success(
-            <div>
-              <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
-              <Text>
-                {
-                  'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'
-                }
-              </Text>
-              <Button
-                className="mt-3"
-                size="sm"
-                onClick={() => console.log('DISMISS')}
-              >
-                خرید اشتراک
-              </Button>
-            </div>,
-            { duration: 5000 }
-          );
-          router.replace('/bundle/buy');
-        }
-        return true;
-      }
-    } catch (error) {
-      console.error('Error fetching subscription:', error);
-      toast.error(
-        <div>
-          <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
-          <Text>
-            {'اما هنگام دریافت وضعیت اشتراک شما، خطایی رخ داده است.\n' +
-              'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'}
-          </Text>
-          <Button
-            className="mt-3"
-            size="sm"
-            onClick={() => console.log('DISMISS')}
-          >
-            خرید اشتراک
-          </Button>
-        </div>,
-        { duration: 60000 }
-      );
-    }
-  };
+  // const fetchSubscriptions = async (subCategoryId: number) => {
+  //   try {
+  //     const response = await _axios.get(`/subscription/${subCategoryId}`);
+  //     if (response.data.status === 'SUCCESS') {
+  //       if (!response.data?.data) {
+  //         toast.success(
+  //           <div>
+  //             <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
+  //             <Text>
+  //               {
+  //                 'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'
+  //               }
+  //             </Text>
+  //             <Button
+  //               className="mt-3"
+  //               size="sm"
+  //               onClick={() => console.log('DISMISS')}
+  //             >
+  //               خرید اشتراک
+  //             </Button>
+  //           </div>,
+  //           { duration: 5000 }
+  //         );
+  //         router.replace('/bundle/buy');
+  //       }
+  //       return true;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching subscription:', error);
+  //     toast.error(
+  //       <div>
+  //         <Text tag="b">{'اطلاعات شما به طور موقت ثبت شد.\n\n'}</Text>
+  //         <Text>
+  //           {'اما هنگام دریافت وضعیت اشتراک شما، خطایی رخ داده است.\n' +
+  //             'برای تایید نهایی و استفاده از خدمات سایت، لطفا اشتراک فعال جدیدی تهیه کنید.\n'}
+  //         </Text>
+  //         <Button
+  //           className="mt-3"
+  //           size="sm"
+  //           onClick={() => console.log('DISMISS')}
+  //         >
+  //           خرید اشتراک
+  //         </Button>
+  //       </div>,
+  //       { duration: 60000 }
+  //     );
+  //   }
+  // };
   const onSubmit: SubmitHandler<CreateEventInput> = async (data) => {
     setLoading(true);
     try {
@@ -176,7 +177,7 @@ export default function CreateExhibition({
         // );
         methods.reset();
         // router.push('/info/service');
-        let hasSubscription = await fetchSubscriptions(data.subcategory?.value);
+        let hasSubscription = await fetchSubscriptions(24, _axios, router);
         if (hasSubscription) router.push('/info/service');
       }
     } catch (error) {

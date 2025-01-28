@@ -36,15 +36,15 @@ const filterState = {
   status: '',
 };
 
-const fetchCompanies = async (
+const fetchServices = async (
   searchTerm: string,
   currentPage: number,
   pageSize: number,
   category: number
 ) => {
   let API_URL = searchTerm
-    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/company/?pageNumber=${currentPage}&pageSize=${pageSize}`;
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/search/service?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/service/?pageNumber=${currentPage}&pageSize=${pageSize}`;
 
   API_URL += category ? `&categoryId=${category}` : '';
 
@@ -56,11 +56,11 @@ const fetchCompanies = async (
       totalItems: response.data.pagination.totalElements,
     };
   } else {
-    throw new Error('Failed to fetch companies');
+    throw new Error('Failed to fetch services');
   }
 };
 
-export default function CompaniesTable({ category }) {
+export default function ServicesTable({ category }) {
   const [revisionRequestLoading, setRevisionRequestLoading] =
     useState<boolean>(false);
   const [pageSize, setPageSize] = useState(10);
@@ -110,8 +110,8 @@ export default function CompaniesTable({ category }) {
   );
 
   const { data, isLoading, isError } = useQuery(
-    ['companies', searchTerm, currentPage, pageSize],
-    () => fetchCompanies(searchTerm, currentPage, pageSize, category),
+    ['services', searchTerm, currentPage, pageSize],
+    () => fetchServices(searchTerm, currentPage, pageSize, category),
     {
       keepPreviousData: true,
     }

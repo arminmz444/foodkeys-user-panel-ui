@@ -8,18 +8,18 @@ import { PiCaretLeftBold, PiCaretRightBold } from 'react-icons/pi';
 import { usePathname } from 'next/navigation';
 import cn from '@/utils/class-names';
 
-const menuItems = [
-  {
-    label: 'اشتراک‌های من',
-    value: '/bundle',
-  },
-  {
-    label: 'خرید اشتراک',
-    value: '/bundle/buy',
-  },
-];
 
-export default function ProfileSettingsNav() {
+export default function ProfileSettingsNav({ id }) {
+  const menuItems = [
+    {
+      label: 'اشتراک‌های من',
+      value: `/bundle/${id}`,
+    },
+    {
+      label: 'خرید اشتراک',
+      value: `/bundle/${id}/buy`,
+    },
+  ];
   const pathname = usePathname();
   const {
     sliderEl,
