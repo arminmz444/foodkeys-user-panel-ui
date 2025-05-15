@@ -100,7 +100,7 @@ export default function EditCompanyPage({
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
-        <Link
+        {/* <Link
           href={routes.info.foodIndustryAdd}
           className="mt-4 w-full @lg:mt-0 @lg:w-auto"
         >
@@ -111,7 +111,7 @@ export default function EditCompanyPage({
             <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
             ثبت شرکت جدید
           </Button>
-        </Link>
+        </Link> */}
       </PageHeader>
 
       <CreateCompany id={params.id} category={1} />

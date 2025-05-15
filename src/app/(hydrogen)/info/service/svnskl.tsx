@@ -14,7 +14,7 @@ interface ServicePageProps {
 // export const getServerSideProps: GetServerSideProps<ServicePageProps> = async (context) => {
 //     const { id } = context.params as { id: string };
 //
-//     const res = await fetch(`https://foodkeys-api-dev.liara.run/api/services/${id}/schema`);
+//     const res = await fetch(`http://localhost:8080/api/services/${id}/schema`);
 //     if (!res.ok) {
 //         return {
 //             notFound: true,

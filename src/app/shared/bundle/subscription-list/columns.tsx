@@ -16,7 +16,7 @@ import HandWaveIcon from '@/components/icons/hand-wave';
 import { PiHand } from 'react-icons/pi';
 import { TbExclamationMark } from 'react-icons/tb';
 
-const STATIC_FILE_URL = 'https://foodkeys-api-dev.liara.run';
+const STATIC_FILE_URL = 'http://localhost:8080';
 const companyStatusDict: any = {
   VERIFIED: 'تایید شده',
   PENDING: 'در انتظار تایید',

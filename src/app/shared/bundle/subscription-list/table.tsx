@@ -31,8 +31,8 @@ const filterState = {
 
 const fetchCompanies = async (searchTerm: string, currentPage: number, pageSize: number) => {
     const API_URL = searchTerm
-        ? `https://foodkeys-api-dev.liara.run/api/v1/client/panel/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-        : `https://foodkeys-api-dev.liara.run/api/v1/client/panel/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
+        ? `http://localhost:8080/api/v1/client/panel/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+        : `http://localhost:8080/api/v1/client/panel/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
 
     const response = await axiosInstance.get(API_URL);
 

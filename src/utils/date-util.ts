@@ -12,3 +12,8 @@ export function convertTimestampToLocalDateTime(timestamp) {
 
     return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
 }
+
+export const ensureSeconds = (s?: string) =>
+    s && s.length === 16
+        ? `${s}:00`
+        : s

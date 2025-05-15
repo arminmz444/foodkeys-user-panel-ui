@@ -32,7 +32,7 @@ const menuItems = [
     href: routes.activities,
   },
 ];
-const STATIC_FILES_URL = 'https://foodkeys-api-dev.liara.run';
+const STATIC_FILES_URL = 'http://localhost:8080';
 
 function DropdownMenu() {
   const user = useSelector((state: RootState) => state.user);

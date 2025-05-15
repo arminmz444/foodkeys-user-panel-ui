@@ -18,7 +18,7 @@ import { TbExclamationMark } from 'react-icons/tb';
 import { BsLine } from 'react-icons/bs';
 import { RxBorderSolid } from 'react-icons/rx';
 
-const STATIC_FILE_URL = 'https://foodkeys-api-dev.liara.run';
+const STATIC_FILE_URL = 'http://localhost:8080';
 const companyStatusDict: any = {
   VERIFIED: 'تایید شده',
   PENDING: 'در انتظار تایید',

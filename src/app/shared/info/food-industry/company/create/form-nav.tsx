@@ -10,6 +10,7 @@ export const formParts = {
   contact: 'contact',
   factory: 'factory',
   office: 'office',
+  location: 'location',
   social: 'social',
   media: 'media',
   gallery: 'gallery',
@@ -31,6 +32,10 @@ export const menuItems = [
   {
     label: 'تاریخچه',
     value: formParts.history,
+  },
+  {
+    label: 'موقعیت مکانی',
+    value: formParts.location,
   },
   {
     label: 'اطلاعات تماس کارخانه',

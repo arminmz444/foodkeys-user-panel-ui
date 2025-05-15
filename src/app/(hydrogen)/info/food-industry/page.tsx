@@ -9,11 +9,8 @@ import { productsData } from '@/data/products-data';
 import { exportToCSV } from '@/utils/export-to-csv';
 import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import MapSelector from '@/components/MapSelector';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import QuillLoader from '@/components/loader/quill-loader';
 import Spinner from '@/components/ui/spinner';
 
 const queryClient = new QueryClient();
@@ -91,7 +88,7 @@ export default function FoodIndustryPage() {
       </PageHeader>
 
       <CompaniesTable category={1} />
-      <MapSelector onLocationSelect={handleLocationSelect} />
+      {/*<MapSelector onLocationSelect={handleLocationSelect} />*/}
     </QueryClientProvider>
   );
 }

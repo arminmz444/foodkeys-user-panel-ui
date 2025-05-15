@@ -123,7 +123,7 @@ export default function PersonalInfoView({ user }) {
     // const dispatch = useDispatch()
     // const user = useSelector((state: RootState) => state.user);
     const _axios = useAxiosPrivate();
-    const STATIC_FILE_PATH = 'https://foodkeys-api-dev.liara.run'
+    const STATIC_FILE_PATH = 'http://localhost:8080'
     const imageRef = useRef<HTMLInputElement>(null);
     const userImgRef = useRef<HTMLInputElement>(null);
     const [isLoading, setLoading] = useState(false);

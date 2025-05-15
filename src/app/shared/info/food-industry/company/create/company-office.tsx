@@ -24,7 +24,7 @@ const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
 });
 
 // const fetchSubcategories = async () => {
-//   const { data } = await axios.get('https://foodkeys-api-dev.liara.run/api/v1/category/1/subcategory');
+//   const { data } = await axios.get('http://localhost:8080/api/v1/category/1/subcategory');
 //   return data;
 // };
 interface OfficeTel {
@@ -123,32 +123,32 @@ export default function CompanyOffice({ className }: { className?: string }) {
       {/*  )}*/}
       {/*/>*/}
 
-      <Input
-        label="استان دفتر مرکزی"
-        placeholder="استان دفتر مرکزی"
-        {...register('officeState')}
-        error={errors.officeState?.message as string}
-        className="w-full
-          "
-      />
-      <Input
-        label="شهر دفتر مرکزی"
-        placeholder="شهر دفتر مرکزی"
-        {...register('officeCity')}
-        error={errors.officeCity?.message as string}
-        className="w-full"
-      />
-      <div className="col-span-2">
-        <Input
-          label="کد پستی دفتر مرکزی"
-          type="number"
-          placeholder="کد پستی دفتر مرکزی"
-          {...register('officePoBox')}
-          error={errors.officePoBox?.message as string}
-          className="w-full
-          "
-        />
-      </div>
+      {/*<Input*/}
+      {/*  label="استان دفتر مرکزی"*/}
+      {/*  placeholder="استان دفتر مرکزی"*/}
+      {/*  {...register('officeState')}*/}
+      {/*  error={errors.officeState?.message as string}*/}
+      {/*  className="w-full*/}
+      {/*    "*/}
+      {/*/>*/}
+      {/*<Input*/}
+      {/*  label="شهر دفتر مرکزی"*/}
+      {/*  placeholder="شهر دفتر مرکزی"*/}
+      {/*  {...register('officeCity')}*/}
+      {/*  error={errors.officeCity?.message as string}*/}
+      {/*  className="w-full"*/}
+      {/*/>*/}
+      {/*<div className="col-span-2">*/}
+      {/*  <Input*/}
+      {/*    label="کد پستی دفتر مرکزی"*/}
+      {/*    type="number"*/}
+      {/*    placeholder="کد پستی دفتر مرکزی"*/}
+      {/*    {...register('officePoBox')}*/}
+      {/*    error={errors.officePoBox?.message as string}*/}
+      {/*    className="w-full*/}
+      {/*    "*/}
+      {/*  />*/}
+      {/*</div>*/}
 
       <div className="flex flex-col space-y-2">
         <label className="font-medium text-gray-700 dark:text-gray-600">
@@ -239,14 +239,14 @@ export default function CompanyOffice({ className }: { className?: string }) {
         {...register('hotlineNumber')}
         error={errors.hotlineNumber?.message as string}
       />
-      <Textarea
-        label="آدرس دفتر مرکزی*"
-        placeholder="آدرس دفتر مرکزی"
-        {...register('officeLocation')}
-        error={errors.officeLocation?.message as string}
-        rows={5}
-        className="col-span-full"
-      />
+      {/*<Textarea*/}
+      {/*  label="آدرس دفتر مرکزی*"*/}
+      {/*  placeholder="آدرس دفتر مرکزی"*/}
+      {/*  {...register('officeLocation')}*/}
+      {/*  error={errors.officeLocation?.message as string}*/}
+      {/*  rows={5}*/}
+      {/*  className="col-span-full"*/}
+      {/*/>*/}
     </FormGroup>
   );
 }

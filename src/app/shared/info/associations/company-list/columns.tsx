@@ -15,7 +15,7 @@ import {Button, Popover} from "rizzui";
 import HandWaveIcon from "@/components/icons/hand-wave";
 import {PiHand} from "react-icons/pi";
 
-const STATIC_FILE_URL = "https://foodkeys-api-dev.liara.run"
+const STATIC_FILE_URL = "http://localhost:8080"
 const companyStatusDict: any = {
     VERIFIED: 'تایید شده',
     PENDING: 'در انتظار تایید',
@@ -173,7 +173,7 @@ export const getColumns = ({
                     </Link>
                 </Tooltip>
                 <DeletePopover
-                    title={`جذف شرکت`}
+                    title={`حذف شرکت`}
                     description={`آیا می‌خواهید درخواست حذف این شرکت را بدهید؟`}
                     onDelete={() => onDeleteItem(row.id)}
                 />

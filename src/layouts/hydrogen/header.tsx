@@ -60,7 +60,7 @@ function HeaderMenuRight() {
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
       webSocketFactory: () =>
-        new SockJS('https://foodkeys-api-dev.liara.run/ws'),
+        new SockJS('http://localhost:8080/ws'),
     });
 
     client.onConnect = () => {
