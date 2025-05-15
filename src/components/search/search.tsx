@@ -17,6 +17,7 @@ import {
 } from 'react-icons/pi';
 import cn from '@/utils/class-names';
 import { pageLinks } from './page-links.data';
+import { FaDeleteLeft } from 'react-icons/fa6';
 
 function SearchBox({ onClose }: { onClose?: () => void }) {
   const inputRef = useRef(null);
@@ -52,7 +53,7 @@ function SearchBox({ onClose }: { onClose?: () => void }) {
           value={searchText}
           ref={inputRef}
           onChange={(e) => setSearchText(() => e.target.value)}
-          placeholder="Search here"
+          placeholder="صفحه مورد نظر خود را بنویسید ..."
           className="flex-1"
           prefix={
             <PiMagnifyingGlassBold className="h-[18px] w-[18px] text-gray-600" />
@@ -68,7 +69,7 @@ function SearchBox({ onClose }: { onClose?: () => void }) {
                   setSearchText(() => '');
                 }}
               >
-                Clear
+                <FaDeleteLeft size={20} className="rotate-180" />
               </Button>
             )
           }
@@ -89,7 +90,7 @@ function SearchBox({ onClose }: { onClose?: () => void }) {
             <Empty
               className="scale-75"
               image={<SearchNotFoundIcon />}
-              text="No Result Found"
+              text="موردی یافت نشد."
               textClassName="text-xl"
             />
           ) : (
@@ -97,7 +98,7 @@ function SearchBox({ onClose }: { onClose?: () => void }) {
               tag="h6"
               className="mb-5 px-3 font-semibold dark:text-gray-700"
             >
-              Quick Page Links
+              دسترسی های سریع
             </Text>
           )}
         </>
@@ -118,7 +119,9 @@ function SearchBox({ onClose }: { onClose?: () => void }) {
                     <span className="font-medium capitalize text-gray-900 dark:text-gray-700">
                       {item.name}
                     </span>
-                    <span className="text-gray-500">{item?.href}</span>
+                    <span dir="ltr" className="text-right text-gray-500">
+                      {item?.href}
+                    </span>
                   </span>
                 </Link>
               ) : (
@@ -165,7 +168,7 @@ export default function SearchWidget() {
       >
         <PiMagnifyingGlassBold className="me-2 h-[18px] w-[18px]" />
         <span className="hidden text-sm text-gray-600 group-hover:text-gray-900 xl:inline-flex">
-          دنبال چی میگردی؟ بنویسش...
+          دنبال چی میگردی؟...
         </span>
         <span className="ms-auto hidden items-center text-sm text-gray-600 lg:flex lg:rounded-md lg:bg-gray-200/70 lg:px-1.5 lg:py-1 lg:text-xs lg:font-semibold xl:justify-normal">
           <PiCommand strokeWidth={1.3} className="h-[15px] w-[15px]" />K

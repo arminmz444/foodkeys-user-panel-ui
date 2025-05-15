@@ -14,7 +14,7 @@ import TransactionsTable from '@/app/shared/finance/transaction/transaction-list
 const queryClient = new QueryClient();
 
 const pageHeader = {
-  title: 'لیست تراکنشات شما در سایت',
+  title: 'لیست تراکنشات',
   breadcrumb: [
     {
       href: routes.finance.dashboard,

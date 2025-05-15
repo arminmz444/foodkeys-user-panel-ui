@@ -51,7 +51,8 @@ export default function TransactionsTable() {
   ) => {
     const API_URL = `/transaction?pageNumber=${currentPage}&pageSize=${pageSize}&filter=${searchTerm}`;
 
-    const response = await _axios.get(API_URL);
+    const response = null;
+    // const response = await _axios.get(API_URL);
 
     if (response.data.statusCode === 200) {
       return {

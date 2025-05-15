@@ -16,24 +16,19 @@ import { messages } from '@/data/support-inbox';
 
 export const supportNavItems = [
   {
-    value: 'unassigned',
-    label: 'به کسی متصل نشده',
-    count: 88,
-  },
-  {
-    value: 'assigned-to-me',
-    label: 'به من متصل شده',
-    count: 1515,
-  },
-  {
     value: 'all-open',
     label: 'همه',
     count: 1603,
   },
   {
-    value: 'chat',
-    label: 'پیام',
+    value: 'open',
+    label: 'باز',
     count: 991,
+  },
+  {
+    value: 'closed',
+    label: 'بسته',
+    count: 612,
   },
 ];
 

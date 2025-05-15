@@ -1,6 +1,7 @@
 import { Text } from '@/components/ui/text';
 import Breadcrumb from '@/components/ui/breadcrumb';
 import cn from '@/utils/class-names';
+import PageHeaderFilter from './page-header-filter';
 
 export type PageHeaderTypes = {
   title: string;
@@ -17,7 +18,7 @@ export default function PageHeader({
   return (
     <header
       className={cn(
-        'mb-6 flex flex-col @lg:flex-row @lg:items-center @lg:justify-between xs:-mt-2 lg:mb-7',
+        'mb-6 flex flex-col gap-4 @lg:flex-row @lg:items-center @lg:justify-between xs:-mt-2 sm:gap-0 lg:mb-7',
         className
       )}
     >

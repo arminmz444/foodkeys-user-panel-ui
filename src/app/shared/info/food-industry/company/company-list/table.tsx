@@ -60,10 +60,16 @@ const fetchCompanies = async (
   }
 };
 
-export default function CompaniesTable({ category }) {
+export default function CompaniesTable({
+  category,
+  defaultPageSize = 5,
+}: {
+  category: number;
+  defaultPageSize?: number;
+}) {
   const [revisionRequestLoading, setRevisionRequestLoading] =
     useState<boolean>(false);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [inputValue, setInputValue] = useState('');

@@ -32,7 +32,7 @@ const menuItems = [
     href: routes.activities,
   },
 ];
-const STATIC_FILES_URL = 'http://localhost:8080';
+const STATIC_FILES_URL = 'http://192.168.43.57:8080';
 
 function DropdownMenu() {
   const user = useSelector((state: RootState) => state.user);
@@ -66,7 +66,7 @@ function DropdownMenu() {
             ''
           }
           name={user.firstName || 'کاربر'}
-          color="invert"
+          color="DEFAULT"
         />
         <div className="ms-3">
           <Text tag="h6" className="font-semibold">
@@ -126,9 +126,9 @@ export default function ProfileMenu() {
                 user.avatar.filePath) ||
             ''
           }
-          name="John Doe"
-          color="invert"
-          className="!h-9 w-9 sm:!h-10 sm:w-10"
+          name={user.firstName || 'کاربر'}
+          color="DEFAULT"
+          className="!h-9 w-9 border-2 bg-white shadow-md dark:bg-white sm:!h-10 sm:w-10"
         />
       </button>
     </Popover>

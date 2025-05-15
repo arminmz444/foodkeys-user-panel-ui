@@ -22,7 +22,7 @@ export default function Page({ params }: { params: { id: string } }) {
             className="flex items-center gap-2"
           >
             <PiArrowLeft />
-            Back
+            بازگشت
           </Button>
         </div>
 

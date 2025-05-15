@@ -207,7 +207,7 @@ export default function InvoiceListPage() {
         <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb}>
           <div className="mt-4 flex items-center gap-3 @lg:mt-0">
             <ExportButton onClick={() => handleExportData()} />
-            <Link href={routes.invoice.create} className="w-full @lg:w-auto">
+            {/* <Link href={routes.invoice.create} className="w-full @lg:w-auto">
               <Button
                 tag="span"
                 className="w-full @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
@@ -215,7 +215,7 @@ export default function InvoiceListPage() {
                 <PiPlusBold className="me-1.5 h-[17px] w-[17px]" />
                 ایجاد فاکتور
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </PageHeader>
         {/*// @ts-ignore*/}

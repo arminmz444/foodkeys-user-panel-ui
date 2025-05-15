@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Text } from '@/components/ui/text';
 import { Collapse } from '@/components/ui/collapse';
@@ -12,7 +12,13 @@ import { menuItems } from './menu-items';
 import Logo from '@/components/logo';
 
 export default function Sidebar({ className }: { className?: string }) {
+  // const [menuItems, setMenuItems] = useState([])
   const pathname = usePathname();
+  // useEffect(() => {
+  //   const getMenuItems = async () => {}
+  //   if (!)
+
+  // }, []);
   return (
     <aside
       className={cn(
@@ -26,7 +32,9 @@ export default function Sidebar({ className }: { className?: string }) {
           className="flex flex-nowrap items-center justify-center gap-2 whitespace-nowrap"
         >
           <Logo className="max-w-[155px]" />
-          <h2 className="text-sm">مرجع صنایع غذایی و کشاورزی ایران</h2>
+          <h2 className="text-sm font-black">
+            مرجع صنایع غذایی و کشاورزی ایران
+          </h2>
         </Link>
       </div>
 
@@ -46,7 +54,7 @@ export default function Sidebar({ className }: { className?: string }) {
                     {item?.dropdownItems ? (
                       <Collapse
                         defaultOpen={isDropdownOpen}
-                        header={({ open, toggle }) => (
+                        header={({ open: collapseOpen, toggle }) => (
                           <div
                             onClick={toggle}
                             className={cn(
@@ -74,10 +82,11 @@ export default function Sidebar({ className }: { className?: string }) {
 
                             <PiCaretDownBold
                               strokeWidth={3}
-                              className={cn(
-                                'h-3.5 w-3.5 -rotate-90 text-gray-500 transition-transform duration-200 rtl:rotate-90',
-                                open && 'rotate-0'
-                              )}
+                              className={
+                                collapseOpen
+                                  ? 'h-3.5 w-3.5 rotate-0 text-gray-500 transition-transform duration-200'
+                                  : 'h-3.5 w-3.5 rotate-90 text-gray-500 transition-transform duration-200'
+                              }
                             />
                           </div>
                         )}

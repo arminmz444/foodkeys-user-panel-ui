@@ -18,7 +18,6 @@ import { getRelativeTime } from '@/utils/get-relative-time';
 import rangeMap from '@/utils/range-map';
 import { routes } from '@/config/routes';
 import {
-  messages,
   MessageType,
   supportStatuses,
   SupportStatusType,
@@ -81,7 +80,7 @@ export function MessageItem({ className, message }: MessageItemProps) {
         isActive && 'border-t-2 border-t-primary dark:bg-gray-100/70'
       )}
     >
-      {message.selected || isHover ? (
+      {/* {message.selected || isHover ? (
         <Checkbox
           {...(isActive && {
             inputClassName:
@@ -108,32 +107,34 @@ export function MessageItem({ className, message }: MessageItemProps) {
             <HiOutlineAdjustmentsHorizontal className="h-3.5 w-3.5" />
           )}
         </ActionIcon>
-      )}
-      <div>
-        <div className="flex items-center justify-between lg:flex-col lg:items-start 2xl:flex-row 2xl:items-center">
-          <Text tag="h4" className="flex items-center">
+      )} */}
+      <PiChats className="h-5  w-5" />
+      <div className="col-span-full flex w-full items-center justify-between lg:flex-col lg:items-start 2xl:flex-row 2xl:items-center">
+        <Text tag="h4" className="flex items-center">
+          {/* @ts-ignore */}
+          <span className="text-sm font-semibold dark:text-gray-700">
+            {message.subject}
             {/* @ts-ignore */}
-            <span className="text-sm font-semibold dark:text-gray-700">
-              {message.subject}
-              {/* @ts-ignore */}
-            </span>
-            {message.hasAttachment && (
-              <PiPaperclipLight className="mr-2 h-4 w-4 text-gray-500" />
-            )}
-            {!message.markedAsRead && (
-              <Badge renderAsDot className="mr-3 h-2.5 w-2.5 bg-primary" />
-            )}
-          </Text>
-          <span className="text-xs text-gray-500">
-            {/*{getRelativeTime(new Date(message.createdAt))}*/}
-            {/* @ts-ignore */}
-            {message.createdAtStr}
           </span>
-        </div>
-        <p className="mt-1 line-clamp-3 text-sm text-gray-500">
-          {message.summary}
-        </p>
+          {message.hasAttachment && (
+            <PiPaperclipLight className="mr-2 h-4 w-4 text-gray-500" />
+          )}
+          {!message.markedAsRead && (
+            <Badge
+              renderAsDot
+              className="mr-3 h-2.5 w-2.5 flex-shrink-0 flex-grow-0 bg-primary"
+            />
+          )}
+        </Text>
+        <span className="text-xs text-gray-500">
+          {/*{getRelativeTime(new Date(message.createdAt))}*/}
+          {/* @ts-ignore */}
+          {message.updatedAtStr}
+        </span>
       </div>
+      {/* <p className="mt-1 line-clamp-3 text-sm text-gray-500">
+        {message.summary}
+      </p> */}
     </div>
   );
 }
@@ -191,6 +192,7 @@ export default function MessageList({
   useEffect(() => {
     const fetchTickets = async () => {
       try {
+        setIsLoading(true);
         const response = await _axios.get(`/ticket/`, {
           params: {
             page: currentPage,
@@ -198,10 +200,12 @@ export default function MessageList({
           },
         });
         if (response.data.status === 'SUCCESS') {
+          setIsLoading(false);
           setData(response.data.data);
           setTotalItems(response.data.pagination.totalElements);
         }
       } catch (error) {
+        setIsLoading(false);
         console.error('Error fetching ticket data:', error);
         toast.error('خطا در دریافت تیکت‌ها');
       }
@@ -211,7 +215,7 @@ export default function MessageList({
   }, [_axios, currentPage, pageSize, refetchTickets]);
 
   useEffect(() => {
-    const updatedItems = messages.filter(
+    const updatedItems = data.filter(
       (item) => item.status === supportStatuses.Open
     );
     setData(updatedItems);
@@ -235,7 +239,7 @@ export default function MessageList({
     setSelectAll(!selectAll);
   };
   const handleOpen = () => {
-    const updatedItems = messages.filter(
+    const updatedItems = data.filter(
       (item) => item.status === supportStatuses.Open
     );
     setData(updatedItems);
@@ -245,7 +249,7 @@ export default function MessageList({
   };
 
   const handleClosed = () => {
-    const updatedItems = messages.filter(
+    const updatedItems = data.filter(
       (item) => item.status === supportStatuses.Closed
     );
     setData(updatedItems);
@@ -264,34 +268,11 @@ export default function MessageList({
     <>
       <div className={cn(className, 'sticky')}>
         <div className="mb-7 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Checkbox checked={selectAll} onChange={handleSelectAllChange} />
-            <div className="overflow-hidden rounded border border-gray-200">
-              <button
-                className={cn(
-                  'px-2.5 py-1.5 text-sm font-medium text-gray-500 transition duration-300',
-                  status === supportStatuses.Open && 'bg-gray-100 text-gray-900'
-                )}
-                onClick={handleOpen}
-              >
-                باز
-              </button>
-              <button
-                className={cn(
-                  'px-2.5 py-1.5 text-sm font-medium text-gray-500 transition duration-300',
-                  status === supportStatuses.Closed &&
-                    'bg-gray-100 text-gray-900'
-                )}
-                onClick={handleClosed}
-              >
-                بسته
-              </button>
-            </div>
-          </div>
-
           <Select
             size="sm"
-            variant="text"
+            label="مرتب‌سازی ..."
+            variant="outline"
+            labelClassName="font-extrabold text-black"
             value={sortBy}
             options={options}
             getOptionValue={(option) => option.value}
@@ -299,7 +280,7 @@ export default function MessageList({
             displayValue={(selected) =>
               options.find((o) => o.value === selected)?.name
             }
-            suffix={<PiCaretDownBold className="w- ml-2 h-3.5 w-3.5" />}
+            suffix={<PiCaretDownBold className="h-3.5w-3.5 ml-2" />}
             selectClassName="text-sm px-2.5"
             optionClassName="text-sm"
             dropdownClassName="p-2 w-32 left-auto right-0"
