@@ -1,22 +1,19 @@
-import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
-import cn from '@/utils/class-names';
-import dynamic from 'next/dynamic';
-import SelectLoader from '@/components/loader/select-loader';
-import QuillLoader from '@/components/loader/quill-loader';
-import { PiPlusBold } from 'react-icons/pi';
-import { Button } from '@/components/ui/button';
-import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Textarea } from '@/components/ui/textarea';
+import QuillLoader from '@/components/loader/quill-loader';
+import SelectLoader from '@/components/loader/select-loader';
+import { ActionIcon } from '@/components/ui/action-icon';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import LogoUpload from '@/components/ui/logo-upload';
 import JalaliDatePicker from '@/components/ui/react-shamsi-date-picker';
-import { DatePicker } from '@/components/ui/datepicker';
+import { Textarea } from '@/components/ui/textarea';
 import useAxiosPrivate from '@/hooks/use-axios-private';
-import toast from 'react-hot-toast';
-import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
+import cn from '@/utils/class-names';
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useState } from 'react';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { PiPlusBold } from 'react-icons/pi';
 
 const Select = dynamic(() => import('@/components/ui/select'), {
   ssr: false,
@@ -202,7 +199,7 @@ export default function CompanySummary({
       description="شامل نام شرکت، برندها و ..."
       className={cn(className)}
     >
-      <div className="flex flex-col gap-6 xl:flex-row ">
+      <div className="flex flex-col gap-6 ">
         <LogoUpload
           label="آپلود لوگو"
           accept="image/*"
@@ -212,9 +209,9 @@ export default function CompanySummary({
           progress={logoProgress}
           error={logoError}
           success={logoSuccess}
-          wrapperClassName="flex-grow"
+          wrapperClassName="flex-grow cursor-pointer"
         />
-
+        {logoPreview && <span>برای تغییر لوگو روی کادر کلیک کنید.</span>}
         {/*<LogoUpload*/}
         {/*    label="آپلود پس زمینه"*/}
         {/*    accept="image/*"*/}
@@ -353,26 +350,12 @@ export default function CompanySummary({
         control={control}
         render={({ field: { onChange, value, onBlur } }) => (
           // @ts-ignore
-          <JalaliDatePicker
-            selected={establishDateValue}
-            onChange={
-              (e: any) => {
-                setEstablishDateValue(e);
-                setValue('establishDate', e);
-              }
-              // setEstablishDateValue(e.target.value)
-            }
-            // onBlur={onBlur}
-            dateFormat="yyyy-MM-dd'T'HH:mm:ss"
-            maxDate={new Date()}
-            placeholderText="تاریخ تاسیس"
-            inputProps={{
-              variant: 'outline',
-              label: 'تاریخ تاسیس',
-              inputClassName: 'p-4 border border-gray-300 rounded-md',
-            }}
-            popperPlacement="bottom-end"
-            className="rmdp-mobile custom-calendar flex-grow"
+          <Input
+            label="تاریخ تاسیس"
+            {...register('establishDate')}
+            error={errors.establishDate?.message as string}
+            helperText="(مثال: 1390)"
+            type="number"
           />
         )}
       />

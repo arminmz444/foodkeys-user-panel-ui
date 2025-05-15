@@ -18,7 +18,7 @@ import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
 import SelectLoader from '@/components/loader/select-loader';
 import QuillLoader from '@/components/loader/quill-loader';
-import { PiCaretDownBold, PiPlusBold } from 'react-icons/pi';
+import { PiCaretDownBold, PiPaperclipLight, PiPlusBold } from 'react-icons/pi';
 import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -29,11 +29,13 @@ import { DatePicker } from '@/components/ui/datepicker';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 import toast from 'react-hot-toast';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
-import { FaXmark } from 'react-icons/fa6';
-import { Avatar, Badge, Checkbox, Modal, Text } from 'rizzui';
+import { FaHeading, FaPlus, FaXmark } from 'react-icons/fa6';
+import { Avatar, Badge, Checkbox, FileInput, Modal, Text } from 'rizzui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { any, shape } from 'prop-types';
+import QuillEditor from '@/components/ui/quill-editor';
+import { MdAttachFile } from 'react-icons/md';
 
 const priorityOptions = [
   {
@@ -218,7 +220,7 @@ const ticketSchema = z.object({
   category: categorySchema.required({ name: true, value: true }),
   priority: prioritySchema,
   subject: z.string().min(1, 'موضوع تیکت الزامی است'),
-  message: z.string().optional(),
+  message: z.string().min(1, 'متن تیکت الزامی است'),
   department: departmentSchema.required({ name: true, value: true }),
 });
 
@@ -245,6 +247,7 @@ const pageHeader = {
 };
 
 export default function SupportInboxPage() {
+  const [attachments, setAttachments] = useState<File[]>([]);
   const _axios = useAxiosPrivate();
   const [refetchTickets, setRefetchTickets] = useState(0);
   const [modalState, setModalState] = useState({
@@ -262,6 +265,23 @@ export default function SupportInboxPage() {
       department: {},
     },
   });
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      const totalFiles = [...attachments, ...newFiles];
+      if (totalFiles.length > 3) {
+        toast.error('شما فقط مجاز به ارسال ۳ فایل هستید!');
+        return;
+      }
+      for (const file of newFiles) {
+        if (file.size > 8 * 1024 * 1024) {
+          toast.error(`${file.name} دارای حجمی بیشتر از ۸ مگابایت است.`);
+          return;
+        }
+      }
+      setAttachments(totalFiles);
+    }
+  };
 
   // useEffect(() => {
   //   setRefetchTickets(false);
@@ -308,9 +328,10 @@ export default function SupportInboxPage() {
               size: 'lg',
             }))
           }
-          className="mt-4 w-full @lg:mt-0 @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
+          className="mt-4 w-full gap-2 @lg:mt-0 @lg:w-auto dark:bg-gray-100 dark:text-white dark:active:bg-gray-100"
         >
-          ثبت تیکت جدید
+          تیکت جدید
+          <FaPlus size={15} />
         </Button>
         {/* <Button
           onClick={() =>
@@ -356,15 +377,20 @@ export default function SupportInboxPage() {
                 </ActionIcon>
               </div>
               <div className="grid grid-cols-2 gap-x-6 gap-y-6 [&_label>span]:font-medium">
-                <div className="col-span-full mb-4">
+                <div className="col-span-full">
+                  {/* <label htmlFor="subject">موضوع *</label> */}
                   <Input
-                    // label="موضوع *"
+                    label="موضوع *"
                     {...methods.register('subject')}
-                    variant="flat"
-                    placeholder="موضوع تیکت *"
-                    inputClassName="border-2 bg-gray-100"
+                    variant="outline"
+                    labelClassName="text-black font-extrabold"
+                    placeholder="موضوع تیکت خود را وارد کنید"
+                    inputClassName=""
                     size="DEFAULT"
-                    className="col-span-full mb-2 mt-4 bg-gray-100"
+                    multiple
+                    min={2}
+                    className="col-span-full mt-2 "
+                    prefix={<FaHeading />}
                   />
                   {methods.formState.errors.subject && (
                     <Text className="text-sm text-red-light">
@@ -377,7 +403,7 @@ export default function SupportInboxPage() {
                   control={methods.control}
                   render={({ field: { onChange, value } }) => (
                     <Select
-                      variant="flat"
+                      variant="outline"
                       // value={contactStatus}
                       // options={contactStatuses}
                       options={contactStatuses.map((subcategory) => ({
@@ -394,7 +420,8 @@ export default function SupportInboxPage() {
                       placeholder="انتخاب دسته‌بندی"
                       placement="bottom-end"
                       // useContainerWidth={false}
-                      selectClassName="text-xs sm:text-sm bg-gray-100"
+                      className="col-span-full sm:col-span-1"
+                      selectClassName="text-xs sm:text-sm"
                       optionClassName="text-xs sm:text-sm"
                       // dropdownClassName="w-48 p-2 gap-1 grid"
                       suffix={<PiCaretDownBold className="h-3 w-3" />}
@@ -412,12 +439,13 @@ export default function SupportInboxPage() {
                   control={methods.control}
                   render={({ field: { onChange, value } }) => (
                     <Select
+                      className="col-span-full sm:col-span-1"
                       {...methods.register('department')}
                       // value={agent}
-                      variant="flat"
+                      variant="outline"
                       options={agents}
                       // onChange={setAgent}
-                      selectClassName="bg-gray-100"
+
                       placeholder="انتخاب دپارتمان"
                       placement="bottom-end"
                       // options={agents.map((department) => ({
@@ -450,7 +478,7 @@ export default function SupportInboxPage() {
                   render={({ field: { onChange, value } }) => (
                     <Select
                       // size="sm"
-                      variant="flat"
+                      variant="outline"
                       // value={priority}
                       // onChange={setPriority}
                       options={priorityOptions}
@@ -464,11 +492,11 @@ export default function SupportInboxPage() {
                       //   methods.formState.errors?.priority?.name
                       //     ?.message as string
                       // }
-                      selectClassName="bg-gray-100 text-xs sm:text-sm"
+                      selectClassName="text-xs sm:text-sm"
                       optionClassName="text-xs sm:text-sm"
                       placeholder="تعریف اولویت"
                       placement="bottom-end"
-                      className="mt-2"
+                      className="col-span-full sm:col-span-1"
                       useContainerWidth={false}
                       dropdownClassName="w-30 p-2 gap-1 grid"
                       suffix={<PiCaretDownBold className="h-3 w-3" />}
@@ -482,15 +510,57 @@ export default function SupportInboxPage() {
                 )} */}
                 {/* </div> */}
                 {/* <div className="mb-4"> */}
-                <Textarea
-                  {...methods.register('message')}
-                  error={methods.formState?.errors.message?.message as string}
-                  className="mt-2"
-                  variant="flat"
-                  rows={8}
-                  placeholder="پیام اولیه"
-                  textareaClassName="h-100 col-span-full bg-gray-100"
-                />
+                <div className="col-span-full mb-4">
+                  <Controller
+                    name="message"
+                    control={methods.control}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => (
+                      <>
+                        <QuillEditor
+                          label="متن تیکت *"
+                          labelClassName="text-black"
+                          value={value}
+                          onChange={onChange}
+                          className="rounded-md bg-gray-0 dark:bg-gray-50 [&>.ql-container_.ql-editor]:min-h-[100px] [&>.ql-toolbar]:3xl:overflow-x-auto"
+                        />
+                        {error && (
+                          <Text className="mt-1 text-sm text-red-light">
+                            {error.message}
+                          </Text>
+                        )}
+                      </>
+                    )}
+                  />
+                </div>
+                <div className="col-span-full flex w-full flex-col items-start justify-center gap-1">
+                  <Button
+                    variant="solid"
+                    size="DEFAULT"
+                    className="gap-2"
+                    onClick={() =>
+                      document.getElementById('attachment-upload')?.click()
+                    }
+                  >
+                    انتخاب فایل
+                    <MdAttachFile className="h-4 w-4" />
+                  </Button>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".png,.jpg,.jpeg,.pdf,.docx,.xlsx,.txt,.zip,.rar"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="attachment-upload"
+                  />
+                  {attachments.length > 0 && (
+                    <span className="gap-2">
+                      نام فایل: {attachments.map((file) => file.name)}
+                    </span>
+                  )}
+                </div>
                 {/* {methods.formState.errors.message && (
                     <Text className="text-sm text-red-light">
                       {methods.formState.errors.message.message}

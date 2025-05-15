@@ -21,7 +21,7 @@ async function uploadGalleryFile(
   tempUploadFormData.append('fileServiceType', fileServiceType);
 
   const response = await _axios.post(
-    'https://foodkeys-api-dev.liara.run/api/v1/client/panel/company/file/temp',
+    'http://192.168.43.57:8080/api/v1/client/panel/company/file/temp',
     tempUploadFormData,
     {
       headers: {

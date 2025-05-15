@@ -367,14 +367,6 @@ export default function CompanyFactory({
         rows={5}
         className="col-span-full"
       />
-      <Textarea
-        label="آدرس دفتر مرکزی*"
-        placeholder="آدرس دفتر مرکزی"
-        {...register('officeLocation')}
-        error={errors.officeLocation?.message as string}
-        rows={5}
-        className="col-span-full"
-      />
 
       {/* Factory Address */}
       {/* <Controller

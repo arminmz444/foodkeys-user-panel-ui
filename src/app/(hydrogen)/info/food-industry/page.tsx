@@ -1,20 +1,17 @@
 'use client';
 
-import Link from 'next/link';
-import { routes } from '@/config/routes';
-import { Button } from '@/components/ui/button';
+import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
 import PageHeader from '@/app/shared/page-header';
-import { PiArrowLineDownBold, PiPlusBold } from 'react-icons/pi';
+import { Button } from '@/components/ui/button';
+import Spinner from '@/components/ui/spinner';
+import { routes } from '@/config/routes';
 import { productsData } from '@/data/products-data';
 import { exportToCSV } from '@/utils/export-to-csv';
-import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import MapSelector from '@/components/MapSelector';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
-import QuillLoader from '@/components/loader/quill-loader';
-import Spinner from '@/components/ui/spinner';
+import Link from 'next/link';
+import { useState } from 'react';
+import { PiArrowLineDownBold, PiPlusBold } from 'react-icons/pi';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
 
@@ -91,7 +88,6 @@ export default function FoodIndustryPage() {
       </PageHeader>
 
       <CompaniesTable category={1} />
-      <MapSelector onLocationSelect={handleLocationSelect} />
     </QueryClientProvider>
   );
 }

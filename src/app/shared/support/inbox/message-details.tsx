@@ -2,9 +2,14 @@
 
 import { useAtomValue } from 'jotai';
 import { z } from 'zod';
-import { LuReply } from 'react-icons/lu';
+import { LuReply, LuTicket } from 'react-icons/lu';
 import { useState, useEffect } from 'react';
-import { PiCaretDownBold, PiPaperclipLight, PiXCircle } from 'react-icons/pi';
+import {
+  PiCaretDownBold,
+  PiCheck,
+  PiPaperclipLight,
+  PiXCircle,
+} from 'react-icons/pi';
 import { Text } from '@/components/ui/text';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,6 +37,11 @@ import useAxiosPrivate from '@/hooks/use-axios-private';
 import ticketSelectionImg from '@public/ticketSelection.jpg';
 import Image from 'next/image';
 import { isUUID } from '@/utils/is-uuid';
+import { MdAttachFile } from 'react-icons/md';
+import { Tooltip } from '@/components/ui/tooltip';
+import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
+import { HiOutlineClipboardDocument } from 'react-icons/hi2';
+import { AiTwotoneCloseCircle } from 'react-icons/ai';
 const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
   ssr: false,
 });
@@ -174,12 +184,14 @@ export default function MessageDetails({ className }: { className?: string }) {
   );
 
   const [messages, setMessages] = useState([]);
+  const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [sendBtnLoading, setSendBtnLoading] = useState(false);
   const [changed, setChanged] = useState<boolean>(false);
   const _axios = useAxiosPrivate();
   const [showMessages, setShowMessages] = useState(false);
+  const [state, copyToClipboard] = useCopyToClipboard();
   const [supportType, setSupportType] = useState<SupportType | string>(
     supportTypes.Chat.value
   );
@@ -282,6 +294,15 @@ export default function MessageDetails({ className }: { className?: string }) {
       setSendBtnLoading(false);
     }
   };
+  const handleCopyToClipboard = (id: string) => {
+    copyToClipboard(id as string);
+    if (!state.error && state.value) {
+      setIsCopied(() => true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 3000); // 3 seconds
+    }
+  };
 
   if (isLoading) {
     return (
@@ -322,73 +343,90 @@ export default function MessageDetails({ className }: { className?: string }) {
       <div>
         <header className="flex flex-col justify-between gap-4 border-b border-gray-200 pb-5 3xl:flex-row 3xl:items-center">
           <div className="flex flex-col items-start justify-between gap-3 xs:flex-row xs:items-center xs:gap-6 lg:justify-normal">
-            {selectedTicket ? (
-              <Text tag="h4" className="font-semibold">
-                {/*@ts-ignore*/}
-                {selectedTicket.subject}
-              </Text>
-            ) : (
-              <Input
-                placeholder="موضوع *"
-                inputClassName="border-2"
-                className="col-span-full"
-                size="lg"
-                // value="مشکل نرم افزار"
-              />
+            {selectedTicket && (
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Text tag="h4" className="font-semibold">
+                    {/*@ts-ignore*/}
+                    {selectedTicket.subject}
+                  </Text>
+                  <Badge
+                    variant="outline"
+                    // color="success"
+                    size="sm"
+                    className={`animate-pulse ${
+                      selectedTicket?.statusStr === 'در انتظار پاسخ'
+                        ? 'bg-orange-light'
+                        : selectedTicket?.statusStr === 'پاسخ داده شده'
+                        ? 'bg-green-light'
+                        : 'bg-red-light'
+                    } ${
+                      selectedTicket?.statusStr === 'در انتظار پاسخ'
+                        ? 'border-orange-light'
+                        : selectedTicket?.statusStr === 'پاسخ داده شده'
+                        ? 'border-green-light'
+                        : 'border-red-light'
+                    } w-auto min-w-min px-5 text-white`}
+                  >
+                    {selectedTicket?.statusStr || 'مشکل نرم افزار'}
+                  </Badge>
+                </div>
+                <span className="mt-1.5 flex items-center text-gray-500 lg:mt-0">
+                  <p>شماره تیکت: </p>
+                  {selectedTicket?.ticketRefId}{' '}
+                  <Tooltip
+                    size="sm"
+                    rounded="sm"
+                    placement="top"
+                    content={() => (isCopied ? 'کپی شده' : 'کپی شود')}
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCopyToClipboard(selectedTicket?.ticketRefId)
+                      }
+                    >
+                      {isCopied ? (
+                        <PiCheck className="mr-1 h-4 w-4" />
+                      ) : (
+                        <HiOutlineClipboardDocument className="mr-1 h-4 w-4" />
+                      )}
+                    </button>
+                  </Tooltip>
+                </span>
+              </div>
             )}
-            <Badge variant="outline" color="danger" size="sm">
-              {selectedTicket?.statusStr || 'مشکل نرم افزار'}
-            </Badge>
           </div>
 
-          <div className="jus flex flex-wrap items-center gap-2.5 sm:justify-end">
-            <Select
-              value={agent}
-              variant="text"
-              options={agents}
-              onChange={setAgent}
-              placeholder="دپارتمان"
-              placement="bottom-end"
-              useContainerWidth={false}
-              dropdownClassName="w-60 p-2 gap-1 grid"
-              suffix={<PiCaretDownBold className="h-3 w-3" />}
-            />
-            <Select
-              variant="text"
-              value={contactStatus}
-              options={contactStatuses}
-              onChange={setContactStatus}
-              placeholder="انتخاب وضعیت"
-              placement="bottom-end"
-              useContainerWidth={false}
-              selectClassName="text-xs sm:text-sm"
-              optionClassName="text-xs sm:text-sm"
-              dropdownClassName="w-48 p-2 gap-1 grid"
-              suffix={<PiCaretDownBold className="h-3 w-3" />}
-            />
-            <Select
-              // size="sm"
-              variant="text"
-              // disSabled
-              value={priority}
-              onChange={setPriority}
-              options={priorityOptions}
-              placeholder="تعریف اولویت"
-              placement="bottom-end"
-              useContainerWidth={false}
-              dropdownClassName="w-32 p-2 gap-1 grid"
-              suffix={<PiCaretDownBold className="h-3 w-3" />}
-            />
-            <Button
-              variant="outline"
-              color="danger"
-              type="submit"
-              size="sm"
-              className="col-span-2 ms-3"
-            >
-              بستن تیکت
-            </Button>
-          </div>
+          {selectedTicket && (
+            <div className="jus flex flex-wrap items-center gap-2.5 sm:justify-end">
+              <div className="flex gap-4">
+                <span className="rounded-md border px-4 py-2 shadow-md">
+                  {agents[0].label}
+                </span>
+                <span className="rounded-md border px-4 py-2 shadow-md">
+                  {contactStatuses[0].value}
+                </span>
+                <span className="rounded-md border px-4 py-2 shadow-md">
+                  {priorityOptions[0].label}
+                </span>
+              </div>
+
+              <Button
+                variant="outline"
+                color="danger"
+                type="submit"
+                size="DEFAULT"
+                className="group col-span-2 flex items-center gap-1"
+              >
+                بستن تیکت
+                <AiTwotoneCloseCircle
+                  className="text-red-light transition-all group-hover:scale-110 group-active:scale-95"
+                  size={20}
+                />
+              </Button>
+            </div>
+          )}
         </header>
         {showMessages ? (
           <>
@@ -424,7 +462,7 @@ export default function MessageDetails({ className }: { className?: string }) {
                   {({ control, watch, formState: { errors } }) => {
                     return (
                       <>
-                        <div className="relative mb-2.5 flex items-center justify-between">
+                        {/* <div className="relative mb-2.5 flex items-center justify-between">
                           <Select
                             size="sm"
                             variant="outline"
@@ -444,14 +482,14 @@ export default function MessageDetails({ className }: { className?: string }) {
                             selectClassName="bg-gray-0 dark:bg-gray-50"
                             placeholder="پبام"
                           />
-                          {/* <Button
-                        isLoading={sendBtnLoading}
-                        type="submit"
-                        className="dark:bg-gray-200 dark:text-white"
-                      >
-                        ارسال
-                      </Button> */}
-                        </div>
+                          <Button
+                            isLoading={sendBtnLoading}
+                            type="submit"
+                            className="dark:bg-gray-200 dark:text-white"
+                          >
+                            ارسال
+                          </Button>
+                        </div> */}
                         {supportType === supportTypes.Email.value && (
                           <div className="mb-2.5 flex items-center gap-2">
                             <LuReply />
@@ -473,8 +511,29 @@ export default function MessageDetails({ className }: { className?: string }) {
                             />
                           )}
                         />
-                        <div className="mt-4">
+                        <div className="mt-4 flex items-center justify-end">
+                          <Button
+                            variant="solid"
+                            size="DEFAULT"
+                            className="gap-2"
+                            onClick={() =>
+                              document
+                                .getElementById('attachment-upload')
+                                ?.click()
+                            }
+                          >
+                            انتخاب فایل
+                            <MdAttachFile className="h-4 w-4" />
+                          </Button>
                           <input
+                            type="file"
+                            multiple
+                            accept=".png,.jpg,.jpeg,.pdf,.docx,.xlsx,.txt,.zip,.rar"
+                            onChange={handleFileUpload}
+                            className="hidden"
+                            id="attachment-upload"
+                          />
+                          {/* <input
                             type="file"
                             multiple
                             accept=".png,.jpg,.jpeg,.pdf,.docx,.xlsx,.txt,.zip,.rar"
@@ -488,12 +547,15 @@ export default function MessageDetails({ className }: { className?: string }) {
                           >
                             <PiPaperclipLight className="h-6 w-6 text-gray-600" />
                             افزودن فایل
-                          </label>
+                          </label> */}
                         </div>
                         <div>
                           <Button
                             isLoading={sendBtnLoading}
                             type="submit"
+                            disabled={
+                              !watch('message')?.trim() || sendBtnLoading
+                            }
                             className="mt-6 dark:bg-gray-200 dark:text-white"
                           >
                             ارسال
@@ -531,7 +593,7 @@ export default function MessageDetails({ className }: { className?: string }) {
               className="mb-4 h-64 w-auto"
             />
             <p className="text-center text-lg">
-              لطفا یکی از تیکت‌های باز خود را برای نمایش انتخاب کنید
+              لطفا یکی از تیکت‌های خود را برای نمایش انتخاب کنید
             </p>
           </div>
         )}

@@ -129,7 +129,7 @@ export default function RequestInfo({ className }: { className?: string }) {
   const logoPreview = logo
     ? URL.createObjectURL(logo)
     : watchedLogo
-    ? `https://foodkeys-api-dev.liara.run${watchedLogo}`
+    ? `http://192.168.43.57:8080${watchedLogo}`
     : null;
   // const addCustomField = useCallback(() => {
   //   if (fields.length < 3) append([...brands]);

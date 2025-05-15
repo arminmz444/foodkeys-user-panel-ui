@@ -20,7 +20,7 @@ export default function WelcomeBanner({
   return (
     <div
       className={cn(
-        'relative flex items-center justify-between rounded-lg bg-gray-100/60 p-5 dark:bg-gray-100 sm:p-6 lg:p-7',
+        'relative flex w-full items-center justify-between rounded-lg bg-gray-100/60 p-5 dark:bg-gray-100 sm:p-6 lg:p-7',
         className
       )}
     >

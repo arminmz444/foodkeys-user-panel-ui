@@ -2,65 +2,59 @@
 
 import React, { useState } from 'react';
 import * as z from 'zod';
-import {SubmitHandler, Controller, useForm, ErrorOption} from 'react-hook-form';
-import {PiDesktop} from 'react-icons/pi';
+import {
+  SubmitHandler,
+  Controller,
+  useForm,
+  ErrorOption,
+} from 'react-hook-form';
+import { PiDesktop } from 'react-icons/pi';
 import cn from '@/utils/class-names';
-import {Form} from '@/components/ui/form';
-import {Text} from '@/components/ui/text';
-import {Button} from '@/components/ui/button';
-import {ProfileHeader} from './profile-settings';
-import {Password} from '@/components/ui/password';
+import { Form } from '@/components/ui/form';
+import { Text } from '@/components/ui/text';
+import { Button } from '@/components/ui/button';
+import { ProfileHeader } from './profile-settings';
+import { Password } from '@/components/ui/password';
 import HorizontalFormBlockWrapper from './horiozontal-block';
-import toast from "react-hot-toast";
-import useAxiosPrivate from "@/hooks/use-axios-private";
-import {useSelector} from "react-redux";
-import {RootState} from "@/store/store";
-import {mockSession} from "next-auth/client/__tests__/helpers/mocks";
+import toast from 'react-hot-toast';
+import useAxiosPrivate from '@/hooks/use-axios-private';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { mockSession } from 'next-auth/client/__tests__/helpers/mocks';
 import user = mockSession.user;
-import Spinner from "@/components/ui/spinner";
+import Spinner from '@/components/ui/spinner';
 
 // form zod validation schema
-const passwordFormSchema = z.object({
-  currentPassword: z
+const passwordFormSchema = z
+  .object({
+    currentPassword: z
       .string()
-      .min(8, {message: 'رمز عبور فعلی الزامی می‌باشد'}),
-  newPassword: z.string().min(8, {message: 'رمز عبور جدید الزامی می‌باشد'}),
-  confirmedPassword: z
+      .min(8, { message: 'رمز عبور فعلی الزامی می‌باشد' }),
+    newPassword: z.string().min(8, { message: 'رمز عبور جدید الزامی می‌باشد' }),
+    confirmedPassword: z
       .string()
-      .min(8, {message: 'تکرار رمز عبور الزامی می‌باشد'}),
-});
+      .min(8, { message: 'تکرار رمز عبور الزامی می‌باشد' }),
+  })
+  .refine((data) => data.newPassword === data.confirmedPassword, {
+    message: 'رمز عبور جدید و تکرار رمز عبور مطابقت ندارند',
+    path: ['confirmedPassword'],
+  });
 
 // generate form types from zod validation schema
 type PasswordFormTypes = z.infer<typeof passwordFormSchema>;
 
 export default function PasswordSettingsView({
-                                               settings,
-                                             }: {
+  settings,
+}: {
   settings?: PasswordFormTypes;
 }) {
   const userInfo = useSelector((state: RootState) => state.user);
-  const _axios = useAxiosPrivate()
+  const _axios = useAxiosPrivate();
   const [isLoading, setLoading] = useState(false);
   const [reset, setReset] = useState({});
 
-  // @ts-ignore
-  const onSubmit: SubmitHandler<PasswordFormTypes> = async (getValues: { (): { currentPassword: string; newPassword: string; confirmedPassword: string; }; (): any; }, setError: {
-    (field: string, value: ErrorOption): void;
-    (arg0: string, arg1: { type: any; message: any; }): void;
-  }, reset: { (): void; (): void; }) => {
-    // @ts-ignore
-    const data = getValues()
-    // setLoading(true);
-    // setTimeout(() => {
-    //   setLoading(false);
-    //   console.log('Password settings data ->', data);
-    //
-    //   setReset({
-    //     currentPassword: '',
-    //     newPassword: '',
-    //     confirmedPassword: '',
-    //   });
-    // }, 600);
+  const onSubmit: SubmitHandler<PasswordFormTypes> = async (data) => {
+    // Validate password match before making API call
     if (data.newPassword !== data.confirmedPassword) {
       toast.error('رمز عبور جدید و تکرار رمز عبور مطابقت ندارند');
       return;
@@ -68,14 +62,13 @@ export default function PasswordSettingsView({
 
     try {
       setLoading(true);
-      const response = await _axios.post('/auth/change-password', {
+      const response = await _axios.post('/profile/change-password', {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
 
       if (response.status === 200) {
         toast.success('رمز عبور با موفقیت تغییر کرد');
-        reset()
         setReset({
           currentPassword: '',
           newPassword: '',
@@ -107,94 +100,101 @@ export default function PasswordSettingsView({
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-      <>
-        <Form<PasswordFormTypes>
-            validationSchema={passwordFormSchema}
-            resetValues={reset}
-            onSubmit={onSubmit}
-            useFormProps={{
-              defaultValues: {
-                ...settings,
-              },
-            }}
-        >
-          {({register, control, reset, setError, formState: {errors}, getValues}) => {
-            return (
-                <>
-                  <ProfileHeader
-                      userInfo={userInfo}
-                      description={userInfo && userInfo.email || ''}
+    <>
+      <Form<PasswordFormTypes>
+        validationSchema={passwordFormSchema}
+        resetValues={reset}
+        onSubmit={onSubmit}
+        useFormProps={{
+          defaultValues: {
+            ...settings,
+          },
+        }}
+      >
+        {({
+          register,
+          control,
+          reset,
+          setError,
+          formState: { errors },
+          getValues,
+        }) => {
+          return (
+            <>
+              <ProfileHeader
+                userInfo={userInfo}
+                description={(userInfo && userInfo.email) || ''}
+              />
+
+              <div className="mx-auto w-full max-w-screen-2xl">
+                <HorizontalFormBlockWrapper
+                  title="رمز کنونی"
+                  titleClassName="text-base font-medium"
+                >
+                  <Controller
+                    control={control}
+                    name="currentPassword"
+                    render={({ field: { onChange, value } }) => (
+                      <Password
+                        placeholder="رمز عبور خود را وارد کنید"
+                        value={value}
+                        onChange={onChange}
+                        error={errors.currentPassword?.message}
+                      />
+                    )}
                   />
+                </HorizontalFormBlockWrapper>
 
-                  <div className="mx-auto w-full max-w-screen-2xl">
-                    <HorizontalFormBlockWrapper
-                        title="رمز کنونی"
-                        titleClassName="text-base font-medium"
-                    >
-                      <Controller
-                          control={control}
-                          name="currentPassword"
-                          render={({field: {onChange, value}}) => (
-                              <Password
-                                  placeholder="رمز عبور خود را وارد کنید"
-                                  value={value}
-                                  onChange={onChange}
-                                  error={errors.currentPassword?.message}
-                              />
-                          )}
+                <HorizontalFormBlockWrapper
+                  title="رمز جدید"
+                  titleClassName="text-base font-medium"
+                >
+                  <Controller
+                    control={control}
+                    name="newPassword"
+                    render={({ field: { onChange, value } }) => (
+                      <Password
+                        placeholder="رمز عبور خود را وارد کنید"
+                        helperText={
+                          getValues().newPassword.length < 8 &&
+                          'رمز عبور باید بیشتر از 8 کاراکتر باشد'
+                        }
+                        onChange={onChange}
+                        error={errors.newPassword?.message}
                       />
-                    </HorizontalFormBlockWrapper>
+                    )}
+                  />
+                </HorizontalFormBlockWrapper>
 
-                    <HorizontalFormBlockWrapper
-                        title="رمز جدید"
-                        titleClassName="text-base font-medium"
-                    >
-                      <Controller
-                          control={control}
-                          name="newPassword"
-                          render={({field: {onChange, value}}) => (
-                              <Password
-                                  placeholder="رمز عبور خود را وارد کنید"
-                                  helperText={
-                                      getValues().newPassword.length < 8 &&
-                                      'رمز عبور باید بیشتر از 8 کاراکتر باشد'
-                                  }
-                                  onChange={onChange}
-                                  error={errors.newPassword?.message}
-                              />
-                          )}
+                <HorizontalFormBlockWrapper
+                  title="تایید رمز جدید"
+                  titleClassName="text-base font-medium"
+                >
+                  <Controller
+                    control={control}
+                    name="confirmedPassword"
+                    render={({ field: { onChange, value } }) => (
+                      <Password
+                        placeholder="رمز عبور خود را وارد کنید"
+                        onChange={onChange}
+                        error={errors.confirmedPassword?.message}
                       />
-                    </HorizontalFormBlockWrapper>
+                    )}
+                  />
+                </HorizontalFormBlockWrapper>
 
-                    <HorizontalFormBlockWrapper
-                        title="تایید رمز جدید"
-                        titleClassName="text-base font-medium"
-                    >
-                      <Controller
-                          control={control}
-                          name="confirmedPassword"
-                          render={({field: {onChange, value}}) => (
-                              <Password
-                                  placeholder="رمز عبور خود را وارد کنید"
-                                  onChange={onChange}
-                                  error={errors.confirmedPassword?.message}
-                              />
-                          )}
-                      />
-                    </HorizontalFormBlockWrapper>
-
-                    <div className="mt-6 flex w-auto items-center justify-end gap-3">
-                      <Button type="button" variant="outline">
-                        انصراف
-                      </Button>
-                      <Button
-                          onClick={(e) => {
-                            // @ts-ignore
-                            onSubmit(() => getValues(), (field: string, value: ErrorOption) => setError(field, value), () => reset())
-                      }}
+                <div className="mt-6 flex w-auto items-center justify-end gap-3">
+                  <Button type="button" variant="outline">
+                    انصراف
+                  </Button>
+                  <Button
+                    onClick={(e) => {
+                      // @ts-ignore
+                      onSubmit(getValues, setError, reset);
+                    }}
                     type="submit"
                     variant="solid"
                     className="dark:bg-gray-100 dark:text-white"

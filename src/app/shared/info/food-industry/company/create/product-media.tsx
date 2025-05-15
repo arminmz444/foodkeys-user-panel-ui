@@ -75,7 +75,7 @@ export default function ProductMedia({ className }) {
     tempUploadFormData.append('fileServiceType', 'PRODUCT_PICTURE');
 
     const response = await _axios.post(
-      'https://foodkeys-api-dev.liara.run/api/v1/client/panel/file/temp',
+      'http://192.168.43.57:8080/api/v1/client/panel/file/temp',
       tempUploadFormData,
       {
         headers: {
@@ -103,7 +103,7 @@ export default function ProductMedia({ className }) {
       uploadedFileIds: [
         ...(products[productIndex]?.uploadedFileIds || []),
         ...uuids,
-      ]?.map((p) => p?.id ? p.id : p),
+      ]?.map((p) => (p?.id ? p.id : p)),
       outsourced: false,
       removedFileIds: [],
       pictures: [...(products[productIndex].pictures || []), ...uuids],
@@ -122,7 +122,7 @@ export default function ProductMedia({ className }) {
       uploadedFileIds: [
         ...(outSourcedProducts[productIndex]?.uploadedFileIds || []),
         ...uuids,
-      ]?.map((p) => p?.id ? p.id : p),
+      ]?.map((p) => (p?.id ? p.id : p)),
       removedFileIds: [],
       outsourced: true,
       pictures: [
@@ -457,7 +457,9 @@ const ProductAccordion = ({
   const [tempProductData, setTempProductData] = useState(
     products.map((product: { pictures: any }) => ({
       ...product,
-      uploadedFileIds: [...(product?.uploadedFileIds || [])]?.map((p) => p?.id ? p.id : p),
+      uploadedFileIds: [...(product?.uploadedFileIds || [])]?.map((p) =>
+        p?.id ? p.id : p
+      ),
       removedFileIds: [],
       pictures: product.pictures || [],
     }))
@@ -487,7 +489,7 @@ const ProductAccordion = ({
         uploadedFileIds: [
           ...(updatedData[index]?.uploadedFileIds || []),
           ...uuids,
-        ]?.map((p) => p?.id ? p.id : p),
+        ]?.map((p) => (p?.id ? p.id : p)),
         removedFileIds: [],
         pictures: [...(updatedData[index].pictures || []), ...uuids],
       };

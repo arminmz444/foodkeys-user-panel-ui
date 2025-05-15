@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Progressbar } from 'rizzui';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 
-const STATIC_FILE_URL = 'https://foodkeys-api-dev.liara.run';
+const STATIC_FILE_URL = 'http://192.168.43.57:8080';
 const inputClasses = {
   base: 'p-5 md:ps-10 relative border rounded-xl cursor-pointer duration-75 ease-in-out focus:ring',
   flex: 'flex flex-col items-center gap-4',
@@ -73,7 +73,7 @@ function LogoUpload(
         ) : success || logoPreview ? (
           <div
             onClick={handleClick}
-            className="relative h-24 w-24 overflow-hidden rounded-full border border-gray-300"
+            className="relative flex h-24 w-24 flex-col items-center justify-center overflow-hidden rounded-full border border-gray-300"
           >
             <Image
               // @ts-ignore
@@ -82,6 +82,7 @@ function LogoUpload(
               layout="fill"
               objectFit="cover"
             />
+            <span>slkjdfjlskdjflkd</span>
           </div>
         ) : (
           <div

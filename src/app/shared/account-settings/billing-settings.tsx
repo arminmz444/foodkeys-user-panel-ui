@@ -1,6 +1,6 @@
 'use client';
 
-import {Dispatch, ReactElement, useEffect, useState} from 'react';
+import { Dispatch, ReactElement, useEffect, useState } from 'react';
 import cn from '@/utils/class-names';
 import { Text } from '@/components/ui/text';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,8 @@ import {
   PiFire,
   PiLightning,
   PiPlusBold,
-  PiStackSimple, PiWallet,
+  PiStackSimple,
+  PiWallet,
 } from 'react-icons/pi';
 import { AdvancedRadio } from '@/components/ui/advanced-radio';
 import BillingHistoryTable from './billing-history/table';
@@ -36,9 +37,9 @@ import zarinPal from 'public/zarinPal.webp';
 import Image from 'next/image';
 import TomanIcon from '@/components/toman/tomanIcon';
 import { Input } from 'rizzui';
-import {BsCreditCard} from "react-icons/bs";
-import axiosInstance from "@/utils/axios-instance";
-import toast from "react-hot-toast";
+import { BsCreditCard } from 'react-icons/bs';
+import axiosInstance from '@/utils/axios-instance';
+import toast from 'react-hot-toast';
 
 const plansOptions: {
   icon: ReactElement;
@@ -75,7 +76,7 @@ const cardsOptions = [
     title: 'اعتبار کیف پول',
     default: true,
     value: 'credit',
-    isIcon: true
+    isIcon: true,
   },
   {
     icon: zarinPal,
@@ -176,7 +177,7 @@ export default function BillingSettingsView({ id }) {
         </div>
       </HorizontalFormBlockWrapper>
       <ConfirmationCard currentPlan={currentPlan} />
-      <TotalCard currentPlan={currentPlan} id={id}/>
+      <TotalCard currentPlan={currentPlan} id={id} />
     </>
   );
 }
@@ -240,7 +241,6 @@ export function CurrentPlans({
 export function CardDetails() {
   const [paymentMethod, setPaymentMethod] = useState('credit');
 
-
   return (
     <div>
       <div className="flex flex-col gap-4 xs:flex-row">
@@ -257,7 +257,11 @@ export function CardDetails() {
             <div className="flex items-center justify-center">
               <div className="flex h-8 w-12 shrink-0 items-center justify-center rounded-md px-2 py-1.5">
                 {/*// @ts-ignore*/}
-                {cards.isIcon ? <>{cards.icon}</> : <Image src={cards.icon} alt="" />}
+                {cards.isIcon ? (
+                  <>{cards.icon}</>
+                ) : (
+                  <Image src={cards.icon} alt="" />
+                )}
               </div>
               <div className="block">
                 <Text tag="h6" className="mb-1 text-sm font-medium">
@@ -346,12 +350,12 @@ const ConfirmationCard = ({
   );
 };
 
-const TotalCard = ({ currentPlan, id }: { currentPlan: string, id: any }) => {
-  const [discountCode, setDiscountCode] = useState("");
+const TotalCard = ({ currentPlan, id }: { currentPlan: string; id: any }) => {
+  const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(0);
   // @ts-ignore
-  const [totalPrice, setTotalPrice] = useState(0)
-  const [totalDiscount, setTotalDiscount] = useState(0)
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
   const router = useRouter();
   const totalMapper = {
     free: 0,
@@ -381,32 +385,31 @@ const TotalCard = ({ currentPlan, id }: { currentPlan: string, id: any }) => {
         break;
     }
     const createSubscription = async () => {
-      const API_URL = `https://foodkeys-api-dev.liara.run/api/v1/subscription`
+      const API_URL = `http://192.168.43.57:8080/api/v1/subscription`;
       let data = {
-        "bundleId": bundleId,
+        bundleId: bundleId,
+      };
+      if (discountCode) {
+        // @ts-ignore
+        data['discountCode'] = discountCode;
       }
-      if (discountCode)
-        { // @ts-ignore
-          data["discountCode"] = discountCode;
-        }
       try {
         const response = await axiosInstance.post(API_URL, data);
 
         if (response.data.statusCode === 200) {
-          toast.success(response.data.message)
+          toast.success(response.data.message);
           return {
             data: response.data.data,
           };
         }
       } catch (error) {
         // @ts-ignore
-        toast.error(error?.response?.data?.message || "خطا در خرید اشتراک")
+        toast.error(error?.response?.data?.message || 'خطا در خرید اشتراک');
         console.error('Failed to buy subscription', error);
       }
     };
-    let response = await createSubscription()
-    if (response?.data)
-      router.push(`/bundle/${id}`)
+    let response = await createSubscription();
+    if (response?.data) router.push(`/bundle/${id}`);
 
     // dispatch(addCredit(amount));
   };
@@ -424,28 +427,29 @@ const TotalCard = ({ currentPlan, id }: { currentPlan: string, id: any }) => {
         break;
     }
     const applyDiscount = async () => {
-      const API_URL = `https://foodkeys-api-dev.liara.run/api/v1/discount/${encodeURIComponent(discountCode)}/use`
+      const API_URL = `http://192.168.43.57:8080/api/v1/discount/${encodeURIComponent(
+        discountCode
+      )}/use`;
       try {
         const response = await axiosInstance.post(API_URL, {});
 
         if (response.data.statusCode === 200) {
-          toast.success(response.data.message)
+          toast.success(response.data.message);
           return {
             data: response.data.data,
           };
         } else {
-          toast.error("کد تخفیف یافت نشد")
+          toast.error('کد تخفیف یافت نشد');
           // throw new Error('Failed to start payment');
         }
       } catch (error) {
         // @ts-ignore
-        toast.error(error?.response?.data?.message || "کد تخفیف یافت نشد")
+        toast.error(error?.response?.data?.message || 'کد تخفیف یافت نشد');
         console.error('Failed to apply discount code', error);
       }
     };
-    let response = await applyDiscount()
-    if (response?.data)
-      setDiscount(response?.data)
+    let response = await applyDiscount();
+    if (response?.data) setDiscount(response?.data);
     //   // window.location.href = response?.data?.url;
     // else toast.error("کد تخفیف یافت نشد")
     // dispatch(addCredit(amount));
@@ -518,7 +522,9 @@ const TotalCard = ({ currentPlan, id }: { currentPlan: string, id: any }) => {
             />
           </div>
           <div className="mt-5 w-1/2 content-center sm:mt-0 sm:w-1/5">
-            <Button onClick={applyDiscountCode} className="w-full">اعمال کد</Button>
+            <Button onClick={applyDiscountCode} className="w-full">
+              اعمال کد
+            </Button>
           </div>
         </div>
       </div>
@@ -532,7 +538,9 @@ const TotalCard = ({ currentPlan, id }: { currentPlan: string, id: any }) => {
         </div>
       </div>
 
-      <Button onClick={handlePayment} className="mt-5 w-full">تایید و پرداخت</Button>
+      <Button onClick={handlePayment} className="mt-5 w-full">
+        تایید و پرداخت
+      </Button>
     </div>
   );
 };

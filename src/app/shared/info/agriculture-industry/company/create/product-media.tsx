@@ -75,7 +75,7 @@ export default function ProductMedia({ className }) {
     tempUploadFormData.append('fileServiceType', 'PRODUCT_PICTURE');
 
     const response = await _axios.post(
-      'https://foodkeys-api-dev.liara.run/api/v1/client/panel/file/temp',
+      'http://192.168.43.57:8080/api/v1/client/panel/file/temp',
       tempUploadFormData,
       {
         headers: {

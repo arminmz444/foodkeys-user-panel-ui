@@ -24,7 +24,7 @@ import { Button, Modal } from 'rizzui';
 import React, { RefObject, useEffect, useState } from 'react';
 import { useMedia } from '@/hooks/use-media';
 import { Popover } from '@/components/ui/popover';
-import { PiArrowLeftBold, PiWalletFill } from 'react-icons/pi';
+import { PiArrowLeftBold, PiWalletDuotone, PiWalletFill } from 'react-icons/pi';
 import walletImage from '@public/wallet.png';
 import { HiXMark } from 'react-icons/hi2';
 import { Client } from '@stomp/stompjs';
@@ -39,9 +39,9 @@ import toast from 'react-hot-toast';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 import addCreditImg from 'public/addCredit.svg';
 import addCreditImg2 from 'public/addCreditLogo.webp';
-import {dispatch} from "react-hot-toast/src/core/store";
-import {login as reduxLogin} from "@/store/userSlice";
-import {addNotification} from "@/store/notificationSlice";
+import { dispatch } from 'react-hot-toast/src/core/store';
+import { login as reduxLogin } from '@/store/userSlice';
+import { addNotification } from '@/store/notificationSlice';
 
 // export const notificationsAtom = atom([]);
 
@@ -59,8 +59,7 @@ function HeaderMenuRight() {
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
-      webSocketFactory: () =>
-        new SockJS('https://foodkeys-api-dev.liara.run/ws'),
+      webSocketFactory: () => new SockJS('http://192.168.43.57:8080/ws'),
     });
 
     client.onConnect = () => {
@@ -69,7 +68,7 @@ function HeaderMenuRight() {
         // const notification = message.body;
         console.log(notification);
         // @ts-ignore
-        dispatch(addNotification(notification))
+        dispatch(addNotification(notification));
         // @ts-ignore
         // setMessages((prev) => [...prev, notification]);
         // setNo
@@ -101,7 +100,7 @@ function HeaderMenuRight() {
       {/*  </ActionIcon>*/}
       {/*</MessagesDropdown>*/}
       {/*// @ts-ignore*/}
-      <NotificationDropdown >
+      <NotificationDropdown>
         <ActionIcon
           aria-label="Notification"
           variant="text"
@@ -126,7 +125,7 @@ function HeaderMenuRight() {
           variant="text"
           className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
         >
-          <PiWalletFill className="h-[18px] w-auto" />
+          <PiWalletDuotone className="h-[18px] w-auto" />
         </ActionIcon>
       </WalletDropdown>
       <SettingsButton />

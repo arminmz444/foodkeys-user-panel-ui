@@ -20,7 +20,7 @@ import { TiTick } from 'react-icons/ti';
 import { HiXMark } from 'react-icons/hi2';
 import { HiUpload } from 'react-icons/hi';
 
-const STATIC_FILE_URL = 'https://foodkeys-api-dev.liara.run';
+const STATIC_FILE_URL = 'http://192.168.43.57:8080';
 const companyStatusDict: any = {
   PENDING: 'در انتظار تایید',
   APPROVED: 'تایید شده',

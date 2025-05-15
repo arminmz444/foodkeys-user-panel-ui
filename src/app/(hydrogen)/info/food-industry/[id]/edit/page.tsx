@@ -5,69 +5,6 @@ import { Button } from '@/components/ui/button';
 import PageHeader from '@/app/shared/page-header';
 import CreateCompany from '@/app/shared/info/food-industry/company/create';
 
-const productData = {
-  title: 'سیب',
-  brands: [
-    {
-      name: 'میهن',
-      isEnglish: true,
-      isPrimary: true,
-    },
-  ],
-  companyName: 'میهن',
-  companyEnglishName: 'Mihan',
-  mainBrand: {
-    persian: 'میهن',
-    english: 'mihan',
-  },
-  subcategory: 1,
-  description: 'مخلوط سالاد باغی ایسبرگ فرش اکسپرس',
-  sku: 'SKU-28935',
-  type: 'محصول دیجیتال',
-  categories: 'خواربار',
-  price: '10',
-  costPrice: '20',
-  retailPrice: '15',
-  salePrice: '25',
-  inventoryTracking: 'no',
-  currentStock: '150',
-  lowStock: '20',
-  productAvailability: 'online',
-  tradeNumber: '12345',
-  manufacturerNumber: '154',
-  brand: 'امینی',
-  upcEan: 'Ean',
-  customFields: [
-    {
-      label: 'رنگ',
-      value: 'قرمز',
-    },
-  ],
-  freeShipping: false,
-  shippingPrice: '45',
-  locationBasedShipping: true,
-  locationShipping: [
-    {
-      name: 'USA',
-      shippingCharge: '150',
-    },
-  ],
-  pageTitle: 'سیب',
-  metaDescription: 'سیب',
-  metaKeywords: 'خواربار, غذا',
-  productUrl: 'http://localhost:3000/',
-  isPurchaseSpecifyDate: true,
-  isLimitDate: true,
-  dateFieldName: 'فیلد تاریخ',
-  productVariants: [
-    {
-      name: 'صادق',
-      value: '150',
-    },
-  ],
-  tags: ['آیفون', 'موبایل'],
-};
-
 export default function EditCompanyPage({
   params,
 }: {

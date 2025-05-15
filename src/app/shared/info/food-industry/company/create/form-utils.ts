@@ -212,7 +212,7 @@ import { z } from 'zod';
 const pictureSchema = z.object({
   id: z.string().optional(),
   fileName: z.string().optional(),
-  filePath: z.string().optional()
+  filePath: z.string().optional(),
 });
 
 const productSchema = z.object({
@@ -246,7 +246,6 @@ const telSchema = z.object({
   telType: z.string(),
 });
 
-
 const contactSchema = z.object({
   name: z.string().optional(),
   lastName: z.string().optional(),
@@ -265,7 +264,7 @@ const galleryContactSchema = z.object({
   position: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
-  priority: z.number().optional()
+  priority: z.number().optional(),
 });
 
 const galleryCertificateSchema = z.object({
@@ -273,7 +272,7 @@ const galleryCertificateSchema = z.object({
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
-  priority: z.number().optional()
+  priority: z.number().optional(),
 });
 
 const galleryProductSchema = z.object({
@@ -281,7 +280,7 @@ const galleryProductSchema = z.object({
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
-  priority: z.number().optional()
+  priority: z.number().optional(),
 });
 
 const gallerySliderSchema = z.object({
@@ -289,7 +288,7 @@ const gallerySliderSchema = z.object({
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
-  priority: z.number().optional()
+  priority: z.number().optional(),
 });
 
 const galleryCatalogSchema = z.object({
@@ -297,7 +296,7 @@ const galleryCatalogSchema = z.object({
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
-  priority: z.number().optional()
+  priority: z.number().optional(),
 });
 
 const galleryDocumentSchema = z.object({
@@ -305,7 +304,7 @@ const galleryDocumentSchema = z.object({
   description: z.string().optional(),
   uploadedFileId: z.array(z.string()).optional(),
   removedFileIds: z.array(z.string()).optional().nullable(),
-  priority: z.number().optional()
+  priority: z.number().optional(),
 });
 
 const gallerySchema = z.object({
@@ -360,27 +359,48 @@ const gallerySchema = z.object({
 //   message: "Each contact must have a unique priority.",
 // });
 
-
 const subcategorySchema = z.object({
-  name: z.string(),
-  value: z.number(),
+  name: z.string().min(1, { message: 'نام زیرشاخه اجباری می‌باشد.' }),
+  value: z.number().min(1, { message: 'مقدار زیرشاخه اجباری می‌باشد.' }),
 });
 
-const companyTypeSchema = z.object({
-  name: z.string(),
-  value: z.string(),
-});
+const companyTypeSchema = z
+  .object({
+    name: z.string().min(1, { message: 'انتخاب الزامی می‌باشد.' }),
+    value: z.string().optional(),
+  })
+  .partial({ value: true });
 const companyBrandSchema = z.object({
   name: z.string(),
   nameEn: z.string(),
 });
 
 export const companyFormSchema = z.object({
+  subcategory: subcategorySchema.nullable().refine((val) => val !== null, {
+    message: 'زیرشاخه اجباری می‌باشد.',
+    path: ['subcategory'],
+  }),
+  companyName: z.string().min(1, { message: 'نام شرکت اجباری می‌باشد.' }),
+  companyNameEn: z
+    .string()
+    .min(1, { message: 'نام شرکت به انگلیسی اجباری می‌باشد.' }),
+  mainBrandEn: z
+    .string()
+    .min(1, { message: 'نام تجاری به انگلیسی اجباری می‌باشد.' }),
+  primaryBrand: z.string().min(1, { message: 'نام تجاری اجباری می‌باشد.' }),
+  ceo: z.string().min(1, { message: 'نام مدیرعامل اجباری می‌باشد.' }),
+  factoryCity: z
+    .string()
+    .min(1, { message: 'شهر محل کارخانه الزامی می‌باشد.' }),
+  factoryState: z
+    .string()
+    .min(1, { message: 'استان محل کارخانه الزامی می‌باشد.' }),
+  industrialCity: z
+    .string()
+    .min(1, { message: 'شهرک صنعتی کارخانه الزامی می‌باشد.' }),
+
   brands: z.array(companyBrandSchema).optional(),
-  ceo: z.string().optional(),
   ceoPhoneNumber: z.string().optional(),
-  companyName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-  companyNameEn: z.string(),
   companyStakeHolders: z.string().optional(),
   // ceo: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
   // ceoPhoneNumber: z.string().min(1, { message: "این فیلد اجباری می‌باشد" }),
@@ -399,11 +419,18 @@ export const companyFormSchema = z.object({
   companyType: companyTypeSchema.optional(),
   companyTypeOther: z.string().optional(),
   // backgroundImage: z.array(z.instanceof(File)).optional(),
-  logo: z.instanceof(File).refine((file) => file?.size <= 20 * 1024 * 1024, {
-    message: 'حداکثر حجم فایل باید ۲۰ مگابایت باشد',
-  }).nullable().optional(),
+  logo: z
+    .instanceof(File)
+    .refine((file) => file?.size <= 20 * 1024 * 1024, {
+      message: 'حداکثر حجم فایل باید ۲۰ مگابایت باشد',
+    })
+    .nullable()
+    .optional(),
   subjectOfActivity: z.string().optional(),
-  establishDate: z.string().optional(),
+  establishDate: z
+    .string()
+    .max(4, { message: 'تاریخ تاسیس اشتباه است.' })
+    .optional(),
   rawMaterialsOrigin: z.string().optional(),
   keyWords: z.string().optional(),
   tags: z.string().optional(),
@@ -411,8 +438,7 @@ export const companyFormSchema = z.object({
   companyTags: z.array(z.string()).optional(),
   products: z.array(productSchema).optional(),
   outSourcedProducts: z.array(productSchema).optional(),
-  primaryBrand: z.string().optional(),
-  mainBrandEn: z.string().optional(),
+
   companyBrands: z.array(z.string()).optional(),
   location: locationSchema.optional(),
   factoryTels: z.array(telSchema).optional(),
@@ -434,23 +460,21 @@ export const companyFormSchema = z.object({
   contacts: z.array(contactSchema).optional(),
   emails: z.array(z.string()).optional(),
   productAvailability: z.string().optional(),
-  subcategory: subcategorySchema.optional(),
+
   productTitles: z.string().optional(),
   outSourcedProductTitles: z.string().optional(),
   productsDescription: z.string().optional(),
   outSourcedProductsDescription: z.string().optional(),
   currentLogo: z.string().optional(),
   currentBackgroundImages: z.array(z.string()).optional(),
-  factoryCity: z.string().optional(),
-  factoryState: z.string().optional(),
-  industrialCity: z.string().optional(),
+
   factoryPoBox: z.string().optional(),
   officePoBox: z.string().optional(),
   factoryLocation: z.string().optional(),
   officeLocation: z.string().optional(),
   officeCity: z.string().optional(),
   officeState: z.string().optional(),
-  gallery: gallerySchema.optional()
+  gallery: gallerySchema.optional(),
 });
 
 export type CreateCompanyInput = z.infer<typeof companyFormSchema>;
@@ -460,7 +484,7 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     brands: company?.companyBrands ?? [],
     companyName: company?.companyName ?? '',
     companyNameEn: company?.companyNameEn ?? '',
-    companyStakeHolders: company?.companyStakeHolders ?? "",
+    companyStakeHolders: company?.companyStakeHolders ?? '',
     ceo: company?.ceo ?? '',
     ceoPhoneNumber: company?.ceoPhoneNumber ?? '',
     owner: company?.owner ?? '',
@@ -516,11 +540,11 @@ export function defaultValues(company?: CreateCompanyInput | null) {
     emails: company?.emails ?? [],
     productAvailability: company?.productAvailability ?? '2',
     subcategory: company?.subcategory ?? null,
-    productTitles: company?.productTitles ?? "",
-    outSourcedProductTitles: company?.outSourcedProductTitles ?? "",
-    productsDescription: company?.productsDescription ?? "",
-    outSourcedProductsDescription: company?.outSourcedProductsDescription ?? "",
-    currentLogo: company?.logo ?? "",
+    productTitles: company?.productTitles ?? '',
+    outSourcedProductTitles: company?.outSourcedProductTitles ?? '',
+    productsDescription: company?.productsDescription ?? '',
+    outSourcedProductsDescription: company?.outSourcedProductsDescription ?? '',
+    currentLogo: company?.logo ?? '',
     currentBackgroundImages: company?.currentBackgroundImages ?? [],
     gallery: company?.gallery ?? {
       contacts: [],
@@ -529,7 +553,6 @@ export function defaultValues(company?: CreateCompanyInput | null) {
       slider: [],
       catalog: {},
       documents: [],
-    }
+    },
   };
 }
-

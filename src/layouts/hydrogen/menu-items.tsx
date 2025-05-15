@@ -40,9 +40,24 @@ import {
   PiPlant,
   PiMessengerLogo,
   PiContactlessPayment,
+  PiMonitorPlayDuotone,
+  PiWarehouseDuotone,
+  PiListNumbersDuotone,
+  PiTractorDuotone,
+  PiPlantDuotone,
+  PiOrangeDuotone,
+  PiMailboxDuotone,
+  PiChatCenteredTextDuotone,
 } from 'react-icons/pi';
-import {MdAccountBalance, MdEmail, MdMessage, MdSubscriptions} from 'react-icons/md';
+import {
+  MdAccountBalance,
+  MdEmail,
+  MdMessage,
+  MdSubscriptions,
+} from 'react-icons/md';
 import { CgHome, CgProfile } from 'react-icons/cg';
+import { FaTractor } from 'react-icons/fa6';
+import { AiTwotoneHome } from 'react-icons/ai';
 
 // Note: do not add href in the label object, it is rendering as label
 export const menuItems = [
@@ -53,17 +68,17 @@ export const menuItems = [
   {
     name: 'خانه',
     href: '/',
-    icon: <CgHome />,
+    icon: <AiTwotoneHome />,
   },
   {
     name: 'حساب کاربری',
     href: '/profile',
-    icon: <CgProfile />,
+    icon: <PiUserCircleDuotone />,
   },
   {
     name: 'مدیریت اشتراک',
     href: routes.subscriptionList,
-    icon: <MdAccountBalance />,
+    icon: <PiCreditCardDuotone />,
   },
   // label end
   // {
@@ -168,18 +183,31 @@ export const menuItems = [
     name: 'مدیریت اطلاعات',
   },
   {
+    name: 'لیست شرکت‌های ثبت شده',
+    href: routes.info.foodIndustryList,
+    icon: <PiListNumbersDuotone />,
+  },
+  {
     name: 'بانک صنعت غذا',
     href: '#',
-    icon: <PiBuildings />,
+    icon: <PiOrangeDuotone />,
     dropdownItems: [
-      {
-        name: 'لیست شرکت‌های ثبت شده',
-        href: routes.info.foodIndustryList,
-      },
+      // {
+      //   name: 'لیست شرکت‌های ثبت شده',
+      //   href: routes.info.foodIndustryList,
+      // },
+      // {
+      //   name: 'ثبت شرکت جدید',
+      //   href: routes.info.foodIndustryAdd,
+      // },
       {
         name: 'ثبت شرکت جدید',
         href: routes.info.foodIndustryAdd,
       },
+      // {
+      //   name: 'ثبت شرکت جدید',
+      //   href: routes.info.foodIndustryAdd,
+      // },
       // {
       //   name: 'نمایش اطلاعات',
       //   href: routes.info.foodIndustryView(1234),
@@ -241,12 +269,12 @@ export const menuItems = [
   {
     name: 'بانک صنعت کشاورزی',
     href: '#',
-    icon: <PiPlant />,
+    icon: <PiPlantDuotone />,
     dropdownItems: [
-      {
-        name: 'لیست شرکت‌های ثبت شده',
-        href: routes.info.agricultureIndustryList,
-      },
+      // {
+      //   name: 'لیست شرکت‌های ثبت شده',
+      //   href: routes.info.agricultureIndustryList,
+      // },
       {
         name: 'ثبت شرکت جدید',
         href: routes.info.agricultureIndustryAdd,
@@ -264,7 +292,7 @@ export const menuItems = [
   {
     name: 'بانک ماشین‌آلات',
     href: '#',
-    icon: <PiBuildings />,
+    icon: <PiTractorDuotone />,
     dropdownItems: [
       {
         name: 'لیست شرکت‌های ثبت شده',
@@ -283,7 +311,7 @@ export const menuItems = [
   {
     name: 'بانک خدمات',
     href: '#',
-    icon: <PiBuildings />,
+    icon: <PiWarehouseDuotone />,
     dropdownItems: [
       {
         name: 'لیست شرکت‌های ثبت شده',
@@ -339,7 +367,7 @@ export const menuItems = [
   {
     name: 'رسانه‌ها',
     href: '#',
-    icon: <PiBuildings />,
+    icon: <PiMonitorPlayDuotone />,
     dropdownItems: [
       {
         name: 'لیست شرکت‌های ثبت شده',
@@ -362,12 +390,12 @@ export const menuItems = [
   {
     name: 'ایمیل',
     href: '/support/email',
-    icon: <MdEmail />,
+    icon: <PiMailboxDuotone />,
   },
   {
     name: 'پیام',
     href: '/support/message',
-    icon: <MdMessage />,
+    icon: <PiChatCenteredTextDuotone />,
   },
   // {
   //   name: 'پشتیبانی قدیمی',

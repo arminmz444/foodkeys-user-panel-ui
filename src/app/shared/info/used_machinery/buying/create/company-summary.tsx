@@ -20,7 +20,7 @@ const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
 });
 
 // const fetchSubcategories = async () => {
-//   const { data } = await axios.get('https://foodkeys-api-dev.liara.run/api/v1/category/1/subcategory');
+//   const { data } = await axios.get('http://192.168.43.57:8080/api/v1/category/1/subcategory');
 //   return data;
 // };
 

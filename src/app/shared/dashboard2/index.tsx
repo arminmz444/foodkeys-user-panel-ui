@@ -14,7 +14,7 @@ import PromotionalSales from '@/app/shared/dashboard2/promotional-sales';
 import RecentOrder from '@/app/shared/dashboard2/recent-order';
 import StockReport from '@/app/shared/dashboard2/stock-report';
 import { PiPlusBold } from 'react-icons/pi';
-import welcomeImg from '@public/welcome.jpg';
+import welcomeImg from '@public/welcome.png';
 // import welcomeImg from '@public/shop-illustration.png';
 import HandWaveIcon from '@/components/icons/hand-wave';
 import StorageReport from '@/app/shared/dashboard2/storage-report';
@@ -22,11 +22,11 @@ import ProfitChart from '@/app/shared/dashboard2/profit';
 import FleetStatus from '@/app/shared/logistics/dashboard/fleet-status';
 import CompaniesTable from '@/app/shared/info/food-industry/company/company-list/table';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import {useEffect, useState} from "react";
-import useAxiosPrivate from "@/hooks/use-axios-private";
-import toast from "react-hot-toast";
-import {useSelector} from "react-redux";
-import {RootState} from "@/store/store";
+import { useEffect, useState } from 'react';
+import useAxiosPrivate from '@/hooks/use-axios-private';
+import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 const queryClient = new QueryClient();
 
@@ -35,25 +35,27 @@ interface Props {
 }
 export default function MainDashboard() {
   const user = useSelector((state: RootState) => state.user);
-  const name = user?.firstName || 'کاربر'
-  const _axios = useAxiosPrivate()
-  const [loading, setLoading] = useState(true)
-  const [dashboardData, setDashboardData] = useState({})
+  const name = user?.firstName || 'کاربر';
+  const _axios = useAxiosPrivate();
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState({});
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        setLoading(true)
-        const response = await _axios.get("/dashboard", {headers: {"Content-Type": "application/json"}})
+        setLoading(true);
+        const response = await _axios.get('/dashboard', {
+          headers: { 'Content-Type': 'application/json' },
+        });
         if (response.status === 200) {
-          setLoading(false)
-          setDashboardData(response.data.data)
+          setLoading(false);
+          setDashboardData(response.data.data);
         }
       } catch (e) {
-        console.log('Error fetching dashboard info: ', e)
-        toast.error('خطا در دریافت اطلاعات از سرور')
+        console.log('Error fetching dashboard info: ', e);
+        toast.error('خطا در دریافت اطلاعات از سرور');
       }
-    }
-fetchDashboard()
+    };
+    fetchDashboard();
   }, [_axios]);
   return (
     <div className="@container">
@@ -80,7 +82,7 @@ fetchDashboard()
             </div>
           }
           contentClassName="@2xl:max-w-[calc(100%-340px)]"
-          className="border border-gray-200 bg-gray-0 pb-8 @4xl:col-span-2 @7xl:col-span-8 dark:bg-gray-100/30 lg:pb-9"
+          className="border border-gray-200 bg-gray-0 pb-8 @4xl:col-span-2 @7xl:col-span-12 dark:bg-gray-100/30 lg:pb-9"
         >
           {/* <Link href={routes.eCommerce.createProduct} className="inline-flex">
             <Button
@@ -93,9 +95,9 @@ fetchDashboard()
         </WelcomeBanner>
 
         <StatCards
-            dashboardStatsData={dashboardData}
+          dashboardStatsData={dashboardData}
           // dashboardStatsData={}
-          className="@2xl:grid-cols-3 @3xl:gap-6 @4xl:col-span-2 @7xl:col-span-8"
+          className="@2xl:grid-cols-3 @3xl:gap-6 @4xl:col-span-2 @7xl:col-span-12"
         />
         {/*<ProfitWidget*/}
         {/*    className="h-[464px] @sm:h-[520px] @7xl:col-span-4 @7xl:col-start-9 @7xl:row-start-1 @7xl:row-end-3 @7xl:h-[443px]"/>*/}
@@ -109,8 +111,8 @@ fetchDashboard()
         {/*    className="@4xl:col-start-2 @4xl:row-start-3 @7xl:col-span-4 @7xl:col-start-auto @7xl:row-start-auto"/>*/}
 
         <QueryClientProvider client={queryClient}>
-          <div className="@4xl:col-span-2 @7xl:col-span-8">
-            <CompaniesTable category={1} />
+          <div className="@4xl:col-span-2 @7xl:col-span-12">
+            <CompaniesTable category={1} defaultPageSize={5} />
           </div>
         </QueryClientProvider>
         {/*<RecentOrder className="relative @4xl:col-span-2 @7xl:col-span-12"/>*/}

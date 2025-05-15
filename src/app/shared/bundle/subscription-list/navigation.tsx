@@ -7,8 +7,7 @@ import { useScrollableSlider } from '@/hooks/use-scrollable-slider';
 import { PiCaretLeftBold, PiCaretRightBold } from 'react-icons/pi';
 import { usePathname } from 'next/navigation';
 import cn from '@/utils/class-names';
-import {routes} from "@/config/routes";
-
+import { routes } from '@/config/routes';
 
 export default function ProfileSettingsNav() {
   const menuItems = [

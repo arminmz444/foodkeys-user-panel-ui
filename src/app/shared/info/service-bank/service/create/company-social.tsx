@@ -10,7 +10,7 @@ import { PiPlusBold } from 'react-icons/pi';
 import { Button } from '@/components/ui/button';
 import { ActionIcon } from '@/components/ui/action-icon';
 import TrashIcon from '@/components/icons/trash';
-import {useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Radio } from 'rizzui';
 const Select = dynamic(() => import('@/components/ui/select'), {
   ssr: false,
@@ -22,7 +22,7 @@ const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
 });
 
 // const fetchSubcategories = async () => {
-//   const { data } = await axios.get('https://foodkeys-api-dev.liara.run/api/v1/category/1/subcategory');
+//   const { data } = await axios.get('http://192.168.43.57:8080/api/v1/category/1/subcategory');
 //   return data;
 // };
 
@@ -32,7 +32,7 @@ export default function CompanySocial({ className }: { className?: string }) {
     register,
     control,
     formState: { errors },
-    watch
+    watch,
   } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -62,11 +62,11 @@ export default function CompanySocial({ className }: { className?: string }) {
         helperText="(مثال: 09123456789)"
       />
       <Input
-          label="آیدی تلگرام"
-          placeholder="آیدی تلگرام"
-          {...register('telegramId')}
-          error={errors.telegramId?.message as string}
-          helperText="(مثال: foodkeys)"
+        label="آیدی تلگرام"
+        placeholder="آیدی تلگرام"
+        {...register('telegramId')}
+        error={errors.telegramId?.message as string}
+        helperText="(مثال: foodkeys)"
       />
       <Input
         type="number"
@@ -77,11 +77,11 @@ export default function CompanySocial({ className }: { className?: string }) {
         helperText="(مثال: 09123456789)"
       />
       <Input
-          label="آیدی واتساپ"
-          placeholder="آیدی واتساپ"
-          {...register('whatsAppId')}
-          error={errors.whatsAppId?.message as string}
-          helperText="(مثال: arminm4)"
+        label="آیدی واتساپ"
+        placeholder="آیدی واتساپ"
+        {...register('whatsAppId')}
+        error={errors.whatsAppId?.message as string}
+        helperText="(مثال: arminm4)"
       />
       <Input
         label="آی دی اینستاگرام"
@@ -98,11 +98,11 @@ export default function CompanySocial({ className }: { className?: string }) {
         helperText="(مثال: foodkeys)"
       />
       <Input
-          label="آی دی اسکایپ"
-          placeholder="آی دی اسکایپ"
-          {...register('skypeId')}
-          error={errors.skypeId?.message as string}
-          helperText="(مثال: foodkeys)"
+        label="آی دی اسکایپ"
+        placeholder="آی دی اسکایپ"
+        {...register('skypeId')}
+        error={errors.skypeId?.message as string}
+        helperText="(مثال: foodkeys)"
       />
       <Input
         type="number"

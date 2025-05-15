@@ -1,8 +1,8 @@
 import { routes } from '@/config/routes';
 import PageHeader from '@/app/shared/page-header';
 import CompanyDetails from '@/app/shared/info/food-industry/company/company-details/company-details';
-import axiosInstance from "@/utils/axios-instance";
-import toast from "react-hot-toast";
+import axiosInstance from '@/utils/axios-instance';
+import toast from 'react-hot-toast';
 // import {useQuery} from "react-query";
 
 export default function CompanyDetailsPage({ params }: any) {
@@ -28,7 +28,7 @@ export default function CompanyDetailsPage({ params }: any) {
   };
 
   const fetchCompany = async () => {
-    const API_URL = `https://foodkeys-api-dev.liara.run/api/v1/company/${params.id}`
+    const API_URL = `http://192.168.43.57:8080/api/v1/company/${params.id}`;
     const response = await axiosInstance.get(API_URL);
 
     if (response.data.statusCode === 200) {
@@ -37,7 +37,7 @@ export default function CompanyDetailsPage({ params }: any) {
         totalItems: response.data.pagination.totalElements,
       };
     } else {
-      toast.error("خطا در دریافت شرکت‌ها")
+      toast.error('خطا در دریافت شرکت‌ها');
       throw new Error('Failed to fetch companies');
     }
   };
@@ -53,7 +53,11 @@ export default function CompanyDetailsPage({ params }: any) {
   return (
     <>
       <PageHeader title={pageHeader.title} breadcrumb={pageHeader.breadcrumb} />
-      <CompanyDetails data={undefined} isLoading={undefined} isError={undefined} />
+      <CompanyDetails
+        data={undefined}
+        isLoading={undefined}
+        isError={undefined}
+      />
     </>
   );
 }
