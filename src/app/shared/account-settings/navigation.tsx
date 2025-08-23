@@ -29,10 +29,10 @@ const menuItems = [
   //   label: 'پرداخت',
   //   value: '/forms/profile-settings/billing',
   // },
-  {
-    label: 'پیام ها',
-    value: '/profile/notification',
-  },
+  // {
+  //   label: 'پیام ها',
+  //   value: '/profile/notification',
+  // },
   // {
   //   label: 'تعاملات',
   //   value: '/forms/profile-settings/integration',

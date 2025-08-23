@@ -42,17 +42,17 @@ export default function TransactionsTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [inputValue, setInputValue] = useState('');
+  const [billDownloadLoading, setBillDownloadLoading] = useState([])
   const searchInput = useRef<HTMLInputElement>(null);
   const _axios = useAxiosPrivate();
-  const fetchTransactions = async (
+  const fetchPayments = async (
     searchTerm: string,
     currentPage: number,
     pageSize: number
   ) => {
     const API_URL = `/transaction?pageNumber=${currentPage}&pageSize=${pageSize}&filter=${searchTerm}`;
 
-    const response = null;
-    // const response = await _axios.get(API_URL);
+    const response = await _axios.get(API_URL);
 
     if (response.data.statusCode === 200) {
       return {
@@ -60,25 +60,25 @@ export default function TransactionsTable() {
         totalItems: response.data.pagination.totalElements,
       };
     } else {
-      throw new Error('Failed to fetch transactions');
+      throw new Error('Failed to fetch payments');
     }
   };
-  // const handleRequestRevision = async (id: number) => {
-  //   console.log(id);
-  //   setRevisionRequestLoading(true);
-  //   try {
-  //     let response = await _axios.post('company/' + id + '/revision/', {});
-  //     if (response.status === 200 && response.data.statusCode === 200)
-  //       toast.success(response.data.message);
-  //     else toast.error(response.data.message);
-  //   } catch (e) {
-  //     console.error(e);
-  //     // @ts-ignore
-  //     toast.error(e?.response?.data?.message || 'خطا در درخواست بازبینی');
-  //   } finally {
-  //     setRevisionRequestLoading(false);
-  //   }
-  // };
+  const handleRequestRevision = async (id: number) => {
+    console.log(id);
+    setRevisionRequestLoading(true);
+    try {
+      let response = await _axios.post('company/' + id + '/revision/', {});
+      if (response.status === 200 && response.data.statusCode === 200)
+        toast.success(response.data.message);
+      else toast.error(response.data.message);
+    } catch (e) {
+      console.error(e);
+      // @ts-ignore
+      toast.error(e?.response?.data?.message || 'خطا در درخواست بازبینی');
+    } finally {
+      setRevisionRequestLoading(false);
+    }
+  };
 
   const debounceSearch = useCallback((func: Function, delay: number) => {
     let timer: NodeJS.Timeout;
@@ -104,8 +104,8 @@ export default function TransactionsTable() {
   );
 
   const { data, isLoading, isError } = useQuery(
-    ['transactions', searchTerm, currentPage, pageSize],
-    () => fetchTransactions(searchTerm, currentPage, pageSize),
+    ['payments', searchTerm, currentPage, pageSize],
+    () => fetchPayments(searchTerm, currentPage, pageSize),
     {
       keepPreviousData: true,
     }
@@ -143,6 +143,10 @@ export default function TransactionsTable() {
         onDeleteItem: (id: string) => handleDelete(id),
         onChecked: handleRowSelect,
         handleSelectAll,
+        handleRequestRevision: handleRequestRevision,
+        revisionRequestLoading: revisionRequestLoading,
+        handleDownloadBill: handleRequestRevision,
+        billDownloadLoading: billDownloadLoading
       }),
     [data, selectedRowKeys, sortConfig]
   );

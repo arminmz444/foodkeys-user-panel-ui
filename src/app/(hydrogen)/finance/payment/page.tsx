@@ -176,19 +176,19 @@ import PaymentTransactionsTable from '@/app/shared/invoice/invoice-list/table';
 const queryClient = new QueryClient();
 
 const pageHeader = {
-  title: 'لیست سفارش',
+  title: 'لیست پرداخت‌ها',
   breadcrumb: [
     {
       href: routes.finance.dashboard,
       name: 'مدیریت مالی',
     },
     {
-      href: routes.invoice.home,
-      name: 'فاکتور',
+      href: routes.finance.paymentList,
+      name: 'لیست پرداخت',
     },
-    {
-      name: 'لیست',
-    },
+    // {
+    //   name: 'لیست',
+    // },
   ],
 };
 

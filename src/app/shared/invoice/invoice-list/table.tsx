@@ -49,7 +49,7 @@ export default function PaymentTransactionsTable() {
     currentPage: number,
     pageSize: number
   ) => {
-    const API_URL = `/payment?pageNumber=${currentPage}&pageSize=${pageSize}&filter=${searchTerm}`;
+    const API_URL = `/payment/me?pageNumber=${currentPage}&pageSize=${pageSize}&filter=${searchTerm}`;
 
     const response = await _axios.get(API_URL);
 

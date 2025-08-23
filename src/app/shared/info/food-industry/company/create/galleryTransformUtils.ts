@@ -1,11 +1,3 @@
-import { useEffect } from 'react';
-import { useFormContext } from 'react-hook-form';
-
-/**
- * Transforms the gallery files from the API response to the format expected by the form
- * @param galleryFiles The array of gallery files from the API
- * @returns An object containing the transformed gallery files grouped by their type
- */
 export const transformGalleryFiles = (galleryFiles: any[]) => {
     if (!galleryFiles || !Array.isArray(galleryFiles) || galleryFiles.length === 0) {
         return {
@@ -30,7 +22,7 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
 
     // Process each gallery file
     galleryFiles.forEach(file => {
-        // Skip files without a service type
+        // Skip files without a file service type
         if (!file.fileServiceType) return;
 
         // Parse metadata JSON if available
@@ -47,64 +39,49 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
         const baseFileObj = {
             ...file,
             ...metadata,
-            priority: 1, // Default priority
-            uploadedFileId: [file.id] // Prepare ID for form
+            uploadedFileId: file.id, // Store the file ID
+            id: file.id, // Keep original ID
+            filePath: file.filePath,
+            fileName: file.fileName
         };
 
         // Map to the appropriate gallery section based on fileServiceType
         switch (file.fileServiceType) {
             case 'COMPANY_GALLERY_CONTACT':
-                result.contacts.push({
-                    ...baseFileObj,
-                    firstName: metadata.firstName || '',
-                    lastName: metadata.lastName || '',
-                    phoneNumbers: metadata.phoneNumbers?.[0] || '',
-                    emails: metadata.emails?.[0] || '',
-                    position: metadata.position || '',
-                    description: metadata.description || ''
-                });
+                result.contacts.push(baseFileObj);
                 break;
 
             case 'COMPANY_GALLERY_CERTIFICATE':
-                result.certificates.push({
-                    ...baseFileObj,
-                    title: metadata.title || '',
-                    description: metadata.description || ''
-                });
+                result.certificates.push(baseFileObj);
                 break;
 
             case 'COMPANY_GALLERY_PRODUCT':
-                result.products.push({
-                    ...baseFileObj,
-                    title: metadata.title || '',
-                    description: metadata.description || ''
-                });
+                result.products.push(baseFileObj);
                 break;
 
             case 'COMPANY_GALLERY_SLIDER':
-                result.sliders.push({
-                    ...baseFileObj,
-                    title: metadata.title || '',
-                    description: metadata.description || ''
-                });
+                result.sliders.push(baseFileObj);
                 break;
 
             case 'COMPANY_GALLERY_CATALOG':
-                result.catalogs.push({
-                    ...baseFileObj,
-                    title: metadata.title || '',
-                    altText: metadata.altText || '',
-                    description: metadata.description || ''
-                });
+                result.catalogs.push(baseFileObj);
                 break;
 
             case 'COMPANY_GALLERY_DOCUMENT':
-                result.documents.push({
-                    ...baseFileObj,
-                    title: metadata.title || '',
-                    description: metadata.description || ''
-                });
+                result.documents.push(baseFileObj);
                 break;
+        }
+    });
+
+    // Sort each category array by priority if available
+    Object.keys(result).forEach(key => {
+        if (result[key].length > 0) {
+            result[key].sort((a, b) => {
+                // Default to priority 1 if not set
+                const priorityA = a.priority || 1;
+                const priorityB = b.priority || 1;
+                return priorityA - priorityB;
+            });
         }
     });
 
@@ -112,26 +89,71 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
 };
 
 /**
- * Custom hook to handle gallery file transformation and form registration
- * @param galleryFiles The array of gallery files from the API
+ * Prepares gallery data for API submission
+ * @param galleryData The gallery data from the form
+ * @returns An array of gallery files formatted for API submission
  */
-export const useGalleryFiles = (galleryFiles: any[]) => {
-    const { setValue } = useFormContext();
+export function prepareGalleryFilesForSubmission(galleryData: any) {
+    if (!galleryData) return [];
+    console.log(`Gallery Data: ${JSON.stringify(galleryData)}`)
+    const galleryFiles: any[] = [];
+    const allSections = ['products', 'certificates', 'contacts', 'sliders', 'catalogs', 'documents'];
 
-    useEffect(() => {
-        if (!galleryFiles || !Array.isArray(galleryFiles) || galleryFiles.length === 0) return;
+    allSections.forEach(section => {
+        if (galleryData[section] && Array.isArray(galleryData[section])) {
+            galleryData[section].forEach((item: any) => {
+                // Skip items without an ID
+                if (!item.id && !item.uploadedFileId) return;
 
-        const transformedFiles = transformGalleryFiles(galleryFiles);
+                // Get file ID from either id or uploadedFileId
+                const fileId = item.id || item.uploadedFileId;
 
-        // Set the transformed files in the form
-        setValue('gallery', transformedFiles);
+                // Skip if no valid ID
+                if (!fileId) return;
 
-        // Optionally, you can log the transformation for debugging
-        console.log('Transformed gallery files:', transformedFiles);
-    }, [galleryFiles, setValue]);
+                // Determine service type based on section
+                let fileServiceType = '';
+                switch(section) {
+                    case 'products':
+                        fileServiceType = 'COMPANY_GALLERY_PRODUCT';
+                        break;
+                    case 'certificates':
+                        fileServiceType = 'COMPANY_GALLERY_CERTIFICATE';
+                        break;
+                    case 'contacts':
+                        fileServiceType = 'COMPANY_GALLERY_CONTACT';
+                        break;
+                    case 'sliders':
+                        fileServiceType = 'COMPANY_GALLERY_SLIDER';
+                        break;
+                    case 'catalogs':
+                        fileServiceType = 'COMPANY_GALLERY_CATALOG';
+                        break;
+                    case 'documents':
+                        fileServiceType = 'COMPANY_GALLERY_DOCUMENT';
+                        break;
+                }
 
-    return transformGalleryFiles(galleryFiles);
-};
+                // Create metadata object
+                const metadata: any = {};
+                Object.keys(item).forEach(key => {
+                    // Skip special fields
+                    if (['id', 'uploadedFileId', 'filePath', 'fileName'].includes(key)) return;
+                    metadata[key] = item[key];
+                });
+
+                // Add to gallery files
+                galleryFiles.push({
+                    id: fileId,
+                    metadata: JSON.stringify(metadata),
+                    fileServiceType
+                });
+            });
+        }
+    });
+
+    return galleryFiles;
+}
 
 /**
  * Utility function for direct usage in components
@@ -150,4 +172,27 @@ export const prepareCompanyDataWithGallery = (data: any) => {
     }
 
     return data;
+};
+
+/**
+ * Function to prepare all form data for submission, including gallery files
+ * @param formData The complete form data object
+ * @returns The prepared data with galleryFiles instead of gallery
+ */
+export const prepareFormDataForSubmission = (formData: any) => {
+    if (!formData) return formData;
+
+    // Get a copy of the data
+    const preparedData = { ...formData };
+
+    // Process gallery data if it exists
+    if (preparedData.gallery) {
+        // Transform gallery to galleryFiles
+        preparedData.galleryFiles = prepareGalleryFilesForSubmission(preparedData.gallery);
+
+        // Remove the gallery property as it's not needed for API
+        delete preparedData.gallery;
+    }
+
+    return preparedData;
 };

@@ -1,223 +1,159 @@
-'use client';
-
-import Link from 'next/link';
-import { routes } from '@/config/routes';
-import { Text } from '@/components/ui/text';
-import { Badge } from '@/components/ui/badge';
-import { Tooltip } from '@/components/ui/tooltip';
 import { HeaderCell } from '@/components/ui/table';
+import { Text } from '@/components/ui/text';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ActionIcon } from '@/components/ui/action-icon';
-import EyeIcon from '@/components/icons/eye';
-import PencilIcon from '@/components/icons/pencil';
-import DeletePopover from '@/app/shared/delete-popover';
-import { PiWallet } from 'react-icons/pi';
-import { MdOutlinePayments, MdPayment, MdPayments } from 'react-icons/md'; // Icon for payment
+import { Badge } from '@/components/ui/badge';
+import { Button } from 'rizzui';
+import { PiDownload } from 'react-icons/pi';
 
-// function getStatusBadge(status: string) {
-//   if (!status) return <></>;
-//   switch (status.toLowerCase()) {
-//     case 'pending':
-//       return (
-//         <div className="flex items-center">
-//           <Badge color="warning" renderAsDot />
-//           <Text className="ms-2 font-medium text-orange-dark">پردازش</Text>
-//         </div>
-//       );
-//     case 'completed':
-//       return (
-//         <div className="flex items-center">
-//           <Badge color="success" renderAsDot />
-//           <Text className="ms-2 font-medium text-green-dark">پرداخت شده</Text>
-//         </div>
-//       );
-//     case 'failed':
-//       return (
-//         <div className="flex items-center">
-//           <Badge color="danger" renderAsDot />
-//           <Text className="ms-2 font-medium text-red-dark">ناموفق</Text>
-//         </div>
-//       );
-//     default:
-//       return (
-//         <div className="flex items-center">
-//           <Badge renderAsDot className="bg-gray-400" />
-//           <Text className="ms-2 font-medium text-gray-600">پیش نویس</Text>
-//         </div>
-//       );
-//   }
-// }
+const statusColorMap: Record<string, string> = {
+    SUCCESS: 'success',
+    IN_PROGRESS: 'warning',
+    FAIL: 'destructive',
+    PENDING_REVIEW: 'muted',
+    ARCHIVED: 'secondary',
+};
 
-function getStatusBadge(status: string, statusColor: String) {
-  return (
-    <div className="flex items-center">
-      {/*// @ts-ignore*/}
-      <Badge color={statusColor || 'warning'} renderAsDot />
-      <Text className="ms-2 font-medium">{status}</Text>
-    </div>
-  );
-}
-
-type Columns = {
-  data: any[];
-  sortConfig?: any;
-  handleSelectAll: any;
-  checkedItems: string[];
-  onDeleteItem: (id: string) => void;
-  onHeaderCellClick: (value: string) => void;
-  onChecked?: (id: string) => void;
+const statusLabelMap: Record<string, string> = {
+    SUCCESS: 'موفق',
+    IN_PROGRESS: 'در انتظار تأیید',
+    FAIL: 'ناموفق',
+    PENDING_REVIEW: 'در انتظار بازبینی',
+    ARCHIVED: 'آرشیو شده',
 };
 
 export const getColumns = ({
-  data,
-  sortConfig,
-  checkedItems,
-  onDeleteItem,
-  onHeaderCellClick,
-  handleSelectAll,
-  onChecked,
-}: Columns) => [
-  {
-    title: (
-      <div className="ps-2">
-        <Checkbox
-          title={'انتخاب همه'}
-          onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    dataIndex: 'checked',
-    key: 'checked',
-    width: 30,
-    render: (_: any, row: any) => (
-      <div className="inline-flex ps-2">
-        <Checkbox
-          className="cursor-pointer"
-          checked={checkedItems.includes(row.id)}
-          {...(onChecked && { onChange: () => onChecked(row.id) })}
-        />
-      </div>
-    ),
-  },
-  {
-    title: <HeaderCell title="" />,
-    dataIndex: 'icon',
-    key: 'icon',
-    width: 50,
-    render: () => (
-      <div className="flex items-center justify-center">
-        <PiWallet className="text-blue-500 h-6 w-6" />
-      </div>
-    ),
-  },
-  {
-    title: <HeaderCell title="توضیحات" />,
-    dataIndex: 'description',
-    key: 'description',
-    width: 250,
-    render: (description: string) => description,
-  },
-  {
-    title: <HeaderCell title="شناسه تراکنش" />,
-    dataIndex: 'transactionId',
-    key: 'transactionId',
-    width: 250,
-    render: (transactionId: string) => transactionId,
-  },
-  {
-    title: <HeaderCell title="تاریخ ایجاد" />,
-    onHeaderCell: () => onHeaderCellClick('createdAtStr'),
-    dataIndex: 'createdAtStr',
-    key: 'createdAtStr',
-    width: 200,
-    render: (value: string) => value,
-  },
-  {
-    title: <HeaderCell title="تاریخ آخرین تغییر" />,
-    onHeaderCell: () => onHeaderCellClick('updatedAtStr'),
-    dataIndex: 'updatedAtStr',
-    key: 'updatedAtStr',
-    width: 200,
-    render: (value: string) => value,
-  },
-  {
-    title: (
-      <HeaderCell
-        title="هزینه"
-        // sortable
-        // ascending={
-        //   sortConfig?.direction === 'asc' && sortConfig?.key === 'amount'
-        // }
-      />
-    ),
-    onHeaderCell: () => onHeaderCellClick('amount'),
-    dataIndex: 'amount',
-    key: 'amount',
-    width: 200,
-    render: (value: number) => (
-      <Text className="font-medium text-gray-700 dark:text-gray-600">
-        {value} تومان
-      </Text>
-    ),
-  },
-  {
-    title: <HeaderCell title="وضعیت" />,
-    dataIndex: 'paymentStatus',
-    key: 'paymentStatus',
-    width: 80,
-    render: (_: string, row: any) => {
-      return getStatusBadge(row.paymentStatus, row.paymentStatusColor);
+                               data,
+                               checkedItems,
+                               onChecked,
+                               handleSelectAll,
+                               sortConfig,
+                               onHeaderCellClick,
+                               handleDownloadBill,
+                               billDownloadLoading,
+                           }: {
+    data: any[];
+    checkedItems: string[];
+    onChecked: (id: string) => void;
+    handleSelectAll: (checked: boolean) => void;
+    sortConfig: { key: string; direction: 'asc' | 'desc' } | null;
+    onHeaderCellClick: (key: string) => void;
+    handleDownloadBill: (id: string) => void;
+    billDownloadLoading: Record<string, boolean>;
+}) => [
+    {
+        title: (
+            <div className="ps-3.5">
+                <Checkbox
+                    title="انتخاب همه"
+                    onChange={e => handleSelectAll(e.currentTarget.checked)}
+                    checked={checkedItems.length === data.length && data.length > 0}
+                    className="cursor-pointer"
+                />
+            </div>
+        ),
+        key: 'select',
+        width: 30,
+        render: (_: any, row: any) => (
+            <div className="inline-flex ps-3.5">
+                <Checkbox
+                    className="cursor-pointer"
+                    checked={checkedItems.includes(row.id)}
+                    onChange={() => onChecked(row.id)}
+                />
+            </div>
+        ),
     },
-  },
-  {
-    title: <></>,
-    dataIndex: 'action',
-    key: 'action',
-    width: 140,
-    render: (_: string, row: any) => (
-      <div className="flex items-center justify-end gap-3 pe-3">
-        <Tooltip
-          size="sm"
-          content={() => 'ویرایش فاکتور'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.invoice.edit(row.id)}>
-            <ActionIcon
-              tag="span"
-              size="sm"
-              variant="outline"
-              className="hover:!border-gray-900 hover:text-gray-700"
-            >
-              <PencilIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
-        <Tooltip
-          size="sm"
-          content={() => 'مشاهده فاکتور'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.invoice.details(row.id)}>
-            <ActionIcon
-              tag="span"
-              size="sm"
-              variant="outline"
-              className="bg-red text-white hover:!border-gray-900 hover:text-gray-700"
-            >
-              <EyeIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
-        {/* <DeletePopover
-          title={`حذف فاکتور`}
-          description={`آیا مطمئنید که می‌خواهید این فاکتور را پاک کنید؟`}
-          onDelete={() => onDeleteItem(row.id)}
-        /> */}
-      </div>
-    ),
-  },
+    {
+        title: <HeaderCell title="تاریخ" sortKey="createdStr" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'createdStr',
+        key: 'createdStr',
+        width: 140,
+        render: (_: string, row: any) => (
+            <div className="flex flex-col">
+                <Text>{row.createdStr}</Text>
+                <Text className="text-xs text-gray-500">{"ساعت: " + row.createdAtTimeStr}</Text>
+            </div>
+        ),
+    },
+    // {
+    //     title: <HeaderCell title="تاریخ بروزرسانی" sortKey="updatedStr" {...{ sortConfig, onHeaderCellClick }} />,
+    //     dataIndex: 'updatedStr',
+    //     key: 'updatedStr',
+    //     width: 140,
+    //     render: (_: string, row: any) => (
+    //         <div className="flex flex-col">
+    //             <Text>{row.updatedStr}</Text>
+    //             <Text className="text-xs text-gray-500">{row.updatedAtTime}</Text>
+    //         </div>
+    //     ),
+    // },
+
+    {
+        title: <HeaderCell title="شماره فاکتور" sortKey="billId" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'billId',
+        key: 'billId',
+        width: 180,
+        render: (svc: string) => <Text>{svc}</Text>,
+    },
+    {
+        title: <HeaderCell title="نوع تراکنش" sortKey="serviceNameFa" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'serviceNameFa',
+        key: 'serviceNameFa',
+        width: 180,
+        render: (svc: string) => <Text>{svc}</Text>,
+    },
+    // {
+    //     title: <HeaderCell title="نوع تراکنش" sortKey="transactionType" {...{ sortConfig, onHeaderCellClick }} />,
+    //     dataIndex: 'transactionType',
+    //     key: 'transactionType',
+    //     width: 140,
+    //     render: (type: string) => <Text>{type}</Text>,
+    // },
+    {
+        title: <HeaderCell title="مبلغ" sortKey="amount" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'amount',
+        key: 'amount',
+        width: 100,
+        render: (amt: number) => <Text>{amt?.toLocaleString()}</Text>,
+    },
+    {
+        title: <HeaderCell title="کد پیگیری" sortKey="referenceCode" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'referenceCode',
+        key: 'referenceCode',
+        width: 140,
+        render: (ref: string) => <Text>{ref || '—'}</Text>,
+    },
+    {
+        title: <HeaderCell title="وضعیت" sortKey="status" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'status',
+        key: 'status',
+        width: 120,
+        render: (_: any, row: any) => {
+            const color = statusColorMap[row.status] || 'default';
+            const label = statusLabelMap[row.status] || row.statusStr;
+            return (
+                <div className="flex items-center">
+                    <Badge color={color} renderAsDot />
+                    <Text className="ms-2">{label}</Text>
+                </div>
+            );
+        },
+    },
+    {
+        title: <HeaderCell title="فاکتور" />,
+        dataIndex: 'hasBill',
+        key: 'hasBill',
+        width: 100,
+        render: (_: any, row: any) =>
+
+                <Button
+                    size="sm"
+                    isLoading={billDownloadLoading[row.id]}
+                    onClick={() => handleDownloadBill(row.id)}
+                >
+                    <PiDownload className="me-1" />
+                    دریافت فاکتور
+                </Button>
+
+    },
 ];

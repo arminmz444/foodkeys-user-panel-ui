@@ -216,11 +216,12 @@ const pictureSchema = z.object({
 });
 
 const productSchema = z.object({
-    id: z.any().optional(),
+    id: z.number().nullable().optional(),
     name: z.string(),
-    type: z.string().optional(),
+    categoryType: z.string().optional(),
+    otherTypeName: z.string().optional(),
     description: z.string().optional(),
-    pictures: z.array(pictureSchema).optional().nullable(),
+    pictures: z.any().optional().nullable(),
     uploadedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     outsourced: z.boolean().optional(),
@@ -257,10 +258,11 @@ const contactSchema = z.object({
 });
 
 const galleryContactSchema = z.object({
-    name: z.string().optional(),
+    firstName: z.string().optional(),
     lastName: z.string().optional(),
-    email: z.string().optional(),
-    phone: z.string().optional(),
+    emails: z.string().optional(),
+    phoneNumbers: z.string().optional(),
+    description: z.string().optional(),
     // isCEO: z.boolean(),
     position: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
@@ -373,6 +375,7 @@ const companyTypeSchema = z.object({
 const companyBrandSchema = z.object({
     name: z.string(),
     nameEn: z.string(),
+    brandImage: z.string().optional()
 });
 
 export const companyFormSchema = z.object({
@@ -382,6 +385,7 @@ export const companyFormSchema = z.object({
     companyName: z.string().min(1, {message: 'این فیلد اجباری میباشد'}),
     companyNameEn: z.string(),
     companyStakeHolders: z.string().optional(),
+    specialLineNumber: z.string().optional(),
     // ceo: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
     // ceoPhoneNumber: z.string().min(1, { message: "این فیلد اجباری می‌باشد" }),
     // owner: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
@@ -399,9 +403,10 @@ export const companyFormSchema = z.object({
     companyType: companyTypeSchema.optional(),
     companyTypeOther: z.string().optional(),
     // backgroundImage: z.array(z.instanceof(File)).optional(),
-    logo: z.instanceof(File).refine((file) => file?.size <= 20 * 1024 * 1024, {
-        message: 'حداکثر حجم فایل باید ۲۰ مگابایت باشد',
-    }).nullable().optional(),
+    logo: z.string().optional(),
+    // logo: z.instanceof(File).refine((file) => file?.size <= 20 * 1024 * 1024, {
+    //     message: 'حداکثر حجم فایل باید ۲۰ مگابایت باشد',
+    // }).nullable().optional(),
     subjectOfActivity: z.string().optional(),
     establishDate: z.string().optional(),
     rawMaterialsOrigin: z.string().optional(),
@@ -452,8 +457,12 @@ export const companyFormSchema = z.object({
     officeState: z.string().optional(),
     gallery: gallerySchema.optional(),
     fullAddress: z.string().optional(),
-    latitude: z.string().optional(),
+    latitude: z.number().optional(),
     longitude: z.number().optional(),
+    factoryLongitude: z.number().optional(),
+    factoryLatitude: z.number().optional(),
+    officeLongitude: z.number().optional(),
+    officeLatitude: z.number().optional(),
 });
 
 export type CreateCompanyInput = z.infer<typeof companyFormSchema>;
@@ -506,7 +515,7 @@ export function defaultValues(company?: CreateCompanyInput | null) {
         telegramId: company?.telegramId ?? '',
         telegramPhoneNo: company?.telegramPhoneNo ?? '',
         smsNumber: company?.smsNumber ?? '',
-        hotlineNumber: company?.hotlineNumber ?? '',
+        specialLineNumber: company?.specialLineNumber ?? '',
         whatsAppId: company?.whatsAppId ?? '',
         whatsAppPhoneNo: company?.whatsAppPhoneNo ?? '',
         instagramId: company?.instagramId ?? '',
@@ -533,10 +542,14 @@ export function defaultValues(company?: CreateCompanyInput | null) {
             catalog: {},
             documents: [],
         },
-
-        fullAddress: company?.fullAddress ?? '',
-        officeCommonName: company?.officeCommonName ?? '',
+        factoryLongitude: company?.factoryLongitude,
+        factoryLatitude: company?.factoryLatitude,
+        officeLongitude: company?.officeLongitude,
+        officeLatitude: company?.officeLatitude,
+        factoryFullAddress: company?.factoryFullAddress ?? '',
         officeFullAddress: company?.officeFullAddress ?? '',
+        officeCommonName: company?.officeCommonName ?? '',
+        factoryCommonName: company?.factoryCommonName ?? '',
         manualLatitude: '',
         manualLongitude: '',
     };

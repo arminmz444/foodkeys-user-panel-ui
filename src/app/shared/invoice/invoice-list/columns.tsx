@@ -46,30 +46,30 @@ export const getColumns = ({
   handleSelectAll,
   onChecked,
 }: any) => [
-  {
-    title: (
-      <div className="ps-3.5">
-        <Checkbox
-          title="انتخاب همه"
-          onChange={handleSelectAll}
-          checked={checkedItems.length === data.length}
-          className="cursor-pointer"
-        />
-      </div>
-    ),
-    dataIndex: 'checked',
-    key: 'checked',
-    width: 30,
-    render: (_: any, row: any) => (
-      <div className="inline-flex ps-3.5">
-        <Checkbox
-          className="cursor-pointer"
-          checked={checkedItems.includes(row.id)}
-          onChange={() => onChecked && onChecked(row.id)}
-        />
-      </div>
-    ),
-  },
+  // {
+  //   title: (
+  //     <div className="ps-3.5">
+  //       <Checkbox
+  //         title="انتخاب همه"
+  //         onChange={handleSelectAll}
+  //         checked={checkedItems.length === data.length}
+  //         className="cursor-pointer"
+  //       />
+  //     </div>
+  //   ),
+  //   dataIndex: 'checked',
+  //   key: 'checked',
+  //   width: 30,
+  //   render: (_: any, row: any) => (
+  //     <div className="inline-flex ps-3.5">
+  //       <Checkbox
+  //         className="cursor-pointer"
+  //         checked={checkedItems.includes(row.id)}
+  //         onChange={() => onChecked && onChecked(row.id)}
+  //       />
+  //     </div>
+  //   ),
+  // },
   // {
   //     title: <HeaderCell title="نام شرکت" />,
   //     dataIndex: 'companyName',
@@ -77,40 +77,45 @@ export const getColumns = ({
   //     width: 300,
   //     render: (companyName: string) => <Text>{companyName}</Text>,
   // },
+  // {
+  //   title: <HeaderCell title="سرویس" />,
+  //   dataIndex: 'serviceFa',
+  //   key: 'serviceFa',
+  //   width: 210,
+  //   render: (serviceFa: string) => <Text>{serviceFa}</Text>,
+  // },
   {
-    title: <HeaderCell title="سرویس" />,
-    dataIndex: 'serviceFa',
-    key: 'serviceFa',
-    width: 210,
-    render: (serviceFa: string) => <Text>{serviceFa}</Text>,
-  },
-  {
-    title: <HeaderCell title="تاریخ" />,
+    title: <HeaderCell title="تاریخ" sortKey="createdAtStr" {...{ sortConfig, onHeaderCellClick }} />,
     dataIndex: 'createdAtStr',
     key: 'createdAtStr',
-    width: 100,
-    render: (createdAtStr: string) => <Text>{createdAtStr}</Text>,
-  },
-  {
-    title: <HeaderCell title="شناسه پرداخت" />,
-    dataIndex: 'id',
-    key: 'id',
-    width: 250,
-    hidden: 'id',
-
+    width: 80,
     render: (_: string, row: any) => (
-      <div>
-        <Text className="font-iransans text-sm font-medium text-gray-900 dark:text-gray-700">
-          {row.id}
-        </Text>
-        {/* {row.createdAtStr ? (
-          <Text className="text-[13px] text-gray-500">{row.createdAtStr}</Text>
-        ) : (
-          <></>
-        )} */}
-      </div>
+        <div className="flex flex-col">
+          <Text>{row.createdAtStr}</Text>
+          <Text className="text-xs text-gray-500">{"ساعت: " + row.createdAtTimeStr}</Text>
+        </div>
     ),
   },
+  // {
+  //   title: <HeaderCell title="شناسه پرداخت" />,
+  //   dataIndex: 'id',
+  //   key: 'id',
+  //   width: 250,
+  //   hidden: 'id',
+  //
+  //   render: (_: string, row: any) => (
+  //     <div>
+  //       <Text className="font-iransans text-sm font-medium text-gray-900 dark:text-gray-700">
+  //         {row.id}
+  //       </Text>
+  //       {/* {row.createdAtStr ? (
+  //         <Text className="text-[13px] text-gray-500">{row.createdAtStr}</Text>
+  //       ) : (
+  //         <></>
+  //       )} */}
+  //     </div>
+  //   ),
+  // },
   {
     title: <HeaderCell title="مبلغ" />,
     dataIndex: 'amount',
@@ -122,14 +127,14 @@ export const getColumns = ({
     title: <HeaderCell title="کد ارجاع" />,
     dataIndex: 'refId',
     key: 'refId',
-    width: 70,
+    width: 60,
     render: (refId: number) => <Text>{refId || <RxBorderSolid />}</Text>,
   },
   {
     title: <HeaderCell title="توضیحات" />,
     dataIndex: 'description',
     key: 'description',
-    width: 150,
+    width: 120,
     render: (description: string) => (
       <Text>{description || <RxBorderSolid />}</Text>
     ),
@@ -143,55 +148,55 @@ export const getColumns = ({
       return getStatusBadge(row.paymentStatus, row.paymentStatusColor);
     },
   },
-  {
-    title: <></>,
-    dataIndex: 'action',
-    key: 'action',
-    width: 140,
-    render: (_: string, row: any) => (
-      <div className="flex items-center justify-end gap-3 pe-3">
-        <Tooltip
-          size="sm"
-          content={() => 'ویرایش فاکتور'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.invoice.edit(row.id)}>
-            <ActionIcon
-              tag="span"
-              size="sm"
-              variant="outline"
-              className="hover:!border-gray-900 hover:text-gray-700"
-            >
-              <PencilIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
-        <Tooltip
-          size="sm"
-          content={() => 'مشاهده فاکتور'}
-          placement="top"
-          color="invert"
-        >
-          <Link href={routes.invoice.details(row.id)}>
-            <ActionIcon
-              tag="span"
-              size="sm"
-              variant="outline"
-              className="bg-red text-white hover:!border-gray-900 hover:text-gray-700"
-            >
-              <EyeIcon className="h-4 w-4" />
-            </ActionIcon>
-          </Link>
-        </Tooltip>
-        {/* <DeletePopover
-          title={`حذف فاکتور`}
-          description={`آیا مطمئنید که می‌خواهید این فاکتور را پاک کنید؟`}
-          onDelete={() => onDeleteItem(row.id)}
-        /> */}
-      </div>
-    ),
-  },
+  // {
+  //   title: <></>,
+  //   dataIndex: 'action',
+  //   key: 'action',
+  //   width: 140,
+  //   render: (_: string, row: any) => (
+  //     <div className="flex items-center justify-end gap-3 pe-3">
+  //       <Tooltip
+  //         size="sm"
+  //         content={() => 'ویرایش فاکتور'}
+  //         placement="top"
+  //         color="invert"
+  //       >
+  //         <Link href={routes.invoice.edit(row.id)}>
+  //           <ActionIcon
+  //             tag="span"
+  //             size="sm"
+  //             variant="outline"
+  //             className="hover:!border-gray-900 hover:text-gray-700"
+  //           >
+  //             <PencilIcon className="h-4 w-4" />
+  //           </ActionIcon>
+  //         </Link>
+  //       </Tooltip>
+  //       <Tooltip
+  //         size="sm"
+  //         content={() => 'مشاهده فاکتور'}
+  //         placement="top"
+  //         color="invert"
+  //       >
+  //         <Link href={routes.invoice.details(row.id)}>
+  //           <ActionIcon
+  //             tag="span"
+  //             size="sm"
+  //             variant="outline"
+  //             className="bg-red text-white hover:!border-gray-900 hover:text-gray-700"
+  //           >
+  //             <EyeIcon className="h-4 w-4" />
+  //           </ActionIcon>
+  //         </Link>
+  //       </Tooltip>
+  //       {/* <DeletePopover
+  //         title={`حذف فاکتور`}
+  //         description={`آیا مطمئنید که می‌خواهید این فاکتور را پاک کنید؟`}
+  //         onDelete={() => onDeleteItem(row.id)}
+  //       /> */}
+  //     </div>
+  //   ),
+  // },
   // {
   //     title: <></>,
   //     dataIndex: 'action',

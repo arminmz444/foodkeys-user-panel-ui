@@ -11,10 +11,10 @@ import cn from '@/utils/class-names';
 
 export default function ProfileSettingsNav({ id }) {
   const menuItems = [
-    {
-      label: 'اشتراک‌های من',
-      value: `/bundle/${id}`,
-    },
+    // {
+    //   label: 'اشتراک‌های من',
+    //   value: `/bundle/${id}`,
+    // },
     {
       label: 'خرید اشتراک',
       value: `/bundle/${id}/buy`,

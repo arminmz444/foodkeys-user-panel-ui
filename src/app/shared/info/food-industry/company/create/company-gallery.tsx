@@ -1,113 +1,625 @@
+// import { useFormContext } from 'react-hook-form';
+// import { Input } from '@/components/ui/input';
+// import FormGroup from '@/app/shared/form-group';
+// import cn from '@/utils/class-names';
+// import dynamic from 'next/dynamic';
+// import SelectLoader from '@/components/loader/select-loader';
+// import TrashIcon from '@/components/icons/trash';
+// import { useEffect, useRef, useState, useCallback } from 'react';
+// import Upload from '@/components/ui/upload';
+// import Image from 'next/image';
+// import toast from 'react-hot-toast';
+// import useAxiosPrivate from '@/hooks/use-axios-private';
+//
+// const Select = dynamic(() => import('@/components/ui/select'), {
+//   ssr: false,
+//   loading: () => <SelectLoader />,
+// });
+//
+// // Interface for uploaded file data
+// interface UploadedFileDTO {
+//   id: string;
+//   fileName: string;
+//   filePath: string;
+// }
+//
+// // Interface for gallery item data
+// interface GalleryItemData {
+//   id?: string;
+//   uploadedFileId?: string | string[];
+//   filePath?: string;
+//   fileName?: string;
+//   priority?: number;
+//   [key: string]: any;
+// }
+//
+// export default function CompanyGallery({
+//                                          className,
+//                                          category,
+//                                        }: {
+//   className?: string;
+//   category?: number;
+// }) {
+//   const {
+//     register,
+//     formState: { errors },
+//     setValue,
+//     watch,
+//   } = useFormContext();
+//
+//   const galleryData = watch("gallery");
+//   const [error, setError] = useState('');
+//   const _axios = useAxiosPrivate();
+//
+//   // Function to upload files to the API
+//   const uploadGalleryFile = async (
+//       files: File[],
+//       fileServiceType: string
+//   ): Promise<UploadedFileDTO[]> => {
+//     try {
+//       const formData = new FormData();
+//       files.forEach((file) => formData.append('files', file));
+//       formData.append('fileServiceType', fileServiceType);
+//
+//       const response = await _axios.post(
+//           `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+//           formData,
+//           {
+//             headers: {
+//               'Content-Type': 'multipart/form-data',
+//             },
+//           }
+//       );
+//
+//       if (response.data.status === 'SUCCESS' && response.data.data) {
+//         return response.data.data;
+//       }
+//
+//       throw new Error('Failed to upload files');
+//     } catch (error) {
+//       console.error('Error uploading files:', error);
+//       toast.error('خطا در آپلود فایل‌ها. لطفا دوباره تلاش کنید.');
+//       return [];
+//     }
+//   };
+//
+//   return (
+//       <FormGroup
+//           title="گالری شرکت"
+//           description="عکس‌های شرکت خود را اینجا آپلود کنید"
+//           className={cn(className)}
+//       >
+//         <GallerySection
+//             className="col-span-2"
+//             label="عکس‌های نمونه محصولات تولیدی"
+//             uploadAreaContent={
+//               <>
+//                 عکس‌های محصولات شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+//                 <strong className="font-medium text-gray-900">
+//                   20 مگابایت باشد
+//                 </strong>
+//               </>
+//             }
+//             registerName="gallery.products"
+//             fields={[
+//               { name: 'title', label: 'عنوان محصول', type: 'text' },
+//               { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
+//             ]}
+//             uploadFile={uploadGalleryFile}
+//             fileServiceType="COMPANY_GALLERY_PRODUCT"
+//             initialFiles={galleryData?.products || []}
+//         />
+//
+//         <GallerySection
+//             className="col-span-2"
+//             label="عکس‌های افتخارات و گواهینامه‌ها"
+//             uploadAreaContent={
+//               <>
+//                 عکس‌های افتخارات و گواهینامه‌های شرکت خود را اینجا آپلود کنید حجم
+//                 عکس باید کمتر از{' '}
+//                 <strong className="font-medium text-gray-900">
+//                   20 مگابایت باشد
+//                 </strong>
+//               </>
+//             }
+//             registerName="gallery.certificates"
+//             fields={[
+//               { name: 'title', label: 'نام گواهینامه', type: 'text' },
+//               { name: 'description', label: 'توضیحات گواهینامه', type: 'text' }
+//             ]}
+//             uploadFile={uploadGalleryFile}
+//             fileServiceType="COMPANY_GALLERY_CERTIFICATE"
+//             initialFiles={galleryData?.certificates || []}
+//         />
+//
+//         <GallerySection
+//             className="col-span-2"
+//             label="عکس‌های مدیران و مسئولین"
+//             uploadAreaContent={
+//               <>
+//                 عکس‌های مدیران و مسئولین شرکت خود را اینجا آپلود کنید حجم عکس باید
+//                 کمتر از{' '}
+//                 <strong className="font-medium text-gray-900">
+//                   20 مگابایت باشد
+//                 </strong>
+//               </>
+//             }
+//             registerName="gallery.contacts"
+//             fields={[
+//               { name: 'firstName', label: 'نام', type: 'text' },
+//               { name: 'lastName', label: 'نام خانوادگی', type: 'text' },
+//               { name: 'phoneNumbers', label: 'شماره تلفن', type: 'text' },
+//               { name: 'emails', label: 'ایمیل', type: 'email' },
+//               { name: 'position', label: 'سمت', type: 'text' },
+//               { name: 'description', label: 'توضیحات', type: 'text' },
+//             ]}
+//             uploadFile={uploadGalleryFile}
+//             fileServiceType="COMPANY_GALLERY_CONTACT"
+//             initialFiles={galleryData?.contacts || []}
+//         />
+//
+//         <GallerySection
+//             className="col-span-2"
+//             label="اسلایدر شرکت"
+//             uploadAreaContent={
+//               <>
+//                 عکس‌های اسلایدر اصلی شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر
+//                 از{' '}
+//                 <strong className="font-medium text-gray-900">
+//                   20 مگابایت باشد
+//                 </strong>
+//               </>
+//             }
+//             registerName="gallery.sliders"
+//             fields={[
+//               { name: 'title', label: 'متن زیرنویس', type: 'text' },
+//               { name: 'description', label: 'توضیحات بیشتر', type: 'text' }
+//             ]}
+//             uploadFile={uploadGalleryFile}
+//             fileServiceType="COMPANY_GALLERY_SLIDER"
+//             initialFiles={galleryData?.sliders || []}
+//         />
+//
+//         <GallerySection
+//             className="col-span-2"
+//             label="کاتالوگ‌ شرکت"
+//             uploadAreaContent={
+//               <>
+//                 کاتالوگ‌های شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
+//                 <strong className="font-medium text-gray-900">
+//                   20 مگابایت باشد
+//                 </strong>
+//               </>
+//             }
+//             registerName="gallery.catalogs"
+//             fields={[
+//               { name: 'title', label: 'عنوان کاتالوگ', type: 'text' },
+//               { name: 'altText', label: 'متن جایگزین', type: 'text' },
+//               { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
+//             ]}
+//             uploadFile={uploadGalleryFile}
+//             fileServiceType="COMPANY_GALLERY_CATALOG"
+//             initialFiles={galleryData?.catalogs || []}
+//         />
+//
+//         <GallerySection
+//             className="col-span-2"
+//             label="اسناد دیگر شرکت"
+//             uploadAreaContent={
+//               <>
+//                 اسناد دیگر شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
+//                 <strong className="font-medium text-gray-900">
+//                   20 مگابایت باشد
+//                 </strong>
+//               </>
+//             }
+//             registerName="gallery.documents"
+//             fields={[
+//               { name: 'title', label: 'نام سند', type: 'text' },
+//               { name: 'description', label: 'توضیحات سند', type: 'text' }
+//             ]}
+//             uploadFile={uploadGalleryFile}
+//             fileServiceType="COMPANY_GALLERY_DOCUMENT"
+//             initialFiles={galleryData?.documents || []}
+//         />
+//       </FormGroup>
+//   );
+// }
+//
+// // Component for handling a single gallery section
+// function GallerySection({
+//                           className,
+//                           label,
+//                           uploadAreaContent,
+//                           registerName,
+//                           fields,
+//                           uploadFile,
+//                           fileServiceType,
+//                           initialFiles = [],
+//                         }: {
+//   className?: string;
+//   label?: React.ReactNode;
+//   uploadAreaContent?: React.ReactNode;
+//   registerName: string;
+//   fields: { name: string; label: string; type: string }[];
+//   uploadFile: (files: File[], fileServiceType: string) => Promise<UploadedFileDTO[]>;
+//   fileServiceType: string;
+//   initialFiles?: any[];
+// }) {
+//   const fileInputRef = useRef<HTMLInputElement>(null);
+//   const {
+//     register,
+//     setValue,
+//     unregister,
+//   } = useFormContext();
+//
+//   // State to track all files
+//   const [galleryItems, setGalleryItems] = useState<GalleryItemData[]>([]);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [isInitialized, setIsInitialized] = useState(false);
+//
+//   // Setup form values for a specific item
+//   const setupFormValues = useCallback((item: GalleryItemData, index: number) => {
+//     // Register all fields for this item
+//     fields.forEach(field => {
+//       setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
+//     });
+//
+//     // Register the file ID
+//     setValue(`${registerName}[${index}].id`, item.id || '');
+//     setValue(`${registerName}[${index}].uploadedFileId`, item.id || item.uploadedFileId);
+//     setValue(`${registerName}[${index}].priority`, index + 1);
+//   }, [fields, registerName, setValue]);
+//
+//   // Register all items with the form
+//   const registerItems = useCallback(() => {
+//     galleryItems.forEach((item, index) => {
+//       setupFormValues(item, index);
+//     });
+//   }, [galleryItems, setupFormValues]);
+//
+//   // Initial load of files
+//   useEffect(() => {
+//     if (!isInitialized && initialFiles && initialFiles.length > 0) {
+//       // Process initial files
+//       const formattedItems = initialFiles.map((file, index) => {
+//         return {
+//           ...file,
+//           id: file.id || file.uploadedFileId,
+//           filePath: file.filePath,
+//           fileName: file.fileName,
+//           priority: index + 1,
+//         };
+//       });
+//
+//       setGalleryItems(formattedItems);
+//       setIsInitialized(true);
+//     }
+//   }, [initialFiles, isInitialized]);
+//
+//   // Register items with form when they change
+//   useEffect(() => {
+//     if (galleryItems.length > 0) {
+//       registerItems();
+//     }
+//   }, [galleryItems, registerItems]);
+//
+//   // Handle file upload
+//   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+//     const files = Array.from(event.target.files || []);
+//     if (!files.length) return;
+//
+//     setIsUploading(true);
+//
+//     try {
+//       // Filter files to valid types and sizes
+//       const validFiles = files.filter(file => {
+//         const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+//         const maxSize = 20 * 1024 * 1024; // 20MB
+//         return validTypes.includes(file.type) && file.size <= maxSize;
+//       });
+//
+//       if (validFiles.length === 0) {
+//         toast.error('فرمت یا حجم فایل‌ها اشتباه است. تنها فایل‌های JPG، PNG یا PDF با حجم کمتر از 20 مگابایت مجاز هستند.');
+//         setIsUploading(false);
+//         return;
+//       }
+//
+//       // Upload the files
+//       const uploadedFiles = await uploadFile(validFiles, fileServiceType);
+//
+//       if (uploadedFiles.length > 0) {
+//         // Create new gallery items
+//         const newItems = uploadedFiles.map((file, index) => {
+//           return {
+//             id: file.id,
+//             uploadedFileId: file.id,
+//             filePath: file.filePath,
+//             fileName: file.fileName,
+//             priority: galleryItems.length + index + 1,
+//             ...Object.fromEntries(fields.map(f => [f.name, ''])),
+//           };
+//         });
+//
+//         // Update state with new items
+//         setGalleryItems(prevItems => [...prevItems, ...newItems]);
+//
+//         toast.success('فایل‌ها با موفقیت آپلود شدند');
+//       }
+//     } catch (error) {
+//       console.error('Error during file upload:', error);
+//       toast.error('خطا در آپلود فایل‌ها');
+//     } finally {
+//       setIsUploading(false);
+//       // Clear the input
+//       if (fileInputRef.current) {
+//         fileInputRef.current.value = '';
+//       }
+//     }
+//   };
+//
+//   // Handle field change
+//   const handleFieldChange = (index: number, fieldName: string, value: string) => {
+//     setGalleryItems(prevItems => {
+//       const updatedItems = [...prevItems];
+//       if (updatedItems[index]) {
+//         updatedItems[index] = {
+//           ...updatedItems[index],
+//           [fieldName]: value
+//         };
+//         // Update the form value directly
+//         setValue(`${registerName}[${index}].${fieldName}`, value);
+//       }
+//       return updatedItems;
+//     });
+//   };
+//
+//   // Handle item removal
+//   const handleItemRemove = (index: number) => {
+//     // Remove from state
+//     setGalleryItems(prevItems => {
+//       const updatedItems = prevItems.filter((_, i) => i !== index);
+//       return updatedItems;
+//     });
+//
+//     // Unregister this item from the form
+//     unregister(`${registerName}[${index}]`);
+//
+//     // Re-register remaining items with updated indices
+//     setTimeout(() => {
+//       galleryItems.forEach((item, idx) => {
+//         if (idx >= index) {
+//           // Only update items that come after the removed one
+//           unregister(`${registerName}[${idx + 1}]`);
+//           fields.forEach(field => {
+//             setValue(`${registerName}[${idx}].${field.name}`, item[field.name] || '');
+//           });
+//           setValue(`${registerName}[${idx}].id`, item.id || '');
+//           setValue(`${registerName}[${idx}].uploadedFileId`, item.id || item.uploadedFileId);
+//           setValue(`${registerName}[${idx}].priority`, idx + 1);
+//         }
+//       });
+//     }, 0);
+//
+//     toast.success('آیتم با موفقیت حذف شد');
+//   };
+//
+//   return (
+//       <div className={className}>
+//         <Upload
+//             label={label}
+//             ref={fileInputRef}
+//             accept="image/jpeg,image/png,application/pdf"
+//             multiple
+//             onChange={handleFileUpload}
+//             disabled={isUploading}
+//         />
+//         <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
+//
+//         {isUploading && (
+//             <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-md">
+//               در حال آپلود فایل‌ها... لطفا صبر کنید
+//             </div>
+//         )}
+//
+//         {galleryItems.length > 0 && (
+//             <div className="mt-6 space-y-6">
+//               {galleryItems.map((item, index) => (
+//                   <div
+//                       key={`${item.id || item.uploadedFileId || index}`}
+//                       className="flex flex-col md:flex-row items-start border border-gray-200 rounded-lg p-4 gap-4"
+//                   >
+//                     {/* File preview/info */}
+//                     <div className="w-full md:w-1/5 flex justify-center">
+//                       {item.filePath && (item.fileName?.toLowerCase().endsWith('.jpg') ||
+//                           item.fileName?.toLowerCase().endsWith('.jpeg') ||
+//                           item.fileName?.toLowerCase().endsWith('.png')) ? (
+//                           <div className="relative w-24 h-24 overflow-hidden rounded-lg border border-gray-200">
+//                             <Image
+//                                 src={`${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${item.filePath}`}
+//                                 alt={item.fileName || `فایل ${index + 1}`}
+//                                 width={96}
+//                                 height={96}
+//                                 objectFit="cover"
+//                             />
+//                           </div>
+//                       ) : (
+//                           <div className="flex items-center justify-center w-24 h-24 bg-gray-100 rounded-lg border border-gray-200">
+//                     <span className="text-xs text-center text-gray-500 p-2 break-all">
+//                       {item.fileName || `فایل ${index + 1}`}
+//                     </span>
+//                           </div>
+//                       )}
+//                     </div>
+//
+//                     {/* Form fields */}
+//                     <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+//                       {fields.map(field => (
+//                           <Input
+//                               key={`${item.id || item.uploadedFileId}-${field.name}`}
+//                               label={field.label}
+//                               type={field.type}
+//                               value={item[field.name] || ''}
+//                               onChange={(e) => handleFieldChange(index, field.name, e.target.value)}
+//                           />
+//                       ))}
+//                       <div className="flex items-center">
+//                         <span className="text-sm text-gray-500">اولویت: {index + 1}</span>
+//                         <input
+//                             type="hidden"
+//                             {...register(`${registerName}[${index}].priority`)}
+//                             value={index + 1}
+//                         />
+//                       </div>
+//                     </div>
+//
+//                     {/* Delete button */}
+//                     <div className="w-full md:w-1/12 flex justify-center md:justify-end">
+//                       <button
+//                           type="button"
+//                           onClick={() => handleItemRemove(index)}
+//                           className="p-2 bg-red-50 rounded-full text-red-500 hover:bg-red-100 transition-colors"
+//                       >
+//                         <TrashIcon className="h-5 w-5" />
+//                       </button>
+//                     </div>
+//                   </div>
+//               ))}
+//             </div>
+//         )}
+//       </div>
+//   );
+// }
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
 import SelectLoader from '@/components/loader/select-loader';
-import QuillLoader from '@/components/loader/quill-loader';
 import TrashIcon from '@/components/icons/trash';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import Upload from '@/components/ui/upload';
 import Image from 'next/image';
-import { Radio } from '@/components/ui/radio';
-import GalleryForm from './upload-gallery-file';
-import _axios from '@/utils/axios-instance';
+import toast from 'react-hot-toast';
+import useAxiosPrivate from '@/hooks/use-axios-private';
 
 const Select = dynamic(() => import('@/components/ui/select'), {
   ssr: false,
   loading: () => <SelectLoader />,
 });
-const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-  ssr: false,
-  loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-});
+
+interface UploadedFileDTO {
+  id: string;
+  fileName: string;
+  filePath: string;
+}
+
+interface GalleryItemData {
+  id?: string;
+  uploadedFileId?: string | string[];
+  filePath?: string;
+  fileName?: string;
+  priority?: number;
+  [key: string]: any;
+}
 
 export default function CompanyGallery({
                                          className,
                                          category,
-                                         // data,
                                        }: {
   className?: string;
   category?: number;
-  // data?: any;
 }) {
   const {
     register,
-    control,
     formState: { errors },
     setValue,
-      watch
+    watch,
   } = useFormContext();
-  const data = watch("gallery")
-  const [error, setError] = useState('');
 
-  const checkFileSizeAndType = (file: File) => {
-    const validTypes = ['image/jpeg', 'image/png'];
-    const maxSize = 8 * 1024 * 1024; // 8MB
-    return validTypes.includes(file.type) && file.size <= maxSize;
-  };
-  const handleFileUpload = (
-      event: React.ChangeEvent<HTMLInputElement>,
-      fileType: string
-  ) => {
-    setError('');
-    const uploadedFile = (event.target as HTMLInputElement).files?.[0];
-    if (!uploadedFile) return;
+  const galleryData = watch('gallery');
+  const _axios = useAxiosPrivate();
 
-    if (!checkFileSizeAndType(uploadedFile)) {
-      setError(
-          'فرمت فایل اشتباه است. تنها فایل‌های با پسوند .JPG، .PNG مجاز هستند و حداکثر حجم مجاز ۸ مگابایت است'
-      );
-      return;
-    }
-    setValue(fileType, uploadedFile);
-  };
-  async function uploadGalleryFile(
-      files: File[],
-      fileServiceType: string
-  ): Promise<string[]> {
-    const tempUploadFormData = new FormData();
-    files.forEach((file) => tempUploadFormData.append('files', file));
-    tempUploadFormData.append(
-        'fileServiceType',
-        fileServiceType || 'GALLERY_FILE'
-    );
+  // Wrap upload function in useCallback for stable identity
+  const uploadGalleryFile = useCallback(
+      async (files: File[], fileServiceType: string): Promise<UploadedFileDTO[]> => {
+        try {
+          const formData = new FormData();
+          files.forEach((file) => formData.append('files', file));
+          formData.append('fileServiceType', fileServiceType);
 
-    const response = await _axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/file`,
-        tempUploadFormData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          const response = await _axios.post(
+              `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+              formData,
+              { headers: { 'Content-Type': 'multipart/form-data' } }
+          );
+
+          if (response.data.status === 'SUCCESS' && response.data.data) {
+            return response.data.data;
+          }
+          throw new Error('Failed to upload files');
+        } catch (err) {
+          console.error('Error uploading files:', err);
+          toast.error('خطا در آپلود فایل‌ها. لطفا دوباره تلاش کنید.');
+          return [];
         }
-    );
+      },
+      [_axios]
+  );
 
-    if (response.status === 200 && response.data?.data) {
-      const uuids = response.data.data;
-      console.log('uuids: ' + JSON.stringify(uuids));
-      return uuids;
-    }
+  // Memoize field definitions to avoid re-creation on each render
+  const productFields = useMemo(
+      () => [
+        { name: 'title', label: 'عنوان محصول', type: 'text' },
+        { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
+      ],
+      []
+  );
 
-    return [];
-  }
+  const certificateFields = useMemo(
+      () => [
+        { name: 'title', label: 'نام گواهینامه', type: 'text' },
+        { name: 'description', label: 'توضیحات گواهینامه', type: 'text' },
+      ],
+      []
+  );
 
-  const handleGalleryFileSelection = async (
-      files: File[],
-      fileServiceType: string
-  ) => {
-    const uuids = await uploadGalleryFile(files, fileServiceType);
-    console.log('Gallery after update: ' + JSON.stringify(uuids));
-    return uuids;
-  };
+  const contactFields = useMemo(
+      () => [
+        { name: 'firstName', label: 'نام', type: 'text' },
+        { name: 'lastName', label: 'نام خانوادگی', type: 'text' },
+        { name: 'phoneNumbers', label: 'شماره تلفن', type: 'text' },
+        { name: 'emails', label: 'ایمیل', type: 'email' },
+        { name: 'position', label: 'سمت', type: 'text' },
+        { name: 'description', label: 'توضیحات', type: 'text' },
+      ],
+      []
+  );
 
-  useEffect(() => {
-    console.log(`data: ${JSON.stringify(data)}`)
-    // Register initial gallery files from data if available
-    if (data && data.length > 0) {
-      // We'll handle this inside each MultipleFiles component
-    }
-  }, [data]);
+  const sliderFields = useMemo(
+      () => [
+        { name: 'title', label: 'متن زیرنویس', type: 'text' },
+        { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
+      ],
+      []
+  );
+
+  const catalogFields = useMemo(
+      () => [
+        { name: 'title', label: 'عنوان کاتالوگ', type: 'text' },
+        // { name: 'altText', label: 'متن جایگزین', type: 'text' },
+        { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
+      ],
+      []
+  );
+
+  const documentFields = useMemo(
+      () => [
+        { name: 'title', label: 'نام سند', type: 'text' },
+        { name: 'description', label: 'توضیحات سند', type: 'text' },
+      ],
+      []
+  );
 
   return (
       <FormGroup
@@ -115,1086 +627,295 @@ export default function CompanyGallery({
           description="عکس‌های شرکت خود را اینجا آپلود کنید"
           className={cn(className)}
       >
-        <MultipleFiles
+        <GallerySection
             className="col-span-2"
             label="عکس‌های نمونه محصولات تولیدی"
             uploadAreaContent={
               <>
                 عکس‌های محصولات شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">
-                  20 مگابایت باشد
-                </strong>
+                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
               </>
             }
             registerName="gallery.products"
-            fields={[
-              { name: 'title', label: 'عنوان محصول', type: 'text' },
-              { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-            ]}
-            onUpload={handleGalleryFileSelection}
-            fileServiceType={'COMPANY_GALLERY_PRODUCT'}
-            initialFiles={data?.products}
+            fields={productFields}
+            uploadFile={uploadGalleryFile}
+            fileServiceType="COMPANY_GALLERY_PRODUCT"
+            initialFiles={galleryData?.products || []}
         />
-        <MultipleFiles
+
+        <GallerySection
             className="col-span-2"
             label="عکس‌های افتخارات و گواهینامه‌ها"
             uploadAreaContent={
               <>
-                عکس‌های افتخارات و گواهینامه‌های شرکت خود را اینجا آپلود کنید حجم
-                عکس باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">
-                  20 مگابایت باشد
-                </strong>
+                عکس‌های افتخارات و گواهینامه‌های شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
               </>
             }
             registerName="gallery.certificates"
-            fields={[
-              { name: 'title', label: 'نام گواهینامه', type: 'text' },
-              { name: 'description', label: 'توضیحات گواهینامه', type: 'text' }
-            ]}
-            onUpload={handleGalleryFileSelection}
-            fileServiceType={'COMPANY_GALLERY_CERTIFICATE'}
-            initialFiles={data?.certificates}
+            fields={certificateFields}
+            uploadFile={uploadGalleryFile}
+            fileServiceType="COMPANY_GALLERY_CERTIFICATE"
+            initialFiles={galleryData?.certificates || []}
         />
-        <MultipleFiles
+
+        <GallerySection
             className="col-span-2"
             label="عکس‌های مدیران و مسئولین"
             uploadAreaContent={
               <>
-                عکس‌های مدیران و مسئولین شرکت خود را اینجا آپلود کنید حجم عکس باید
-                کمتر از{' '}
-                <strong className="font-medium text-gray-900">
-                  20 مگابایت باشد
-                </strong>
+                عکس‌های مدیران و مسئولین شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
               </>
             }
             registerName="gallery.contacts"
-            fields={[
-              { name: 'firstName', label: 'نام', type: 'text' },
-              { name: 'lastName', label: 'نام خانوادگی', type: 'text' },
-              { name: 'phoneNumbers', label: 'شماره تلفن', type: 'text' },
-              { name: 'emails', label: 'ایمیل', type: 'email' },
-              { name: 'position', label: 'سمت', type: 'text' },
-              { name: 'description', label: 'توضیحات', type: 'text' },
-            ]}
-            onUpload={handleGalleryFileSelection}
-            fileServiceType={'COMPANY_GALLERY_CONTACT'}
-            initialFiles={data?.contacts}
+            fields={contactFields}
+            uploadFile={uploadGalleryFile}
+            fileServiceType="COMPANY_GALLERY_CONTACT"
+            initialFiles={galleryData?.contacts || []}
         />
-        <MultipleFiles
+
+        <GallerySection
             className="col-span-2"
             label="اسلایدر شرکت"
             uploadAreaContent={
               <>
-                عکس‌های اسلایدر اصلی شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر
-                از{' '}
-                <strong className="font-medium text-gray-900">
-                  20 مگابایت باشد
-                </strong>
+                عکس‌های اسلایدر اصلی شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
               </>
             }
             registerName="gallery.sliders"
-            fields={[
-              { name: 'title', label: 'متن زیرنویس', type: 'text' },
-              { name: 'description', label: 'توضیحات بیشتر', type: 'text' }
-            ]}
-            onUpload={handleGalleryFileSelection}
-            fileServiceType={'COMPANY_GALLERY_SLIDER'}
-            initialFiles={data?.sliders}
+            fields={sliderFields}
+            uploadFile={uploadGalleryFile}
+            fileServiceType="COMPANY_GALLERY_SLIDER"
+            initialFiles={galleryData?.sliders || []}
         />
-        <MultipleFiles
+
+        <GallerySection
             className="col-span-2"
             label="کاتالوگ‌ شرکت"
             uploadAreaContent={
               <>
                 کاتالوگ‌های شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">
-                  20 مگابایت باشد
-                </strong>
+                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
               </>
             }
             registerName="gallery.catalogs"
-            fields={[
-              { name: 'title', label: 'عنوان کاتالوگ', type: 'text' },
-              { name: 'altText', label: 'متن جایگزین', type: 'text' },
-              { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-            ]}
-            onUpload={handleGalleryFileSelection}
-            fileServiceType={'COMPANY_GALLERY_CATALOG'}
-            initialFiles={data?.catalogs}
+            fields={catalogFields}
+            uploadFile={uploadGalleryFile}
+            fileServiceType="COMPANY_GALLERY_CATALOG"
+            initialFiles={galleryData?.catalogs || []}
         />
-        <MultipleFiles
+
+        <GallerySection
             className="col-span-2"
             label="اسناد دیگر شرکت"
             uploadAreaContent={
               <>
                 اسناد دیگر شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">
-                  20 مگابایت باشد
-                </strong>
+                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
               </>
             }
             registerName="gallery.documents"
-            fields={[
-              { name: 'title', label: 'نام سند', type: 'text' },
-              { name: 'description', label: 'توضیحات سند', type: 'text' }
-            ]}
-            onUpload={handleGalleryFileSelection}
-            fileServiceType={'COMPANY_GALLERY_DOCUMENT'}
-            initialFiles={data?.documents}
+            fields={documentFields}
+            uploadFile={uploadGalleryFile}
+            fileServiceType="COMPANY_GALLERY_DOCUMENT"
+            initialFiles={galleryData?.documents || []}
         />
       </FormGroup>
   );
 }
 
-export const MultipleFiles = ({
-                                className,
-                                label,
-                                uploadAreaContent,
-                                registerName,
-                                fields,
-                                onUpload,
-                                fileServiceType,
-                                initialFiles = [],
-                              }: {
+function GallerySection({
+                          className,
+                          label,
+                          uploadAreaContent,
+                          registerName,
+                          fields,
+                          uploadFile,
+                          fileServiceType,
+                          initialFiles = [],
+                        }: {
   className?: string;
   label?: React.ReactNode;
   uploadAreaContent?: React.ReactNode;
   registerName: string;
   fields: { name: string; label: string; type: string }[];
-  onUpload: Function;
+  uploadFile: (files: File[], fileServiceType: string) => Promise<UploadedFileDTO[]>;
   fileServiceType: string;
   initialFiles?: any[];
-}) => {
-  const multiRef = useRef<HTMLInputElement>(null);
-  const {
-    register,
-    setValue,
-    getValues,
-    unregister,
-    reset,
-    setError,
-    formState: { errors },
-    clearErrors,
-    trigger,
-  } = useFormContext();
-  const [multiImages, setMultiImages] = useState<any[]>([]);
-  const [fieldValues, setFieldValues] = useState<any[]>([]);
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { register, setValue, unregister } = useFormContext();
+  const [galleryItems, setGalleryItems] = useState<GalleryItemData[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Process initial files on component mount
+    const setupFormValues = useCallback(
+        (item: GalleryItemData, index: number) => {
+            // Register all fields for this item
+            fields.forEach(field => {
+                // Ensure we're properly setting values for all fields
+                setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
+            });
+
+            // Register the file ID and priority
+            setValue(`${registerName}[${index}].id`, item.id || '');
+            setValue(`${registerName}[${index}].uploadedFileId`, item.id || item.uploadedFileId);
+            setValue(`${registerName}[${index}].priority`, index + 1);
+
+            // For contacts, ensure all fields are explicitly registered
+            if (registerName === "gallery.contacts") {
+                setValue(`${registerName}[${index}].firstName`, item.firstName || '');
+                setValue(`${registerName}[${index}].lastName`, item.lastName || '');
+                setValue(`${registerName}[${index}].phoneNumbers`, item.phoneNumbers || '');
+                setValue(`${registerName}[${index}].emails`, item.emails || '');
+                setValue(`${registerName}[${index}].position`, item.position || '');
+                setValue(`${registerName}[${index}].description`, item.description || '');
+            }
+        },
+        [fields, registerName, setValue]
+    );
+  // const setupFormValues = useCallback(
+  //     (item: GalleryItemData, index: number) => {
+  //       fields.forEach((field) => {
+  //         setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
+  //       });
+  //       setValue(`${registerName}[${index}].id`, item.id || '');
+  //       setValue(`${registerName}[${index}].uploadedFileId`, item.id || item.uploadedFileId);
+  //       setValue(`${registerName}[${index}].priority`, index + 1);
+  //     }, [fields, registerName, setValue]
+  // );
+
+  // Initial load
   useEffect(() => {
-    if (initialFiles && initialFiles.length > 0) {
-      const processedFiles = initialFiles.map(file => {
-        // Parse metadata from JSON string if available
-        let metadata = {};
-        try {
-          if (file.metadata) {
-            metadata = JSON.parse(file.metadata);
-          }
-        } catch (e) {
-          console.error("Error parsing metadata:", e);
-        }
-
-        // Return file with extracted metadata
-        return {
-          ...file,
-          ...metadata,
-          priority: 1 // Default priority if not set
-        };
-      });
-
-      setMultiImages(processedFiles);
-      setFieldValues(processedFiles);
-
-      // Register files with form
-      processedFiles.forEach((file, index) => {
-        setValue(`${registerName}[${index}].uploadedFileId`, file.id || '');
-
-        // Set priority
-        setValue(`${registerName}[${index}].priority`, file.priority || 1);
-
-        // Set all field values from metadata
-        fields.forEach(field => {
-          if (file[field.name] !== undefined) {
-            // If the field is an array (like phoneNumbers), use first item or empty string
-            const fieldValue = Array.isArray(file[field.name])
-                ? (file[field.name][0] || '')
-                : (file[field.name] || '');
-
-            setValue(`${registerName}[${index}].${field.name}`, fieldValue);
-          }
-        });
-      });
+    if (!isInitialized && initialFiles.length) {
+      const formatted = initialFiles.map((file, idx) => ({
+        ...file,
+        id: file.id || file.uploadedFileId,
+        filePath: file.filePath,
+        fileName: file.fileName,
+        priority: idx + 1,
+      }));
+      setGalleryItems(formatted);
+      setIsInitialized(true);
     }
-  }, [initialFiles]);
+  }, [initialFiles, isInitialized]);
 
-  const handleFileUpload = async (
-      event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const checkFileSizeAndType = (file: File) => {
-      const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-      const maxSize = 8 * 1024 * 1024; // 8MB
-      return validTypes.includes(file.type) && file.size <= maxSize;
-    };
-    const uploadedFiles = Array.from(event.target.files || []);
-    const allowedFiles = uploadedFiles.filter((file) =>
-        checkFileSizeAndType(file)
-    );
+  // Register items whenever galleryItems changes
+  useEffect(() => {
+    if (galleryItems.length) {
+      galleryItems.forEach((item, idx) => setupFormValues(item, idx));
+    }
+  }, [galleryItems, setupFormValues]);
 
-    const newValues = allowedFiles.map((file) => ({
-      file,
-      ...Object.fromEntries(fields.map((f) => [f.name, ''])),
-      priority: fieldValues.length + 1,
-    }));
-    setMultiImages((prevFiles) => [...prevFiles, ...allowedFiles]);
-    setFieldValues((prevValues) => [...prevValues, ...newValues]);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
 
-    let fileId;
-    for (let i = 0; i < newValues?.length; i++) {
-      if (onUpload) fileId = await onUpload(allowedFiles, fileServiceType);
-      fields.forEach((f) =>
-          setValue(`${registerName}[${fieldValues.length + i}].${f.name}`, '')
-      );
-      setValue(
-          `${registerName}[${fieldValues.length + i}].uploadedFileId`,
-          fileId?.map((f: { id: any }) => f.id) || ''
-      );
-      setValue(
-          `${registerName}[${fieldValues.length + i}].priority`,
-          fieldValues.length + 1
-      );
+    setIsUploading(true);
+    try {
+      const valid = files.filter(f => ['image/jpeg', 'image/png', 'application/pdf', 'image/webp'].includes(f.type) && f.size <= 20 * 1024 * 1024);
+      if (!valid.length) {
+        toast.error('فرمت یا حجم فایل‌ها اشتباه است.');
+        return;
+      }
+      const uploaded = await uploadFile(valid, fileServiceType);
+      if (uploaded.length) {
+        const newItems = uploaded.map((file, i) => ({
+          id: file.id,
+          uploadedFileId: file.id,
+          filePath: file.filePath,
+          fileName: file.fileName,
+          priority: galleryItems.length + i + 1,
+          ...Object.fromEntries(fields.map(f => [f.name, ''])),
+        }));
+        setGalleryItems(prev => [...prev, ...newItems]);
+        toast.success('فایل‌ها با موفقیت آپلود شدند');
+      }
+    } catch {
+      toast.error('خطا در آپلود فایل‌ها');
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
-  const handleFieldChange = (
-      index: number,
-      field: string,
-      value: string | number
-  ) => {
-    const updatedValues = [...fieldValues];
-    updatedValues[index][field] = value;
-
-    if (field === 'priority') {
-      const priority = parseInt(value as string, 10);
-      updatedValues[index][field] = priority;
-      setValue(`${registerName}[${index}].priority`, priority);
-    }
-
-    setFieldValues(updatedValues);
-    setValue(`${registerName}[${index}].${field}`, value);
+  const handleFieldChange = (index: number, name: string, val: string) => {
+    setGalleryItems(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [name]: val };
+      setValue(`${registerName}[${index}].${name}`, val);
+      return copy;
+    });
   };
 
-  const handleMultiImageDelete = (index: number) => {
-    const updatedFiles = multiImages.filter((_, i) => i !== index);
-    const updatedValues = fieldValues.filter((_, i) => i !== index);
-    setMultiImages(updatedFiles);
-    setFieldValues(updatedValues);
-    const currentArray = getValues(registerName) || [];
-    const updatedArray = currentArray.filter(
-        (_: any, i: number) => i !== index
-    );
-    setValue(registerName, updatedArray);
+  const handleItemRemove = (index: number) => {
+    setGalleryItems(prev => prev.filter((_, i) => i !== index));
     unregister(`${registerName}[${index}]`);
+    toast.success('آیتم با موفقیت حذف شد');
   };
 
   return (
       <div className={className}>
         <Upload
             label={label}
-            ref={multiRef}
-            accept="image/*,application/pdf,application/zip"
+            ref={fileInputRef}
+            accept="image/jpeg,image/png,application/pdf,image/webp"
             multiple
             onChange={handleFileUpload}
+            disabled={isUploading}
         />
         <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
 
-        {multiImages.length > 0 && (
-            <div className="overflow-x-auto">
-              <div className="mt-7 flex flex-col gap-5">
-                {multiImages.map((file, index) => (
-                    <div
-                        className="flex flex-col md:flex-row w-full items-center border rounded-lg p-4"
-                        key={`${file.id || file.name}-${index}`}
-                    >
-                      {/* Image container - centered on small screens, left-aligned on larger screens */}
-                      <div className="w-full md:w-[20%] flex justify-center md:justify-start mb-4 md:mb-0 md:px-4">
-                        {(file.type?.includes('image') || file.contentType?.includes('image')) ? (
-                            <figure className="relative aspect-square w-24 overflow-hidden rounded-xl border border-gray-300">
-                              <Image
-                                  src={
-                                    file instanceof File || file instanceof Blob
-                                        ? URL.createObjectURL(file)
-                                        : file?.filePath &&
-                                        `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${file.filePath}`
-                                  }
-                                  alt={file.fileName || file.name || "Uploaded file"}
-                                  fill
-                                  priority
-                                  sizes="(max-width: 768px) 100vw"
-                              />
-                            </figure>
-                        ) : (
-                            <p className="text-sm text-gray-700">
-                              {file.fileName || file.name} ({file.contentType || file.type})
-                            </p>
-                        )}
-                      </div>
+        {isUploading && <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-md">در حال آپلود فایل‌ها...</div>}
 
-                      {/* Form fields - full width on all screens */}
-                      <div className="grid w-full md:w-[60%] grid-cols-1 sm:grid-cols-2 gap-3 md:px-4">
-                        {fields.map((f) => (
-                            <Input
-                                key={f.name}
-                                label={f.label}
-                                type={f.type}
-                                value={fieldValues[index]?.[f.name] || ''}
-                                onChange={(e) =>
-                                    handleFieldChange(index, f.name, e.target.value)
-                                }
-                            />
-                        ))}
-                        <Input
-                            label="اولویت"
-                            type="number"
-                            value={fieldValues[index]?.priority || ''}
-                            onChange={(e) =>
-                                handleFieldChange(index, 'priority', e.target.value)
-                            }
-                            error={
-                                errors?.gallery?.contacts &&
-                                errors?.gallery?.contacts.length > 0 &&
-                                errors?.gallery?.contacts[0]?.priority?.message
-                            }
-                        />
-                      </div>
+        {!!galleryItems.length && (
+            <div className="mt-6 space-y-6">
+              {galleryItems.map((item, idx) => (
+                  <div key={item.id || item.uploadedFileId || idx} className="flex flex-col md:flex-row items-start border rounded-lg p-4 gap-4">
+                    <div className="w-full md:w-1/5 flex justify-center">
+                      {item.filePath && /\.(jpe?g|png)$/i.test(item.fileName || '') ? (
+                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                            <Image src={`${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${item.filePath}`} alt={item.fileName} width={96} height={96} objectFit="cover" />
+                          </div>
+                      ) : (
+                          <div className="flex items-center justify-center w-24 h-24 bg-gray-100 rounded-lg border">
+                            <span className="text-xs text-gray-500 p-2 break-all">{item.fileName}</span>
+                          </div>
+                      )}
+                    </div>
 
-                      {/* Delete button - centered on small screens, right-aligned on larger screens */}
-                      <div className="flex w-full md:w-20 justify-center mt-4 md:mt-0 md:px-4">
-                        <button
-                            type="button"
-                            onClick={() => handleMultiImageDelete(index)}
-                            className="p-2 bg-red-50 text-red-500 rounded-full hover:bg-red-100 transition-colors"
-                        >
-                          <TrashIcon className="h-5 w-5 cursor-pointer" />
-                        </button>
+                    <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {fields.map(f => (
+                          <Input
+                             key={`${idx}-${f.name}`}
+                             label={f.label}
+                             type={f.type}
+                             // register this field with RHF
+                             {...register(`${registerName}[${idx}].${f.name}`)}
+                             // keep it controlled if you like
+                             value={item[f.name] || ''}
+                             onChange={(e) => handleFieldChange(idx, f.name, e.target.value)}
+                           />
+                          // <Input key={`${idx}-${f.name}`} label={f.label} type={f.type} value={item[f.name] || ''} onChange={e => handleFieldChange(idx, f.name, e.target.value)} />
+                      ))}
+                      <div className="flex items-center">
+                        <span className="text-sm text-gray-500">اولویت: {idx + 1}</span>
+                        <input type="hidden" {...register(`${registerName}[${idx}].priority`)} value={idx + 1} />
                       </div>
                     </div>
-                ))}
-              </div>
+
+                    <div className="w-full md:w-1/12 flex justify-center md:justify-end">
+                      <button type="button" onClick={() => handleItemRemove(idx)} className="p-2 bg-red-50 rounded-full text-red-500 hover:bg-red-100 transition">
+                        <TrashIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+              ))}
             </div>
         )}
       </div>
   );
-};
+}
 
-
-// import { useFormContext } from 'react-hook-form';
-// import { Input } from '@/components/ui/input';
-// import FormGroup from '@/app/shared/form-group';
-// import cn from '@/utils/class-names';
-// import dynamic from 'next/dynamic';
-// import SelectLoader from '@/components/loader/select-loader';
-// import QuillLoader from '@/components/loader/quill-loader';
-// import TrashIcon from '@/components/icons/trash';
-// import { useRef, useState } from 'react';
-// import Upload from '@/components/ui/upload';
-// import Image from 'next/image';
-// import { Radio } from '@/components/ui/radio';
-// import GalleryForm from './upload-gallery-file';
-// import _axios from '@/utils/axios-instance';
-//
-// const Select = dynamic(() => import('@/components/ui/select'), {
-//   ssr: false,
-//   loading: () => <SelectLoader />,
-// });
-// const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
-//   ssr: false,
-//   loading: () => <QuillLoader className="col-span-full h-[143px]" />,
-// });
-//
-// export default function CompanyGallery({
-//   className,
-//   category,
-//   data,
-// }: {
-//   className?: string;
-//   category?: number;
-//   data?: any;
-// }) {
-//   const {
-//     register,
-//     control,
-//     formState: { errors },
-//     setValue,
-//   } = useFormContext();
-//
-//   const [error, setError] = useState('');
-//
-//   const checkFileSizeAndType = (file: File) => {
-//     const validTypes = ['image/jpeg', 'image/png'];
-//     const maxSize = 8 * 1024 * 1024; // 8MB
-//     return validTypes.includes(file.type) && file.size <= maxSize;
-//   };
-//   const handleFileUpload = (
-//     event: React.ChangeEvent<HTMLInputElement>,
-//     // setError: React.Dispatch<React.SetStateAction<string | null>>,
-//     fileType: string
-//   ) => {
-//     setError('');
-//     const uploadedFile = (event.target as HTMLInputElement).files?.[0];
-//     if (!uploadedFile) return;
-//
-//     if (!checkFileSizeAndType(uploadedFile)) {
-//       setError(
-//         'فرمت فایل اشتباه است. تنها فایل‌های با پسوند .JPG، .PNG مجاز هستند و حداکثر حجم مجاز ۸ مگابایت است'
-//       );
-//       return;
-//     }
-//     setValue(fileType, uploadedFile);
-//   };
-//   async function uploadGalleryFile(
-//     files: File[],
-//     fileServiceType: string
-//   ): Promise<string[]> {
-//     const tempUploadFormData = new FormData();
-//     files.forEach((file) => tempUploadFormData.append('files', file));
-//     tempUploadFormData.append(
-//       'fileServiceType',
-//       fileServiceType || 'GALLERY_FILE'
-//     );
-//
-//     const response = await _axios.post(
-//       `${process.env.NEXT_PUBLIC_API_BASE_URL}/file/temp`,
-//       tempUploadFormData,
-//       {
-//         headers: {
-//           'Content-Type': 'multipart/form-data',
-//         },
-//       }
-//     );
-//
-//     if (response.status === 200 && response.data?.data) {
-//       const uuids = response.data.data;
-//       console.log('uuids: ' + JSON.stringify(uuids));
-//       return uuids;
-//     }
-//
-//     return [];
-//   }
-//
-//   const handleGalleryFileSelection = async (
-//     files: File[],
-//     fileServiceType: string
-//   ) => {
-//     const uuids = await uploadGalleryFile(files, fileServiceType);
-//     // updateProduct(productIndex, {
-//     //   ...products[productIndex],
-//     //   uploadedFileIds: [
-//     //     ...(products[productIndex]?.uploadedFileIds || []),
-//     //     ...uuids,
-//     //   ]?.map((p) => p.id),
-//     //   outsourced: false,
-//     //   removedFileIds: [],
-//     //   pictures: [...(products[productIndex].pictures || []), ...uuids],
-//     // });
-//     console.log('Gallery after update: ' + JSON.stringify(uuids));
-//     return uuids;
-//   };
-//
-//   return (
-//     <FormGroup
-//       title="گالری شرکت"
-//       description="عکس‌های شرکت خود را اینجا آپلود کنید"
-//       className={cn(className)}
-//     >
-//       {/* <GalleryForm /> */}
-//       <MultipleFiles
-//         className="col-span-2"
-//         label="عکس‌های نمونه محصولات تولیدی"
-//         uploadAreaContent={
-//           <>
-//             عکس‌های محصولات شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
-//             <strong className="font-medium text-gray-900">
-//               20 مگابایت باشد
-//             </strong>
-//           </>
-//         }
-//         registerName="gallery.products"
-//         fields={[
-//           { name: 'title', label: 'عنوان محصول', type: 'text' },
-//           { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-//         ]}
-//         onUpload={handleGalleryFileSelection}
-//         fileServiceType={'COMPANY_GALLERY_PRODUCT'}
-//       />
-//       <MultipleFiles
-//         className="col-span-2"
-//         label="عکس‌های افتخارات و گواهینامه‌ها"
-//         uploadAreaContent={
-//           <>
-//             عکس‌های افتخارات و گواهینامه‌های شرکت خود را اینجا آپلود کنید حجم
-//             عکس باید کمتر از{' '}
-//             <strong className="font-medium text-gray-900">
-//               20 مگابایت باشد
-//             </strong>
-//           </>
-//         }
-//         registerName="gallery.certificates"
-//         fields={[
-//           { name: 'title', label: 'نام گواهینامه', type: 'text' },
-//           { name: 'description', label: 'توضیحات گواهینامه', type: 'text' }
-//         ]}
-//         onUpload={handleGalleryFileSelection}
-//         fileServiceType={'COMPANY_GALLERY_CERTIFICATE'}
-//       />
-//       <MultipleFiles
-//         className="col-span-2"
-//         label="عکس‌های مدیران و مسئولین"
-//         uploadAreaContent={
-//           <>
-//             عکس‌های مدیران و مسئولین شرکت خود را اینجا آپلود کنید حجم عکس باید
-//             کمتر از{' '}
-//             <strong className="font-medium text-gray-900">
-//               20 مگابایت باشد
-//             </strong>
-//           </>
-//         }
-//         registerName="gallery.contacts"
-//         fields={[
-//           { name: 'name', label: 'نام', type: 'text' },
-//           { name: 'lastName', label: 'نام خانوادگی', type: 'text' },
-//           { name: 'phone', label: 'شماره تلفن', type: 'text' },
-//           { name: 'email', label: 'ایمیل', type: 'email' },
-//           { name: 'position', label: 'سمت', type: 'text' },
-//         ]}
-//         onUpload={handleGalleryFileSelection}
-//         fileServiceType={'COMPANY_GALLERY_CONTACT'}
-//       />
-//       <MultipleFiles
-//         className="col-span-2"
-//         label="اسلایدر شرکت"
-//         uploadAreaContent={
-//           <>
-//             عکس‌های اسلایدر اصلی شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر
-//             از{' '}
-//             <strong className="font-medium text-gray-900">
-//               20 مگابایت باشد
-//             </strong>
-//           </>
-//         }
-//         registerName="gallery.sliders"
-//         fields={[
-//             { name: 'title', label: 'متن زیرنویس', type: 'text' },
-//           { name: 'description', label: 'توضیحات بیشتر', type: 'text' }
-//         ]}
-//         onUpload={handleGalleryFileSelection}
-//         fileServiceType={'COMPANY_GALLERY_SLIDER'}
-//       />
-//       <MultipleFiles
-//         className="col-span-2"
-//         label="کاتالوگ‌ شرکت"
-//         uploadAreaContent={
-//           <>
-//             کاتالوگ‌های شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
-//             <strong className="font-medium text-gray-900">
-//               20 مگابایت باشد
-//             </strong>
-//           </>
-//         }
-//         registerName="gallery.catalogs"
-//         fields={[
-//           { name: 'title', label: 'عنوان کاتالوگ', type: 'text' },
-//           { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-//         ]}
-//         onUpload={handleGalleryFileSelection}
-//         fileServiceType={'COMPANY_GALLERY_CATALOG'}
-//       />
-//       <MultipleFiles
-//         className="col-span-2"
-//         label="اسناد دیگر شرکت"
-//         uploadAreaContent={
-//           <>
-//             اسناد دیگر شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
-//             <strong className="font-medium text-gray-900">
-//               20 مگابایت باشد
-//             </strong>
-//           </>
-//         }
-//         registerName="gallery.documents"
-//         fields={[
-//             { name: 'title', label: 'نام سند', type: 'text' },
-//           { name: 'description', label: 'توضیحات سند', type: 'text' }
-//         ]}
-//         onUpload={handleGalleryFileSelection}
-//         fileServiceType={'COMPANY_GALLERY_DOCUMENT'}
-//       />
-//     </FormGroup>
-//   );
-// }
-//
-// export const MultipleFiles = ({
-//   className,
-//   label,
-//   uploadAreaContent,
-//   registerName,
-//   fields,
-//   onUpload,
-//   fileServiceType,
-// }: {
-//   className?: string;
-//   label?: React.ReactNode;
-//   uploadAreaContent?: React.ReactNode;
-//   registerName: string;
-//   fields: { name: string; label: string; type: string }[];
-//   onUpload: Function;
-//   fileServiceType: string;
-// }) => {
-//   const multiRef = useRef<HTMLInputElement>(null);
-//   const {
-//     register,
-//     setValue,
-//     getValues,
-//     unregister,
-//     reset,
-//     setError,
-//     formState: { errors },
-//     clearErrors,
-//     trigger,
-//   } = useFormContext();
-//   const [multiImages, setMultiImages] = useState<File[]>([]);
-//   const [fieldValues, setFieldValues] = useState<any[]>([]);
-//
-//   const handleFileUpload = async (
-//     event: React.ChangeEvent<HTMLInputElement>
-//   ) => {
-//     const checkFileSizeAndType = (file: File) => {
-//       const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-//       const maxSize = 8 * 1024 * 1024; // 8MB
-//       return validTypes.includes(file.type) && file.size <= maxSize;
-//     };
-//     const uploadedFiles = Array.from(event.target.files || []);
-//     const allowedFiles = uploadedFiles.filter((file) =>
-//       checkFileSizeAndType(file)
-//     );
-//
-//     const newValues = allowedFiles.map((file) => ({
-//       file,
-//       ...Object.fromEntries(fields.map((f) => [f.name, ''])),
-//       priority: fieldValues.length + 1,
-//     }));
-//     setMultiImages((prevFiles) => [...prevFiles, ...allowedFiles]);
-//     setFieldValues((prevValues) => [...prevValues, ...newValues]);
-//
-//     let fileId;
-//     for (let i = 0; i < newValues?.length; i++) {
-//       if (onUpload) fileId = await onUpload(allowedFiles, fileServiceType);
-//       fields.forEach((f) =>
-//         setValue(`${registerName}[${fieldValues.length + i}].${f.name}`, '')
-//       );
-//       setValue(
-//         `${registerName}[${fieldValues.length + i}].uploadedFileId`,
-//         fileId.map((f: { id: any }) => f.id) || ''
-//       );
-//       setValue(
-//         `${registerName}[${fieldValues.length + i}].priority`,
-//         fieldValues.length + 1
-//       );
-//     }
-//     // newValues.forEach((_, index) => {
-//     //   if (onUpload) fileId = await onUpload(newValues);
-//     //   fields.forEach((f) =>
-//     //     setValue(`${registerName}[${fieldValues.length + index}].${f.name}`, '')
-//     //   );
-//     //   setValue(
-//     //     `${registerName}[${fieldValues.length + index}].uploadedFileId`,
-//     //     fileId || ''
-//     //   );
-//     //   setValue(
-//     //     `${registerName}[${fieldValues.length + index}].priority`,
-//     //     fieldValues.length + 1
-//     //   );
-//     // });
-//   };
-//
-//   const handleFieldChange = (
-//     index: number,
-//     field: string,
-//     value: string | number
-//   ) => {
-//     const updatedValues = [...fieldValues];
-//     updatedValues[index][field] = value;
-//
-//     if (field === 'priority') {
-//       const priority = parseInt(value as string, 10);
-//       updatedValues[index][field] = priority;
-//       setValue(`${registerName}[${index}].priority`, priority);
-//       if (
-//         priority > 1 &&
-//         !updatedValues.some((v, i) => v.priority === priority && i !== index)
-//       ) {
-//         // updatedValues[index][field] = priority;
-//         // setValue(`${registerName}[${index}].priority`, priority);
-//         // clearErrors(`${registerName}[${index}].priority`);
-//       } else {
-//         // updatedValues[index][field] = '';
-//         // setError(`${registerName}[${index}].priority`, {
-//         //   type: 'custom',
-//         //   message: 'custom message',
-//         // });
-//         // trigger(`${registerName}[${index}].priority`);
-//       }
-//     }
-//
-//     setFieldValues(updatedValues);
-//     setValue(`${registerName}[${index}].${field}`, value);
-//   };
-//
-//   const handleMultiImageDelete = (index: number) => {
-//     const updatedFiles = multiImages.filter((_, i) => i !== index);
-//     const updatedValues = fieldValues.filter((_, i) => i !== index);
-//     setMultiImages(updatedFiles);
-//     setFieldValues(updatedValues);
-//     const currentArray = getValues(registerName) || [];
-//     const updatedArray = currentArray.filter(
-//       (_: any, i: number) => i !== index
-//     );
-//     setValue(registerName, updatedArray);
-//     unregister(`${registerName}[${index}]`);
-//   };
-//
-//   return (
-//     <div className={className}>
-//       <Upload
-//         label={label}
-//         ref={multiRef}
-//         accept="image/*,application/pdf,application/zip"
-//         multiple
-//         onChange={handleFileUpload}
-//       />
-//       <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
-//
-//       {multiImages.length > 0 && (
-//         <div className="overflow-x-scroll">
-//           <div className="mt-7 flex flex-wrap gap-5">
-//             {multiImages.map((file, index) => (
-//               <div
-//                 className="flex w-full items-center"
-//                 key={file.name + ':' + index}
-//               >
-//                 <div className="w-[20%] px-4">
-//                   {file.type.includes('image') ? (
-//                     <figure className="relative mx-auto aspect-square w-20 overflow-hidden rounded-xl border border-gray-300">
-//                       <Image
-//                         src={
-//                           file instanceof File || file instanceof Blob
-//                             ? URL.createObjectURL(file)
-//                             : file &&
-//                               file.filePath &&
-//                               process.env.NEXT_PUBLIC_STATIC_FILES_URL +
-//                                 file.filePath
-//                         }
-//                         alt={file.name}
-//                         fill
-//                         priority
-//                         sizes="(max-width: 768px) 100vw"
-//                       />
-//                     </figure>
-//                   ) : (
-//                     <p className="text-sm text-gray-700">
-//                       {file.name} ({file.type})
-//                     </p>
-//                   )}
-//                 </div>
-//                 <div className="grid w-[60%] grid-cols-2 gap-2 px-4">
-//                   {fields.map((f) => (
-//                     <Input
-//                       key={f.name}
-//                       label={f.label}
-//                       type={f.type}
-//                       value={fieldValues[index]?.[f.name] || ''}
-//                       onChange={(e) =>
-//                         handleFieldChange(index, f.name, e.target.value)
-//                       }
-//                       // {...register(`${registerName}[${index}].${f.name}`)}
-//                     />
-//                   ))}
-//                   <Input
-//                     label="اولویت"
-//                     type="number"
-//                     value={fieldValues[index]?.priority || ''}
-//                     onChange={(e) =>
-//                       handleFieldChange(index, 'priority', e.target.value)
-//                     }
-//                     error={
-//                       errors?.gallery?.contacts &&
-//                       errors?.gallery?.contacts.length > 0 &&
-//                       errors?.gallery?.contacts[0]?.priority?.message
-//                     }
-//                     // {...register(`${registerName}[${index}].priority`)}
-//                   />
-//                 </div>
-//                 <div className="flex w-20 shrink-0 items-center justify-center px-4">
-//                   <TrashIcon
-//                     onClick={() => handleMultiImageDelete(index)}
-//                     className="h-5 w-5 cursor-pointer transition duration-75"
-//                   />
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-//
-// // export const MultipleFiles = ({
-// //   className,
-// //   label,
-// //   uploadAreaContent,
-// //   registerName,
-// //   fields,
-// // }: {
-// //   className?: string;
-// //   label?: React.ReactNode;
-// //   uploadAreaContent?: React.ReactNode;
-// //   registerName: string;
-// //   fields: { name: string; label: string; type: string }[];
-// // }) => {
-// //   const multiRef = useRef<HTMLInputElement>(null);
-// //   const { register, setValue, getValues, unregister } = useFormContext();
-// //   const [multiImages, setMultiImages] = useState<File[]>([]);
-// //   const [fieldValues, setFieldValues] = useState<any[]>([]);
-//
-// //   const handleMultiImageUpload = (
-// //     event: React.ChangeEvent<HTMLInputElement>
-// //   ) => {
-// //     const uploadedFiles = Array.from(event.target.files || []).filter((file) =>
-// //       file.type.includes('image')
-// //     );
-// //     const newValues = uploadedFiles.map((file) => ({
-// //       file,
-// //       ...Object.fromEntries(fields.map((f) => [f.name, ''])),
-// //       priority: fieldValues.length + 1,
-// //     }));
-// //     setMultiImages((prevFiles) => [...prevFiles, ...uploadedFiles]);
-// //     setFieldValues((prevValues) => [...prevValues, ...newValues]);
-//
-// //     newValues.forEach((_, index) => {
-// //       fields.forEach((f) =>
-// //         setValue(`${registerName}[${fieldValues.length + index}].${f.name}`, '')
-// //       );
-// //       setValue(
-// //         `${registerName}[${fieldValues.length + index}].priority`,
-// //         fieldValues.length + 1
-// //       );
-// //     });
-// //   };
-//
-// //   const handleFieldChange = (
-// //     index: number,
-// //     field: string,
-// //     value: string | number
-// //   ) => {
-// //     const updatedValues = [...fieldValues];
-// //     updatedValues[index][field] = value;
-//
-// //     if (field === 'priority') {
-// //       const priority = parseInt(value as string, 10);
-// //       if (
-// //         priority > 1 &&
-// //         !updatedValues.some((v, i) => v.priority === priority && i !== index)
-// //       ) {
-// //         updatedValues[index][field] = priority;
-// //         setValue(`${registerName}[${index}].priority`, priority);
-// //       } else {
-// //         updatedValues[index][field] = '';
-// //       }
-// //     }
-//
-// //     setFieldValues(updatedValues);
-// //     setValue(`${registerName}[${index}].${field}`, value);
-// //   };
-//
-// //   const handleMultiImageDelete = (index: number) => {
-// //     const updatedFiles = multiImages.filter((_, i) => i !== index);
-// //     const updatedValues = fieldValues.filter((_, i) => i !== index);
-// //     setMultiImages(updatedFiles);
-// //     setFieldValues(updatedValues);
-//
-// //     unregister(`${registerName}[${index}]`);
-// //   };
-//
-// //   return (
-// //     <div className={className}>
-// //       <Upload
-// //         label={label}
-// //         ref={multiRef}
-// //         accept="image/*"
-// //         multiple
-// //         onChange={handleMultiImageUpload}
-// //       />
-// //       <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
-//
-// //       {multiImages.length > 0 && (
-// //         <div className="overflow-x-scroll">
-// //           <div className="mt-7 flex flex-wrap gap-5">
-// //             {multiImages.map((file, index) => (
-// //               <div className="flex w-full items-center" key={file.name}>
-// //                 <div className="w-[20%] px-4">
-// //                   <figure className="relative mx-auto aspect-square w-20 overflow-hidden rounded-xl border border-gray-300">
-// //                     <Image
-// //                       src={URL.createObjectURL(file)}
-// //                       alt={file.name}
-// //                       fill
-// //                       priority
-// //                       sizes="(max-width: 768px) 100vw"
-// //                     />
-// //                   </figure>
-// //                 </div>
-// //                 <div className="grid w-[60%] grid-cols-2 gap-2 px-4">
-// //                   {fields.map((f) => (
-// //                     <Input
-// //                       key={f.name}
-// //                       label={f.label}
-// //                       type={f.type}
-// //                       value={fieldValues[index]?.[f.name] || ''}
-// //                       onChange={(e) =>
-// //                         handleFieldChange(index, f.name, e.target.value)
-// //                       }
-// //                       {...register(`${registerName}[${index}].${f.name}`)}
-// //                     />
-// //                   ))}
-// //                   <Input
-// //                     label="اولویت"
-// //                     type="number"
-// //                     value={fieldValues[index]?.priority || ''}
-// //                     onChange={(e) =>
-// //                       handleFieldChange(index, 'priority', e.target.value)
-// //                     }
-// //                     {...register(`${registerName}[${index}].priority`)}
-// //                   />
-// //                 </div>
-// //                 <div className="flex w-20 shrink-0 items-center justify-center px-4">
-// //                   <TrashIcon
-// //                     onClick={() => handleMultiImageDelete(index)}
-// //                     className="h-5 w-5 cursor-pointer transition duration-75"
-// //                   />
-// //                 </div>
-// //               </div>
-// //             ))}
-// //           </div>
-// //         </div>
-// //       )}
-// //     </div>
-// //   );
-// // };
-// // export const MultipleFiles = ({
-// //   className,
-// //   label,
-// //   uploadAreaContent,
-// //   registerName,
-// // }: {
-// //   className?: string;
-// //   label?: React.ReactNode;
-// // }) => {
-// //   const multiRef = useRef<HTMLInputElement>(null);
-// //   const [multiImages, setMultiImages] = useState<Array<File>>([]);
-//
-// //   const handleMultiImageUpload = (
-// //     event: React.ChangeEvent<HTMLInputElement>
-// //   ) => {
-// //     const uploadedFiles = (event.target as HTMLInputElement).files;
-// //     const newFiles = Object.entries(uploadedFiles as object)
-// //       .map((file) => {
-// //         if (file[1].type.includes('image')) return file[1];
-// //       })
-// //       .filter((file) => file !== undefined);
-// //     setMultiImages((prevFiles) => [...prevFiles, ...newFiles]);
-// //   };
-//
-// //   const handleMultiImageDelete = (index: number) => {
-// //     const updatedFiles = multiImages.filter((_, i) => i !== index);
-// //     setMultiImages(updatedFiles);
-// //     (multiRef.current as HTMLInputElement).value = '';
-// //   };
-//
-// //   return (
-// //     <div className={className}>
-// //       <Upload
-// //         label={label}
-// //         ref={multiRef}
-// //         accept="img"
-// //         multiple
-// //         onChange={handleMultiImageUpload}
-// //       />
-// //       <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
-//
-// //       {multiImages.length > 0 && (
-// //         <div className="-mb-3 overflow-x-scroll @xl:mb-0 @xl:overflow-x-hidden">
-// //           <div className="min-w-[600px] pb-5 @xl:pb-0">
-// //             <div className="mt-7 flex items-center rounded-md border border-gray-300 @2xl:mt-10">
-// //               <div className="w-[20%] px-4 py-3.5 text-center text-sm font-semibold text-gray-700 @2xl:py-5">
-// //                 تصویر
-// //               </div>
-// //               <div className="w-[55%] px-4 py-3.5 text-sm font-semibold text-gray-700 @2xl:py-5">
-// //                 توضیحات
-// //               </div>
-// //               <div className="w-28 px-4 py-3.5 text-center text-sm font-semibold text-gray-700 @2xl:py-5">
-// //                 اولویت
-// //               </div>
-// //               <div className="w-20 shrink-0 px-4 py-3.5 text-center text-sm font-semibold text-gray-700 @2xl:py-5">
-// //                 حذف
-// //               </div>
-// //             </div>
-// //             <div className="mt-7 flex flex-row flex-wrap gap-5">
-// //               {multiImages?.map((file: File, index: number) => (
-// //                 <div className="flex w-full items-center" key={file.name}>
-// //                   <div className="w-[20%] px-4">
-// //                     <figure className="relative mx-auto aspect-square w-20 overflow-hidden rounded-xl border border-gray-300 @2xl:w-28">
-// //                       <Image
-// //                         src={URL.createObjectURL(file)}
-// //                         alt={file.name}
-// //                         fill
-// //                         priority
-// //                         sizes="(max-width: 768px) 100vw"
-// //                       />
-// //                     </figure>
-// //                   </div>
-// //                   <div className="w-[55%] px-4">
-// //                     <Input
-// //                       label="توضیحات بیشتر"
-// //                       placeholder="توضیحات نمایش داده شده بر روی عکس ..."
-// //                       // {...register('title')}
-// //                       // error={errors.title?.message}
-// //                     />
-// //                   </div>
-// //                   <div className="flex w-28 items-center justify-center px-4">
-// //                     {/* <Radio
-// //                       value="NotTrackInventoryProduct"
-// //                       inputClassName="dark:checked:!bg-gray-200 dark:checked:!border-gray-200 dark:focus:ring-gray-200 dark:focus:ring-offset-gray-0"
-// //                     /> */}
-// //                     <Input
-// //                       width={50}
-// //                       type="number"
-// //                       label="اولویت"
-// //                       placeholder="1, 2, ..."
-// //                       // {...register('title')}
-// //                       // error={errors.title?.message}
-// //                     />
-// //                   </div>
-// //                   <div className="flex w-20 shrink-0 items-center justify-center px-4">
-// //                     <TrashIcon
-// //                       onClick={() => handleMultiImageDelete(index)}
-// //                       className="h-5 w-5 cursor-pointer transition duration-75"
-// //                     />
-// //                   </div>
-// //                 </div>
-// //               ))}
-// //             </div>
-// //           </div>
-// //         </div>
-// //       )}
-// //     </div>
-// //   );
-// // };

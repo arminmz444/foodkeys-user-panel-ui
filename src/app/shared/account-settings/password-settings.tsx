@@ -23,6 +23,7 @@ import { RootState } from '@/store/store';
 import { mockSession } from 'next-auth/client/__tests__/helpers/mocks';
 import user = mockSession.user;
 import Spinner from '@/components/ui/spinner';
+import {useAuth} from "@/context/AuthContext";
 
 // form zod validation schema
 const passwordFormSchema = z
@@ -52,6 +53,7 @@ export default function PasswordSettingsView({
   const _axios = useAxiosPrivate();
   const [isLoading, setLoading] = useState(false);
   const [reset, setReset] = useState({});
+  const { logout } = useAuth();
 
   const onSubmit: SubmitHandler<PasswordFormTypes> = async (data) => {
     // Validate password match before making API call
@@ -74,6 +76,7 @@ export default function PasswordSettingsView({
           newPassword: '',
           confirmedPassword: '',
         });
+        logout();
       }
     } catch (error) {
       // @ts-ignore
@@ -191,10 +194,10 @@ export default function PasswordSettingsView({
                     انصراف
                   </Button>
                   <Button
-                    onClick={(e) => {
-                      // @ts-ignore
-                      onSubmit(getValues, setError, reset);
-                    }}
+                    // onClick={(e) => {
+                    //   // @ts-ignore
+                    //   onSubmit(getValues, setError, reset);
+                    // }}
                     type="submit"
                     variant="solid"
                     className="dark:bg-gray-100 dark:text-white"
@@ -207,7 +210,7 @@ export default function PasswordSettingsView({
           );
         }}
       </Form>
-      <LoggedDevices className="mt-10" />
+      {/*<LoggedDevices className="mt-10" />*/}
     </>
   );
 }

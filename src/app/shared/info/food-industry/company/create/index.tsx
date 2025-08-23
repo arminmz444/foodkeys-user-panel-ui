@@ -40,9 +40,13 @@ import { telConverter } from '@/utils/tel-converter';
 import { routes } from '@/config/routes';
 import Link from 'next/link';
 import CompanyLocation from "@/app/shared/info/food-industry/company/create/company-location";
-import {prepareCompanyDataWithGallery} from "@/app/shared/info/food-industry/company/create/galleryTransformUtils";
+import {
+  prepareCompanyDataWithGallery,
+  prepareGalleryFilesForSubmission
+} from "@/app/shared/info/food-industry/company/create/galleryTransformUtils";
 import {ensureSeconds} from "@/utils/date-util";
 import Spinner from "@/components/ui/spinner";
+import {AiOutlineCheckCircle} from "react-icons/ai";
 
 const MAP_STEP_TO_COMPONENT = {
   [formParts.intro]: CompanySummary,
@@ -146,6 +150,10 @@ export interface LocationDTO {
   longitude?: number
   commonName?: string
   fullAddress?: string
+  factoryLongitude?: number
+  factoryLatitude?: number
+  officeLongitude?: number
+  officeLatitude?: number
 }
 
 // --- main payload DTO ---
@@ -505,7 +513,7 @@ export default function CreateCompany({
   // };
   const fetchSubscriptions = async (subCategoryId: number) => {
     try {
-      const response = await _axios.get(`/subscription/subcategory/${subCategoryId}`);
+      const response = await _axios.get(`/subscription/subcategory/${subCategoryId}?status=ACTIVE`);
       if (response.data.status === 'SUCCESS') {
         if (!response.data?.data || !response.data?.data?.length) {
           toast.success(
@@ -565,16 +573,44 @@ export default function CreateCompany({
           // ));
           router.replace(`/bundle/${subCategoryId}/buy`);
         } else {
+          // toast.success(
+          //   <>
+          //     <Text tag="b">
+          //       {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
+          //     </Text>
+          //     <Text>{'\n'}</Text>
+          //     <Text>
+          //       بعد از تایید اطلاعات ثبت شده، شرکت شما در سایت بروزرسانی می‌شود
+          //     </Text>
+          //   </>
+          // );
           toast.success(
-            <>
-              <Text tag="b">
-                {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود
-              </Text>
-              <Text>{'\n'}</Text>
-              <Text>
-                بعد از تایید اطلاعات ثبت شده، شرکت شما در سایت بروزرسانی می‌شود
-              </Text>
-            </>
+              <div
+                  dir="rtl"
+                  className="
+        bg-emerald-lightest p-4 rounded-lg shadow
+        text-right
+      "
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  {/*<AiOutlineCheckCircle className="text-emerald" size={20} />*/}
+                  <Text as="strong" className="text-emerald-dark text-lg">
+                    {id ? "بروزرسانی اطلاعات" : "ثبت اطلاعات"} موفقیت‌آمیز بود
+                  </Text>
+                </div>
+                <Text className="text-gray-600 text-sm">
+                  بعد از تایید اطلاعات ثبت‌شده، شرکت شما در سایت بروزرسانی می‌شود
+                </Text>
+              </div>,
+              {
+                position: "top-center",   // for RTL languages :contentReference[oaicite:7]{index=7}
+                autoClose: 5000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                hideProgressBar: false,
+                // icon: false            // we render our own icon
+              }
           );
           router.replace(`/info/food-industry`)
         }
@@ -583,6 +619,18 @@ export default function CreateCompany({
       console.error('Error fetching subscription:', error);
     }
   };
+
+  const mapPictures = (pictures) => {
+    if (!pictures || !Array.isArray(pictures)) return [];
+    return pictures.map(pic => {
+      if (pic && typeof pic === 'object' && pic.id) {
+        return pic.id;
+      }
+      return pic;
+    });
+  };
+
+
   const onSubmit: SubmitHandler<CreateCompanyInput> = async (data) => {
     setLoading(true);
     const computeDataFileIds = (products) => {
@@ -758,6 +806,7 @@ export default function CreateCompany({
       // );
       // console.log('productFileIds: ', formData.get('productFileIds'));
 
+      console.log(`Data: ${JSON.stringify(data)}`)
       const socialMedias: SocialMediaDTO[] = socialMediaConverter({
         telegramPhoneNo: data.telegramPhoneNo,
         telegramId: data.telegramId,
@@ -799,12 +848,30 @@ export default function CreateCompany({
         longitude:       data.longitude,
         fullAddress:     data.fullAddress,
         commonName:      data.commonName,
+        factoryLongitude: data.factoryLongitude,
+        factoryLatitude: data.factoryLatitude,
+        officeLongitude: data.officeLongitude,
+        officeLatitude: data.officeLatitude,
       }
 
-      // 4. Split products vs. outsourcedProducts
-      const products:   ProductDTO[] = (data.products || []).map(p => ({ ...p, outsourced: false }))
-      const outSourcedProducts: ProductDTO[] = (data.outSourcedProducts || []).map(p => ({ ...p, outsourced: true }))
+      // const products:   ProductDTO[] = (data.products || []).map(p => {({ ...p, outsourced: false, pictures: mapPictures(p.pictures) }))
+      //
+      // const outSourcedProducts: ProductDTO[] = (data.outSourcedProducts || []).map(p => ({ ...p, outsourced: true, pictures: mapPictures(p.pictures) }))
+      const products: ProductDTO[] = (data.products || []).map(p => ({
+        ...p,
+        outsourced: false,
+        pictures: mapPictures(p.pictures)
+      }));
 
+      const outSourcedProducts: ProductDTO[] = (data.outSourcedProducts || []).map(p => ({
+        ...p,
+        outsourced: true,
+        pictures: mapPictures(p.pictures)
+      }));
+
+      console.log(`products: ${JSON.stringify(products)}`)
+
+      console.log(`data.gallery: ${JSON.stringify(data?.gallery?.contacts || {})}`)
       // 5. Build the CompanyCreateDTO
       const companyDto: CompanyCreateDTO = {
         id:                 id ?? undefined,
@@ -849,7 +916,7 @@ export default function CreateCompany({
         products,
         outSourcedProducts,
         socialMedias,
-        galleryFiles:       data.galleryFiles || [],
+        galleryFiles:       prepareGalleryFilesForSubmission(data.gallery || []),
         // activities:         data.activities,
         // userId:             data.userId,
         subCategoryId:      data.subcategory?.value,
@@ -868,7 +935,7 @@ export default function CreateCompany({
         emails:             data.emails,
         smsNumber:          data.smsNumber,
         specialLineNumber:  data.specialLineNumber,
-        logo:               data.logoUrl,           // these must be the uploaded-file IDs or URLs
+        logo:               data.logo,
         backgroundImage:    data.backgroundImageUrl,
         latitude:           data.latitude,
         longitude:          data.longitude,
@@ -898,7 +965,7 @@ export default function CreateCompany({
       //   status: 200,
       // };
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // toast.success(
         //   <Text tag="b">
         //     {id ? 'بروزرسانی اطلاعات' : 'ثبت اطلاعات'} موفقیت آمیز بود

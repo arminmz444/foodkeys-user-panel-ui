@@ -32,7 +32,7 @@ const menuItems = [
     href: routes.activities,
   },
 ];
-const STATIC_FILES_URL = 'http://192.168.43.57:8080';
+const STATIC_FILES_URL = 'http://localhost:8080';
 
 function DropdownMenu() {
   const user = useSelector((state: RootState) => state.user);
@@ -62,7 +62,7 @@ function DropdownMenu() {
           src={
             (user.avatar &&
               process.env.NEXT_PUBLIC_STATIC_FILES_URL +
-                user.avatar.filePath) ||
+                user.avatar) ||
             ''
           }
           name={user.firstName || 'کاربر'}
@@ -123,7 +123,7 @@ export default function ProfileMenu() {
           src={
             (user.avatar &&
               process.env.NEXT_PUBLIC_STATIC_FILES_URL +
-                user.avatar.filePath) ||
+                user.avatar) ||
             ''
           }
           name={user.firstName || 'کاربر'}

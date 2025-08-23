@@ -27,6 +27,10 @@ const sortOptions = [
     value: 'active',
   },
   {
+    name: 'در انتظار تایید',
+    value: 'pending',
+  },
+  {
     name: 'منقضی شده',
     value: 'expired',
   },
@@ -34,7 +38,7 @@ const sortOptions = [
 
 interface PageHeaderFilterProps {
   sortValue: string;
-  setSortValue: (val: 'فعال' | 'منقضی شده' | 'همه') => void;
+  setSortValue: (val: 'فعال' | 'در انتظار تایید' | 'منقضی شده' | 'همه') => void;
   value: SelectOption[];
   setValue: (val: SelectOption[]) => void;
   filterValue: string;
@@ -57,6 +61,7 @@ const PageHeaderFilter = ({
           if (
             selected.name === 'همه' ||
             selected.name === 'فعال' ||
+              selected.name === 'در انتظار تایید' ||
             selected.name === 'منقضی شده'
           ) {
             setSortValue(selected.name);
@@ -68,7 +73,7 @@ const PageHeaderFilter = ({
       />
       <SelectBox
         label="فیلتر بر اساس بانک ..."
-        options={value}
+        options={[{name: "همه", value: ''}, ...value]}
         value={filterValue}
         onChange={setValue}
         className="w-full sm:w-1/2 lg:w-1/4"

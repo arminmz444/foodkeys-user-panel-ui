@@ -3,41 +3,20 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Badge } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import Table from '@/components/ui/table';
-import { siteConfig } from '@/config/site.config';
+import { usePathname } from 'next/navigation';
+import farmLogo from 'public/farmLogo.webp';
+import farmSign from 'public/farmSignature.png';
 
 const invoiceItems = [
   {
     id: '1',
     product: {
-      title: 'لاراول',
-      description:
-        'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و ',
+      title: 'پلن 1',
+      description: 'خرید اشتراک رایگان 2 ماهه بانک صنعت غذا ',
     },
     quantity: 2,
-    unitPrice: 100,
-    total: 200,
-  },
-  {
-    id: '2',
-    product: {
-      title: 'ری اکت',
-      description:
-        'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که ',
-    },
-    quantity: 2,
-    unitPrice: 100,
-    total: 200,
-  },
-  {
-    id: '3',
-    product: {
-      title: 'نکست',
-      description:
-        'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و ',
-    },
-    quantity: 3,
-    unitPrice: 100,
-    total: 300,
+    unitPrice: 1_000_000,
+    total: 2_000_000,
   },
 ];
 
@@ -49,10 +28,10 @@ const columns = [
     width: 50,
   },
   {
-    title: 'آیتم',
+    title: 'شرح کالا یا خدمات',
     dataIndex: 'product',
     key: 'product',
-    width: 250,
+    width: 300,
     render: (product: any) => (
       <>
         <Text tag="h6" className="mb-0.5 text-sm font-medium">
@@ -75,21 +54,25 @@ const columns = [
     width: 200,
   },
   {
-    title: 'قیمت جز',
+    title: 'مبلغ واحد',
     dataIndex: 'unitPrice',
     key: 'unitPrice',
     width: 200,
     render: (value: string) => (
-      <Text className="font-medium">تومان{value}</Text>
+      <Text className="font-medium">
+        {parseInt(value).toLocaleString()} ریال
+      </Text>
     ),
   },
   {
-    title: 'قیمت کل',
+    title: 'مبلغ کل',
     dataIndex: 'total',
     key: 'total',
     width: 200,
     render: (value: string) => (
-      <Text className="font-medium">تومان{value}</Text>
+      <Text className="font-medium">
+        {parseInt(value).toLocaleString()} ریال
+      </Text>
     ),
   },
 ];
@@ -107,16 +90,34 @@ function InvoiceDetailsListTable() {
   );
 }
 
-export default function InvoiceDetails() {
+export default function InvoiceDetails({ printRef }) {
+  const path = usePathname();
+  const discount = 100_000;
+  const total = invoiceItems[0].total * invoiceItems[0].quantity;
+  const tax = (total - discount) * 0.1;
+  const totalPrice = total - discount + tax;
   return (
-    <div className="w-full rounded-xl border border-gray-200 p-5 text-sm sm:p-6 lg:p-8 2xl:p-10">
+    <div
+      ref={printRef}
+      className="w-full rounded-xl border border-gray-200 p-5 text-sm sm:p-6 lg:p-8 2xl:p-10"
+    >
       <div className="mb-12 flex flex-col-reverse items-start justify-between md:mb-16 md:flex-row">
-        <Image
-          src={siteConfig.logo}
-          alt={siteConfig.title}
-          className="dark:invert"
-          priority
-        />
+        <div className="flex items-center justify-center gap-4">
+          <Image
+            src={farmLogo}
+            alt="فرآیند آرا رسم مهر"
+            className="w-24 dark:invert"
+            priority
+          />
+          <div className="flex flex-col items-center justify-center">
+            <h3 className=" font-extrabold">
+              شرکت فرآیند آرا رسم مهر{' '}
+              <span className="font-thin">(سهامی خاص)</span>
+            </h3>
+            <div className="h-[.1rem] w-full bg-black" />
+            <h6 className="font-thin">.Farayand Ara Rasme Mehr Co</h6>
+          </div>
+        </div>
         <div className="mb-4 md:mb-0">
           <Badge
             variant="flat"
@@ -133,46 +134,159 @@ export default function InvoiceDetails() {
 
       <div className="mb-12 grid gap-4 xs:grid-cols-2 sm:grid-cols-3 sm:grid-rows-1">
         <div className="">
-          <Text tag="h6" className="mb-3.5 font-semibold">
-            از
+          <Text tag="h5" className="mb-3.5 font-semibold">
+            مشخصات فروشنده:
           </Text>
-          <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
-            شرکت کامپیژن
-          </Text>
-          <Text className="mb-1.5">آرمین مظفری</Text>
-          <Text className="mb-1.5">شیراز</Text>
-          <Text className="mb-4 sm:mb-6 md:mb-8">09123456789</Text>
-          <div>
-            <Text tag="h6" className="mb-2 text-sm font-semibold">
-              تاریخ ایجاد
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              فروشنده:
             </Text>
-            <Text>24 فروردین 1402</Text>
-          </div>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              شرکت فرآیند آرا رسم مهر (سهامی خاص){' '}
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              ش.اقتصادی:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm uppercase">
+              14011180241
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              ش.ثبت / ملی:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              14011180241
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              استان:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              البرز
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              شهر:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              کرج
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              کدپستی:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              3136994769
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              تلفن/نمابر:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              02632774346 / 02632774306
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              نشانی:
+            </Text>
+            <Text tag="sup" className="mb-4 text-sm  uppercase sm:mb-6 md:mb-8">
+              کرج، میدان مادر، ساختمان 431
+            </Text>
+          </span>
         </div>
 
         <div className="mt-4 xs:mt-0">
-          <Text tag="h6" className="mb-3.5 font-semibold">
-            پرداخت
+          <Text tag="h5" className="mb-3.5 font-semibold">
+            مشخصات خریدار:
           </Text>
-          <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
-            دیجی کالا
-          </Text>
-          <Text className="mb-1.5">فرهاد مجیدی</Text>
-          <Text className="mb-1.5">تهران آزادی</Text>
-          <Text className="mb-4 sm:mb-6 md:mb-8">09123456789</Text>
-          <div>
-            <Text tag="h6" className="mb-2 text-sm font-semibold">
-              تاریخ آخرین تراکنش
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              خریدار:
             </Text>
-            <Text>24 فروردین 1402</Text>
-          </div>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              شرکت شیرین عسل
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              ش.اقتصادی:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm uppercase">
+              14011180241
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              ش.ثبت / ملی:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              14011180241
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              استان:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              البرز
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              شهر:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              کرج
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              کدپستی:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              3136994769
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              تلفن/نمابر:
+            </Text>
+            <Text tag="sup" className="mb-1.5 text-sm  uppercase">
+              02632774346 / 02632774306
+            </Text>
+          </span>
+          <span>
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              نشانی:
+            </Text>
+            <Text tag="sup" className="mb-4 text-sm  uppercase sm:mb-6 md:mb-8">
+              کرج، میدان مادر، ساختمان 431
+            </Text>
+          </span>
         </div>
 
-        <div className="mt-4 flex sm:mt-6 md:mt-0 md:justify-end">
+        <div className="mt-4 flex items-end gap-5 sm:mt-6 sm:flex-col sm:gap-0 md:mt-0 md:justify-start">
           <QRCodeSVG
-            value="https://reactjs.org/"
+            value={'localhost:3000' + path}
             className="h-28 w-28 lg:h-32 lg:w-32"
           />
+
+          <span className="mt-10">
+            <Text tag="h6" className="mb-1.5 text-sm font-semibold uppercase">
+              تاریخ:
+            </Text>
+            <Text tag="sup" className="mb-4 text-sm  uppercase sm:mb-6 md:mb-8">
+              1402/02/14
+            </Text>
+          </span>
         </div>
       </div>
 
@@ -187,40 +301,46 @@ export default function InvoiceDetails() {
             یادداشت
           </Text>
           <Text className="leading-[1.7]">
-            لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با
-            استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در
-            ستون و سطرآنچنان که{' '}
+            اشتراک پلن درخواستی از تاریخ فاکتور تا مدت زمان یک سال می‌باشد.
           </Text>
         </div>
         <div className=" w-full max-w-sm">
           <Text className="flex items-center justify-between border-b border-gray-200 pb-3.5 lg:pb-5">
-            قیمت:{' '}
+            جمع کل:{' '}
             <Text tag="span" className="font-semibold">
-              تومان700
+              {total.toLocaleString()} ریال
             </Text>
           </Text>
-          <Text className="flex items-center justify-between border-b border-gray-200 py-3.5 lg:py-5">
-            ارسال:{' '}
-            <Text tag="span" className="font-semibold">
-              تومان142
-            </Text>
-          </Text>
-          <Text className="flex items-center justify-between border-b border-gray-200 py-3.5 lg:py-5">
+
+          <Text className="flex items-center justify-between border-b border-gray-200 py-3.5 text-red-light lg:py-5">
             تخفیف:{' '}
             <Text tag="span" className="font-semibold">
-              تومان250
+              {discount.toLocaleString()} ریال
             </Text>
           </Text>
           <Text className="flex items-center justify-between border-b border-gray-200 py-3.5 lg:py-5">
             مالیات:
             <Text tag="span" className="font-semibold">
-              15%
+              10%
             </Text>
           </Text>
-          <Text className="flex items-center justify-between pt-4 text-base font-semibold text-gray-900 lg:pt-5">
-            کل: <Text tag="span">تومان659.5</Text>
+          <Text className="flex items-center justify-between  pt-4 text-base font-semibold text-gray-900 lg:py-5">
+            خالص پرداختی:{' '}
+            <Text tag="span">{totalPrice.toLocaleString()} ریال</Text>
           </Text>
         </div>
+      </div>
+      <hr className="my-5" />
+      <div className="relative mt-10 flex h-40 w-full items-center justify-center border text-center">
+        <div className="w-1/2">
+          مهر و امضا فروشنده:
+          <Image
+            className="absolute left-1/2 top-1/2 w-36 -translate-y-1/2 translate-x-1/2 rotate-6"
+            src={farmSign}
+            alt=""
+          />
+        </div>
+        <div className="w-1/2">مهر و امضا خریدار:</div>
       </div>
     </div>
   );

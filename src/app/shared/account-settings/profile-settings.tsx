@@ -401,41 +401,61 @@ export default function ProfileSettingsView() {
   );
 }
 
+
 export function ProfileHeader({
-  userInfo,
-  description,
-  children,
-}: React.PropsWithChildren<{ userInfo: any; description?: string }>) {
+                                userInfo,
+                                description,
+                                children,
+                              }: React.PropsWithChildren<{ userInfo: any; description?: string }>) {
+  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'http://localhost:8080';
+  const hasBackgroundImage = !!userInfo?.backgroundAvatar;
+
   return (
-    <div className="relative z-0 -mx-4 px-4 pt-28 before:absolute before:left-0 before:top-0 before:h-40 before:w-full before:bg-gradient-to-r before:from-[#F8E1AF] before:to-[#F6CFCF] @3xl:pt-[190px] @3xl:before:h-[calc(100%-120px)] dark:before:from-[#bca981] dark:before:to-[#cbb4b4] md:-mx-5 md:px-5 lg:-mx-8 lg:px-8 xl:-mx-6 xl:px-6 3xl:-mx-[33px] 3xl:px-[33px] 4xl:-mx-10 4xl:px-10">
-      <div className="relative z-10 mx-auto flex w-full max-w-screen-2xl flex-wrap items-end justify-start gap-6 border-b border-dashed border-gray-300 pb-10">
-        <div className="relative -top-1/3 aspect-square w-[110px] overflow-hidden rounded-full border-[6px] border-white bg-gray-100 shadow-profilePic @2xl:w-[130px] @5xl:-top-2/3 @5xl:w-[150px] dark:border-gray-50 dark:bg-white 3xl:w-[200px]">
-          <Image
-            src={
-              (userInfo.avatar &&
-                process.env.NEXT_PUBLIC_STATIC_FILES_URL + userInfo.avatar) ||
-              noPic
-            }
-            alt="profile-pic"
-            fill
-            sizes="(max-width: 768px) 100vw"
-            className="aspect-auto"
-          />
+      <div className="relative z-0 -mx-4 px-4 pt-28 before:absolute before:left-0 before:top-0 before:h-40 before:w-full before:bg-gradient-to-r before:from-[#F8E1AF] before:to-[#F6CFCF] @3xl:pt-[190px] @3xl:before:h-[calc(100%-120px)] dark:before:from-[#bca981] dark:before:to-[#cbb4b4] md:-mx-5 md:px-5 lg:-mx-8 lg:px-8 xl:-mx-6 xl:px-6 3xl:-mx-[33px] 3xl:px-[33px] 4xl:-mx-10 4xl:px-10">
+        {/* Background Image (if exists) */}
+        {hasBackgroundImage && (
+            <div className="absolute left-0 top-0 z-0 h-40 w-full overflow-hidden @3xl:h-[calc(100%-120px)]">
+              <Image
+                  src={STATIC_FILE_PATH + userInfo.backgroundAvatar}
+                  alt="profile-background"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                  priority
+              />
+              {/* Dark overlay for better text visibility */}
+              <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]"></div>
+            </div>
+        )}
+
+        <div className="relative z-10 mx-auto flex w-full max-w-screen-2xl flex-wrap items-end justify-start gap-6 border-b border-dashed border-gray-300 pb-10">
+          <div className="relative -top-1/3 aspect-square w-[110px] overflow-hidden rounded-full border-[6px] border-white bg-gray-100 shadow-profilePic @2xl:w-[130px] @5xl:-top-2/3 @5xl:w-[150px] dark:border-gray-50 dark:bg-white 3xl:w-[200px]">
+            <Image
+                src={
+                    (userInfo.avatar &&
+                        STATIC_FILE_PATH + userInfo.avatar) ||
+                    noPic
+                }
+                alt="profile-pic"
+                fill
+                sizes="(max-width: 768px) 100vw"
+                className="aspect-auto object-cover"
+            />
+          </div>
+          <div>
+            <Text
+                tag="h2"
+                className="mb-2 inline-flex items-center gap-3 text-xl font-bold text-gray-900"
+            >
+              {userInfo.firstName + ' ' + userInfo.lastName}
+              <PiSealCheckFill className="h-5 w-5 text-primary md:h-6 md:w-6" />
+            </Text>
+            {description ? (
+                <Text className="text-sm text-gray-500">{description}</Text>
+            ) : null}
+          </div>
+          {children}
         </div>
-        <div>
-          <Text
-            tag="h2"
-            className="mb-2 inline-flex items-center gap-3 text-xl font-bold text-gray-900"
-          >
-            {userInfo.firstName + ' ' + userInfo.lastName}
-            <PiSealCheckFill className="h-5 w-5 text-primary md:h-6 md:w-6" />
-          </Text>
-          {description ? (
-            <Text className="text-sm text-gray-500">{description}</Text>
-          ) : null}
-        </div>
-        {children}
       </div>
-    </div>
   );
 }

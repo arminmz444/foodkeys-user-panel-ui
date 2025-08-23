@@ -28,8 +28,11 @@ interface UserState {
     lastName: string | null;
     credit: number | null;
     email: string | null;
+    emails: string[],
     username: string | null;
     phone: string | null;
+    phones: string[],
+    phoneNumbers: string[],
     status: number | null;
     roles: string[];
     roleIds: number[] | null;
@@ -37,6 +40,7 @@ interface UserState {
     accessIds: number[] | null;
     active: boolean;
     avatar: Avatar | null;
+    backgroundAvatar: Avatar | null;
     lastLogin: string | null;
     lastLogout: string | null;
     address: string | null;
@@ -63,8 +67,11 @@ const initialState: UserState = {
     lastName: null,
     credit: 0,
     email: null,
+    emails: [],
     username: null,
     phone: null,
+    phones: [],
+    phoneNumbers: [],
     status: null,
     roles: [],
     roleIds: null,
@@ -72,6 +79,7 @@ const initialState: UserState = {
     accessIds: null,
     active: false,
     avatar: null,
+    backgroundAvatar: null,
     lastLogin: null,
     lastLogout: null,
     address: null,
@@ -102,8 +110,11 @@ const userSlice = createSlice({
             state.lastName = user.lastName;
             state.credit = user.credit;
             state.email = user.email;
+            state.emails = user.emails || [];
             state.username = user.username;
             state.phone = user.phone;
+            state.phones = user.phoneNumbers || user.phones || [];
+            state.phoneNumbers = user.phoneNumbers || user.phones || [];
             state.status = user.status;
             state.roles = user.roles;
             state.roleIds = user.roleIds;
@@ -111,6 +122,7 @@ const userSlice = createSlice({
             state.accessIds = user.accessIds;
             state.active = user.active;
             state.avatar = user.avatar;
+            state.backgroundAvatar = user.backgroundAvatar;
             state.lastLogin = user.lastLogin;
             state.lastLogout = user.lastLogout;
             state.address = user.address;
@@ -136,8 +148,11 @@ const userSlice = createSlice({
             state.lastName = user.lastName;
             state.credit = user.credit;
             state.email = user.email;
+            state.emails = user.emails || [];
             state.username = user.username;
             state.phone = user.phone;
+            state.phones = user.phoneNumbers || user.phones || [];
+            state.phoneNumbers = user.phoneNumbers || user.phones || [];
             state.status = user.status;
             state.roles = user.roles;
             state.roleIds = user.roleIds;
@@ -145,6 +160,7 @@ const userSlice = createSlice({
             state.accessIds = user.accessIds;
             state.active = user.active;
             state.avatar = user.avatar;
+            state.backgroundAvatar = user.backgroundAvatar;
             state.lastLogin = user.lastLogin;
             state.lastLogout = user.lastLogout;
             state.address = user.address;

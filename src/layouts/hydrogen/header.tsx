@@ -21,7 +21,7 @@ import cn from '@/utils/class-names';
 import Logo from '@/components/logo';
 import { BsWalletFill } from 'react-icons/bs';
 import { Button, Modal } from 'rizzui';
-import React, { RefObject, useEffect, useState } from 'react';
+import React, {RefObject, useCallback, useEffect, useState} from 'react';
 import { useMedia } from '@/hooks/use-media';
 import { Popover } from '@/components/ui/popover';
 import { PiArrowLeftBold, PiWalletFill } from 'react-icons/pi';
@@ -42,96 +42,214 @@ import addCreditImg2 from 'public/addCreditLogo.webp';
 import {dispatch} from "react-hot-toast/src/core/store";
 import {login as reduxLogin} from "@/store/userSlice";
 import {addNotification} from "@/store/notificationSlice";
+import {useWebSocket} from "@/context/WebSocketContext";
+import {useAuth} from "@/context/AuthContext";
 
 // export const notificationsAtom = atom([]);
+const WebSocketStatus = ({ isConnected, connectionStatus, className = '' }) => {
+  const getStatusColor = () => {
+    switch (connectionStatus) {
+      case 'Connected':
+        return 'success';
+      case 'Connecting...':
+        return 'warning';
+      case 'Error':
+      case 'Auth Failed':
+      case 'Connection Failed':
+        return 'danger';
+      default:
+        return 'secondary';
+    }
+  };
+
+  const getStatusText = () => {
+    switch (connectionStatus) {
+      case 'Connected':
+        return 'متصل';
+      case 'Connecting...':
+        return 'در حال اتصال...';
+      case 'Error':
+        return 'خطا';
+      case 'Auth Failed':
+        return 'خطا در احراز هویت';
+      case 'Connection Failed':
+        return 'اتصال ناموفق';
+      case 'No Token':
+        return 'عدم احراز هویت';
+      default:
+        return 'قطع شده';
+    }
+  };
+
+  return (
+      <Badge
+          color={getStatusColor()}
+          className={`text-xs ${className}`}
+          title={`وضعیت WebSocket: ${getStatusText()}`}
+      >
+        {isConnected ? '🟢' : '🔴'} {getStatusText()}
+      </Badge>
+  );
+};
+
 
 function HeaderMenuRight() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useAtom(updateNotificationsAtom);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const client = new Client({
-      brokerURL: 'ws://foodkeys-api-dev.liara.run/ws',
-      connectHeaders: {},
-      debug: function (str) {
-        console.log(str);
-      },
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      webSocketFactory: () =>
-        new SockJS('http://localhost:8080/ws'),
-    });
+  // const { isConnected, connectionStatus } = useWebSocket();
+  // const { isConnected, connectionStatus, sendNotification } = useWebSocket();
+  // const { state } = useAuth();
+  //
+  // // Test notification sender (remove in production)
+  // const sendTestNotification = useCallback(() => {
+  //   if (isConnected) {
+  //     sendNotification('این یک پیام تست است', 'info');
+  //     toast.success('پیام تست ارسال شد');
+  //   } else {
+  //     toast.error('WebSocket متصل نیست');
+  //   }
+  // }, [isConnected, sendNotification]);
+  //
 
-    client.onConnect = () => {
-      client.subscribe('/topic/notifications', (message) => {
-        const notification = JSON.parse(message.body);
-        // const notification = message.body;
-        console.log(notification);
-        // @ts-ignore
-        dispatch(addNotification(notification))
-        // @ts-ignore
-        // setMessages((prev) => [...prev, notification]);
-        // setNo
-      });
-    };
 
-    client.activate();
-
-    return () => {
-      client.deactivate();
-    };
-  }, []);
+  // const [messages, setMessages] = useAtom(updateNotificationsAtom);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   const token = localStorage.getItem('access_token');
+  //
+  //   const client = new Client({
+  //     brokerURL: 'ws://localhost:8080/ws',
+  //     connectHeaders: {
+  //       Authorization: token ? `Bearer ${token}` : '',
+  //     },
+  //     debug: function (str) {
+  //       console.log(str);
+  //     },
+  //     reconnectDelay: 5000,
+  //     heartbeatIncoming: 4000,
+  //     heartbeatOutgoing: 4000,
+  //     webSocketFactory: () =>
+  //       new SockJS('http://localhost:8080/ws'),
+  //   });
+  //
+  //   client.onConnect = (frame) => {
+  //     console.log('Connected with headers:', frame.headers);
+  //     client.subscribe('/topic/notifications', (message) => {
+  //       const notification = JSON.parse(message.body);
+  //       // const notification = message.body;
+  //       console.log(notification);
+  //       // @ts-ignore
+  //       dispatch(addNotification(notification))
+  //       // @ts-ignore
+  //       // setMessages((prev) => [...prev, notification]);
+  //       // setNo
+  //     });
+  //   };
+  //
+  //   client.onStompError = frame => {
+  //     console.error('Broker reported error: ' + frame.headers['message']);
+  //     console.error('Additional details: ' + frame.body);
+  //   };
+  //
+  //   client.activate();
+  //
+  //   return () => {
+  //     client.deactivate();
+  //   };
+  // }, []);
 
   return (
-    <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
-      {/*<MessagesDropdown>*/}
-      {/*  <ActionIcon*/}
-      {/*    aria-label="Messages"*/}
-      {/*    variant="text"*/}
-      {/*    className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"*/}
-      {/*  >*/}
-      {/*    <ChatSolidIcon className="h-[18px] w-auto" />*/}
-      {/*    <Badge*/}
-      {/*      renderAsDot*/}
-      {/*      color="success"*/}
-      {/*      enableOutlineRing*/}
-      {/*      className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"*/}
-      {/*    />*/}
-      {/*  </ActionIcon>*/}
-      {/*</MessagesDropdown>*/}
-      {/*// @ts-ignore*/}
-      <NotificationDropdown >
-        <ActionIcon
-          aria-label="Notification"
-          variant="text"
-          className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
-        >
-          <RingBellSolidIcon className="h-[18px] w-auto" />
-          <Badge
-            renderAsDot
-            color="warning"
-            enableOutlineRing
-            className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"
-          />
-        </ActionIcon>
-      </NotificationDropdown>
-      {/*// @ts-ignore*/}
-      {/* <PaymentSuccess />*/}
-      {/*<PaymentReject />*/}
-      <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
-        <ActionIcon
-          aria-label="Notification"
-          onClick={() => setIsOpen(true)}
-          variant="text"
-          className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
-        >
-          <PiWalletFill className="h-[18px] w-auto" />
-        </ActionIcon>
-      </WalletDropdown>
-      <SettingsButton />
-      <ProfileMenu />
-    </div>
+      <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
+      {/* WebSocket Status - Hidden on mobile */}
+        {/*<div className="hidden sm:flex">*/}
+        {/*  <WebSocketStatus*/}
+        {/*      isConnected={isConnected}*/}
+        {/*      connectionStatus={connectionStatus}*/}
+        {/*  />*/}
+        {/*</div>*/}
+
+        {/* Notification Bell with WebSocket Status */}
+        <NotificationDropdown>
+          <ActionIcon
+              aria-label="Notification"
+              variant="text"
+              className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
+              // onClick={sendTestNotification} // Remove in production
+          >
+            <RingBellSolidIcon className="h-[18px] w-auto" />
+            <Badge
+                renderAsDot
+                // color={isConnected ? "success" : "warning"}
+                color={"warning"}
+                enableOutlineRing
+                className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"
+                // title={`WebSocket: ${connectionStatus}`}
+            />
+          </ActionIcon>
+        </NotificationDropdown>
+
+        {/* Wallet */}
+        <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
+          <ActionIcon
+              aria-label="Wallet"
+              onClick={() => setIsOpen(true)}
+              variant="text"
+              className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
+          >
+            <PiWalletFill className="h-[18px] w-auto" />
+          </ActionIcon>
+        </WalletDropdown>
+
+        <SettingsButton />
+        <ProfileMenu />
+      </div>
+    // <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
+    //   {/*<MessagesDropdown>*/}
+    //   {/*  <ActionIcon*/}
+    //   {/*    aria-label="Messages"*/}
+    //   {/*    variant="text"*/}
+    //   {/*    className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"*/}
+    //   {/*  >*/}
+    //   {/*    <ChatSolidIcon className="h-[18px] w-auto" />*/}
+    //   {/*    <Badge*/}
+    //   {/*      renderAsDot*/}
+    //   {/*      color="success"*/}
+    //   {/*      enableOutlineRing*/}
+    //   {/*      className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"*/}
+    //   {/*    />*/}
+    //   {/*  </ActionIcon>*/}
+    //   {/*</MessagesDropdown>*/}
+    //   {/*// @ts-ignore*/}
+    //   <NotificationDropdown >
+    //     <ActionIcon
+    //       aria-label="Notification"
+    //       variant="text"
+    //       className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
+    //     >
+    //       <RingBellSolidIcon className="h-[18px] w-auto" />
+    //       <Badge
+    //         renderAsDot
+    //         color={isConnected ? "success" : "warning"}
+    //         enableOutlineRing
+    //         className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"
+    //       />
+    //     </ActionIcon>
+    //   </NotificationDropdown>
+    //   {/*// @ts-ignore*/}
+    //   {/* <PaymentSuccess />*/}
+    //   {/*<PaymentReject />*/}
+    //   <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
+    //     <ActionIcon
+    //       aria-label="Notification"
+    //       onClick={() => setIsOpen(true)}
+    //       variant="text"
+    //       className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
+    //     >
+    //       <PiWalletFill className="h-[18px] w-auto" />
+    //     </ActionIcon>
+    //   </WalletDropdown>
+    //   <SettingsButton />
+    //   <ProfileMenu />
+    // </div>
   );
 }
 
