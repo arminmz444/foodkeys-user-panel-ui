@@ -19,8 +19,7 @@ import TrashIcon from '@/components/icons/trash';
 import { TiTick } from 'react-icons/ti';
 import { HiXMark } from 'react-icons/hi2';
 import { HiUpload } from 'react-icons/hi';
-
-const STATIC_FILE_URL = 'http://localhost:8080';
+import { STATIC_FILES_URL as STATIC_FILE_URL } from '@/config/api.config';
 const companyStatusDict: any = {
   PENDING: 'در انتظار تایید',
   APPROVED: 'تایید شده',

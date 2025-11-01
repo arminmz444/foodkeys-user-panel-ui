@@ -32,7 +32,8 @@ const menuItems = [
     href: routes.activities,
   },
 ];
-const STATIC_FILES_URL = 'http://localhost:8080';
+
+import { STATIC_FILES_URL } from '@/config/api.config';
 
 function DropdownMenu() {
   const user = useSelector((state: RootState) => state.user);
@@ -61,7 +62,7 @@ function DropdownMenu() {
           // @ts-ignore
           src={
             (user.avatar &&
-              process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+              STATIC_FILES_URL +
                 user.avatar) ||
             ''
           }
@@ -122,7 +123,7 @@ export default function ProfileMenu() {
         <Avatar
           src={
             (user.avatar &&
-              process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+              STATIC_FILES_URL +
                 user.avatar) ||
             ''
           }

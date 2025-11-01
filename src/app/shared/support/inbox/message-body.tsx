@@ -371,9 +371,10 @@ import DOMPurify from 'dompurify';
 import PhotoPreview from './photo-preview';
 import { TbClockHour8 } from 'react-icons/tb';
 
+import { STATIC_FILES_URL } from '@/config/api.config';
+
 // @ts-ignore
 export default function MessageBody({ messages }) {
-    const STATIC_FILES_URL = 'http://localhost:8080';
     const _axios = useAxiosPrivate();
     const messageId = useAtomValue(messageIdAtom);
     const [isCopied, setIsCopied] = useState(false);

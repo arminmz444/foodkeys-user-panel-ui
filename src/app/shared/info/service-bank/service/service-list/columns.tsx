@@ -16,8 +16,7 @@ import HandWaveIcon from '@/components/icons/hand-wave';
 import {PiHand} from 'react-icons/pi';
 import {TbExclamationMark} from 'react-icons/tb';
 import {FaRankingStar} from 'react-icons/fa6';
-
-const STATIC_FILE_URL = 'http://localhost:8080';
+import { STATIC_FILES_URL as STATIC_FILE_URL } from '@/config/api.config';
 const companyStatusDict: any = {
     PENDING: 'در انتظار تایید',
     VERIFIED: 'تایید شده',

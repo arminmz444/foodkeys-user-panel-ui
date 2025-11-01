@@ -5,6 +5,7 @@ import Upload from '@/components/ui/upload';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import _axios from '@/utils/axios-instance';
+import { API_ENDPOINTS } from '@/config/api.config';
 
 interface GalleryUploadProps {
   fileServiceType: string; // e.g. 'CONTACT_PICTURE', 'CERTIFICATE', etc.
@@ -21,7 +22,7 @@ async function uploadGalleryFile(
   tempUploadFormData.append('fileServiceType', fileServiceType);
 
   const response = await _axios.post(
-    'http://localhost:8080/api/v1/client/panel/company/file/temp',
+    API_ENDPOINTS.files.temp,
     tempUploadFormData,
     {
       headers: {

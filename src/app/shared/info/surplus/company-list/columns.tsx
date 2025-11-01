@@ -14,8 +14,7 @@ import AvatarCard from "@/components/ui/avatar-card";
 import {Button, Popover} from "rizzui";
 import HandWaveIcon from "@/components/icons/hand-wave";
 import {PiHand} from "react-icons/pi";
-
-const STATIC_FILE_URL = "http://localhost:8080"
+import { STATIC_FILES_URL as STATIC_FILE_URL } from '@/config/api.config';
 const companyStatusDict: any = {
     VERIFIED: 'تایید شده',
     PENDING: 'در انتظار تایید',

@@ -588,6 +588,7 @@ import { Input, Loader } from 'rizzui';
 import { BsCreditCard } from 'react-icons/bs';
 import axiosInstance from '@/utils/axios-instance';
 import toast from 'react-hot-toast';
+import { API_ENDPOINTS } from '@/config/api.config';
 
 interface Bundle {
   id: number;
@@ -1002,7 +1003,7 @@ const TotalCard = ({
     if (!selectedPlan) return;
 
     const createSubscription = async () => {
-      const API_URL = `http://localhost:8080/api/v1/subscription`;
+      const API_URL = API_ENDPOINTS.subscription;
       let data = {
         bundleId: selectedPlan.bundleId,
       };
@@ -1026,14 +1027,12 @@ const TotalCard = ({
       }
     };
     let response = await createSubscription();
-    if (response?.data) router.push(`/bundle/${id}`);
+    if (response?.data) router.push(`/bundle/subscription-list`);
   };
 
   const applyDiscountCode = async () => {
     const applyDiscount = async () => {
-      const API_URL = `http://localhost:8080/api/v1/discount/${encodeURIComponent(
-          discountCode
-      )}/use`;
+      const API_URL = API_ENDPOINTS.discount(discountCode);
       try {
         const response = await axiosInstance.post(API_URL, {});
 
