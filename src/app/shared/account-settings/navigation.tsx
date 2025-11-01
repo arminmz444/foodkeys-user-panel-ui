@@ -21,13 +21,13 @@ const menuItems = [
     label: 'رمز عبور',
     value: '/profile/password',
   },
+  {
+    label: 'اطلاعات صورت‌حساب',
+    value: '/profile/billing',
+  },
   // {
   //   label: 'تیم',
   //   value: '/forms/profile-settings/team',
-  // },
-  // {
-  //   label: 'پرداخت',
-  //   value: '/forms/profile-settings/billing',
   // },
   // {
   //   label: 'پیام ها',

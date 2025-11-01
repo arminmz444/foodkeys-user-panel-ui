@@ -267,7 +267,7 @@ const galleryContactSchema = z.object({
     position: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
-    priority: z.number().optional()
+    priority: z.union([z.number(), z.string()]).optional()
 });
 
 const galleryCertificateSchema = z.object({
@@ -275,7 +275,7 @@ const galleryCertificateSchema = z.object({
     description: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
-    priority: z.number().optional()
+    priority: z.union([z.number(), z.string()]).optional()
 });
 
 const galleryProductSchema = z.object({
@@ -283,7 +283,7 @@ const galleryProductSchema = z.object({
     description: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
-    priority: z.number().optional()
+    priority: z.union([z.number(), z.string()]).optional()
 });
 
 const gallerySliderSchema = z.object({
@@ -291,7 +291,7 @@ const gallerySliderSchema = z.object({
     description: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
-    priority: z.number().optional()
+    priority: z.union([z.number(), z.string()]).optional()
 });
 
 const galleryCatalogSchema = z.object({
@@ -299,7 +299,7 @@ const galleryCatalogSchema = z.object({
     description: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
-    priority: z.number().optional()
+    priority: z.union([z.number(), z.string()]).optional()
 });
 
 const galleryDocumentSchema = z.object({
@@ -307,7 +307,7 @@ const galleryDocumentSchema = z.object({
     description: z.string().optional(),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
-    priority: z.number().optional()
+    priority: z.union([z.number(), z.string()]).optional()
 });
 
 const gallerySchema = z.object({

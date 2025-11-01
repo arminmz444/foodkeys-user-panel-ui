@@ -6,7 +6,11 @@ export const handleFormikError = (error: any, setError: any, defaultErrorMessage
         // @ts-ignore
         const backendError = error.response.data;
         if (backendError.statusCode === 400 && backendError.error) {
-            // toast.error(backendError.error.message);
+            // Always show the server message to the user
+            if (backendError.message) {
+                toast.error(backendError.message);
+            }
+            // Set field-specific errors
             backendError.error.forEach((err: any) => {
                 console.log(err);
                 // @ts-ignore
@@ -15,14 +19,17 @@ export const handleFormikError = (error: any, setError: any, defaultErrorMessage
                         type: err.type,
                         message: err.message,
                     });
-                else
+                else if (err.formikField)
                     setError(err.formikField, {
                         type: err.type,
                         message: err.message,
                     });
             });
-        } else
-            toast.error(defaultErrorMessage || 'خطا در برقراری ارتباط با سرور');
-    } else
+        } else {
+            // Show server message if available, otherwise show default
+            toast.error(backendError.message || defaultErrorMessage || 'خطا در برقراری ارتباط با سرور');
+        }
+    } else {
         toast.error(defaultErrorMessage || 'خطا در برقراری ارتباط با سرور');
+    }
 }

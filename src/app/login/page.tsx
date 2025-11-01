@@ -14,6 +14,7 @@ export default function Login() {
   const [step, setStep] = useState<'INITIAL' | 'PASSWORD' | 'SIGNUP'>(
     'INITIAL'
   );
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   return (
     <>
@@ -42,7 +43,7 @@ export default function Login() {
             </div>
           }
         >
-          <OtpForm setStep={setStep}/>
+          <OtpForm setStep={setStep} setPhoneNumber={setPhoneNumber}/>
         </AuthWrapperOne>
       )}
       {step === 'SIGNUP' && (
@@ -70,7 +71,7 @@ export default function Login() {
             </div>
           }
         >
-          <SignUpForm />
+          <SignUpForm initialPhoneNumber={phoneNumber} />
         </AuthWrapperOne>
       )}
       {step === 'PASSWORD' && (

@@ -23,7 +23,7 @@ type SendOtpFormValues = {
 };
 
 // @ts-ignore
-export default function OtpForm({ setStep }) {
+export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber }) {
   // @ts-ignore
   const { loginOtp, requestOtp } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -55,8 +55,12 @@ export default function OtpForm({ setStep }) {
       if (sendOtpScenario === SEND_OTP_SCENARIOS.REGISTERED) {
         setOtpSent(true);
         setPhoneNumber(data.phoneNumber);
-      } else if (sendOtpScenario === SEND_OTP_SCENARIOS.NEED_TO_REGISTER)
-        setStep("SIGNUP")
+      } else if (sendOtpScenario === SEND_OTP_SCENARIOS.NEED_TO_REGISTER) {
+        if (setParentPhoneNumber) {
+          setParentPhoneNumber(data.phoneNumber);
+        }
+        setStep("SIGNUP");
+      }
       else if (sendOtpScenario === SEND_OTP_SCENARIOS.IS_BLOCKED) {
         setOtpSent(true);
         setPhoneNumber(data.phoneNumber);
