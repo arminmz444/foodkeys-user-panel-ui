@@ -298,7 +298,7 @@ export const routes = {
         trackingId: (id: string) => `/food-industry/tracking/${id}`,
     },
     info: {
-        dashboard: '/',
+        dashboard: '/info',
         mediaBankList: '/info/media',
         mediaBankAdd: '/info/media/create',
         mediaBankView: (id: number) => `/info/media/${id}`,

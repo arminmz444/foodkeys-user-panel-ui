@@ -228,7 +228,7 @@ export default function Sidebar({ className }: { className?: string }) {
       },
       {
         name: 'لیست شرکت‌های ثبت شده',
-        href: routes.info.foodIndustryList,
+        href: routes.info.dashboard,
         icon: <PiListNumbersDuotone />,
       },
       {
