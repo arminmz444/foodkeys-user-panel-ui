@@ -89,11 +89,13 @@ export const getColumns = ({
     // },
 
     {
-        title: <HeaderCell title="شماره فاکتور" sortKey="billId" {...{ sortConfig, onHeaderCellClick }} />,
-        dataIndex: 'billId',
-        key: 'billId',
-        width: 180,
-        render: (svc: string) => <Text>{svc}</Text>,
+        title: <HeaderCell title="شماره تراکنش" sortKey="id" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'id',
+        key: 'id',
+        width: 200,
+        render: (id: string, row: any) => (
+            <Text className="font-mono text-xs">{id || row.billId || '—'}</Text>
+        ),
     },
     {
         title: <HeaderCell title="نوع تراکنش" sortKey="serviceNameFa" {...{ sortConfig, onHeaderCellClick }} />,
@@ -117,11 +119,11 @@ export const getColumns = ({
         render: (amt: number) => <Text>{amt?.toLocaleString()}</Text>,
     },
     {
-        title: <HeaderCell title="کد پیگیری" sortKey="referenceCode" {...{ sortConfig, onHeaderCellClick }} />,
-        dataIndex: 'referenceCode',
-        key: 'referenceCode',
+        title: <HeaderCell title="کد پیگیری" sortKey="refId" {...{ sortConfig, onHeaderCellClick }} />,
+        dataIndex: 'refId',
+        key: 'refId',
         width: 140,
-        render: (ref: string) => <Text>{ref || '—'}</Text>,
+        render: (ref: string) => <Text>{(ref && ref.replace("FK_TRX-", "")) || '—'}</Text>,
     },
     {
         title: <HeaderCell title="وضعیت" sortKey="status" {...{ sortConfig, onHeaderCellClick }} />,
@@ -143,17 +145,24 @@ export const getColumns = ({
         title: <HeaderCell title="فاکتور" />,
         dataIndex: 'hasBill',
         key: 'hasBill',
-        width: 100,
-        render: (_: any, row: any) =>
-
-                <Button
-                    size="sm"
-                    isLoading={billDownloadLoading[row.id]}
-                    onClick={() => handleDownloadBill(row.id)}
-                >
-                    <PiDownload className="me-1" />
-                    دریافت فاکتور
-                </Button>
-
+        width: 120,
+        render: (_: any, row: any) => {
+            // Only show button for BUY_SUBSCRIPTION transactions
+            if (row.serviceName === 'BUY_SUBSCRIPTION') {
+                return (
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        isLoading={billDownloadLoading[row.id]}
+                        onClick={() => handleDownloadBill(row.id)}
+                        disabled={billDownloadLoading[row.id]}
+                    >
+                        <PiDownload className="me-1" />
+                        دانلود فاکتور
+                    </Button>
+                );
+            }
+            return <Text className="text-gray-400">—</Text>;
+        }
     },
 ];

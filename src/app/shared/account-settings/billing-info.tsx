@@ -156,7 +156,7 @@ export default function BillingInfoView() {
     try {
       setGenerating(true);
       const response = await _axios.post(
-        '/billing-info/generate-bill/' + "aa79b5c5-1bab-4392-932b-3396070fa4a0",
+        '/billing-info/generate-bill/' + "4e6e9d31-33ea-4011-8666-b267962e081e",
         { userId: userInfo.id, templateId: 1 },
         { responseType: 'blob' }
       );
@@ -457,32 +457,32 @@ export default function BillingInfoView() {
         }}
       </Form>
 
-      {billingInfo?.id && (
-        <div className="mx-auto mt-10 w-full max-w-screen-2xl">
-          <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900/50">
-            <div className="mb-4 flex items-start justify-between">
-              <div>
-                <Text tag="h3" className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  دریافت فاکتور
-                </Text>
-                <Text className="text-sm text-gray-500 dark:text-gray-400">
-                  فاکتور خرید خود را با اطلاعات ثبت شده دریافت کنید
-                </Text>
-              </div>
-              <PiFilePdf className="h-10 w-10 text-gray-400 dark:text-gray-600" />
-            </div>
-            <Button
-              variant="outline"
-              onClick={handleGenerateBill}
-              isLoading={isGenerating}
-              className="mt-4 w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 sm:w-auto"
-            >
-              <PiDownloadSimple className="ml-2 h-5 w-5" />
-              دانلود فاکتور
-            </Button>
-          </div>
-        </div>
-      )}
+      {/*{billingInfo?.id && (*/}
+      {/*  <div className="mx-auto mt-10 w-full max-w-screen-2xl">*/}
+      {/*    <div className="rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-900/50">*/}
+      {/*      <div className="mb-4 flex items-start justify-between">*/}
+      {/*        <div>*/}
+      {/*          <Text tag="h3" className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">*/}
+      {/*            دریافت فاکتور*/}
+      {/*          </Text>*/}
+      {/*          <Text className="text-sm text-gray-500 dark:text-gray-400">*/}
+      {/*            فاکتور خرید خود را با اطلاعات ثبت شده دریافت کنید*/}
+      {/*          </Text>*/}
+      {/*        </div>*/}
+      {/*        <PiFilePdf className="h-10 w-10 text-gray-400 dark:text-gray-600" />*/}
+      {/*      </div>*/}
+      {/*      <Button*/}
+      {/*        variant="outline"*/}
+      {/*        onClick={handleGenerateBill}*/}
+      {/*        isLoading={isGenerating}*/}
+      {/*        className="mt-4 w-full dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 sm:w-auto"*/}
+      {/*      >*/}
+      {/*        <PiDownloadSimple className="ml-2 h-5 w-5" />*/}
+      {/*        دانلود فاکتور*/}
+      {/*      </Button>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </>
   );
 }

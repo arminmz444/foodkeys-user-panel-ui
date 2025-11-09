@@ -173,7 +173,7 @@ import { usePathname } from 'next/navigation';
 import { Text } from '@/components/ui/text';
 import { Collapse } from '@/components/ui/collapse';
 import cn from '@/utils/class-names';
-import { PiCaretDownBold } from 'react-icons/pi';
+import {PiCaretDownBold, PiTable} from 'react-icons/pi';
 import SimpleBar from '@/components/ui/simplebar';
 import Logo from '@/components/logo';
 import { useServiceSubcategories } from '@/hooks/use-service-subcategories';
@@ -327,7 +327,7 @@ export default function Sidebar({ className }: { className?: string }) {
       {
         name: 'پرداخت‌',
         href: '#',
-        icon: <PiContactlessPayment />,
+        icon: <PiCurrencyDollarDuotone />,
         dropdownItems: [
           {
             name: 'لیست پرداخت‌ها',
@@ -338,39 +338,43 @@ export default function Sidebar({ className }: { className?: string }) {
             href: routes.finance.transactionList,
           },
           {
-            name: 'ایجاد',
-            href: routes.invoice.create,
-          },
+                name: 'جزییات (تنها برای محیط آزمایشی)',
+                href: routes.invoice.details(DUMMY_ID),
+              },
+          // {
+          //   name: 'ایجاد',
+          //   href: routes.invoice.create,
+          // },
         ],
       },
-      {
-        name: 'فاکتور',
-        href: '#',
-        icon: <PiCurrencyDollarDuotone />,
-        dropdownItems: [
-          {
-            name: 'لیست',
-            href: routes.invoice.home,
-          },
-          {
-            name: 'جزییات (تنها برای محیط آزمایشی)',
-            href: routes.invoice.details(DUMMY_ID),
-          },
-          {
-            name: 'ایجاد',
-            href: routes.invoice.create,
-          },
-        ],
-      },
+      // {
+      //   name: 'فاکتور',
+      //   href: '#',
+      //   icon: <PiCurrencyDollarDuotone />,
+      //   dropdownItems: [
+      //     {
+      //       name: 'لیست',
+      //       href: routes.invoice.home,
+      //     },
+      //     {
+      //       name: 'جزییات (تنها برای محیط آزمایشی)',
+      //       href: routes.invoice.details(DUMMY_ID),
+      //     },
+      //     {
+      //       name: 'ایجاد',
+      //       href: routes.invoice.create,
+      //     },
+      //   ],
+      // },
       {
         name: 'بخش مدیریت (موقت)',
         href: '#',
-        icon: <PiCurrencyDollarDuotone />,
+        icon: <PiTable />,
         dropdownItems: [
-          {
-            name: 'داشبورد',
-            href: routes.management.dashboard,
-          },
+          // {
+          //   name: 'داشبورد',
+          //   href: routes.management.dashboard,
+          // },
           {
             name: 'درخواست‌های کاربران',
             href: routes.management.requestList,

@@ -1158,9 +1158,9 @@ export default function PersonalInfoView({ user }) {
                               <PiXBold className="h-4 w-4" />
                             </Button>
                         )}
-                              <Button className="h-10 w-20" size="sm" rounded="lg">
-                          تأیید ایمیل
-                        </Button>
+                        {/*      <Button className="h-10 w-20" size="sm" rounded="lg">*/}
+                        {/*  تأیید ایمیل*/}
+                        {/*</Button>*/}
 
                               {emails.length === index + 1 && emails.length < 3 && (
                                   <Button
@@ -1210,9 +1210,9 @@ export default function PersonalInfoView({ user }) {
                               <PiXBold className="h-4 w-4" />
                             </Button>
                         )}
-                              <Button className="h-10 w-20" size="sm" rounded="lg">
-                          تأیید تلفن
-                        </Button>
+                        {/*      <Button className="h-10 w-20" size="sm" rounded="lg">*/}
+                        {/*  تأیید تلفن*/}
+                        {/*</Button>*/}
 
                               {phones.length === index + 1 && phones.length < 3 && (
                                   <Button

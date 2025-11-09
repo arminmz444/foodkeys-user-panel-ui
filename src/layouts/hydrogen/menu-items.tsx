@@ -945,7 +945,7 @@ const MenuItems = () => {
         {
             name: 'پرداخت‌',
             href: '#',
-            icon: <PiContactlessPayment />,
+            icon: <PiCurrencyDollarDuotone />,
             dropdownItems: [
                 {
                     name: 'لیست پرداخت‌ها',
@@ -956,39 +956,40 @@ const MenuItems = () => {
                     href: routes.finance.transactionList,
                 },
                 {
-                    name: 'ایجاد',
-                    href: routes.invoice.create,
-                },
-            ],
-        },
-        {
-            name: 'فاکتور',
-            href: '#',
-            icon: <PiCurrencyDollarDuotone />,
-            dropdownItems: [
-                {
-                    name: 'لیست',
-                    href: routes.invoice.home,
-                },
-                {
                     name: 'جزییات (تنها برای محیط آزمایشی)',
                     href: routes.invoice.details(DUMMY_ID),
                 },
-                {
-                    name: 'ایجاد',
-                    href: routes.invoice.create,
-                },
+                // {
+                //     name: 'ایجاد',
+                //     href: routes.invoice.create,
+                // },
             ],
         },
+        // {
+        //     name: 'فاکتور',
+        //     href: '#',
+        //     icon: <PiCurrencyDollarDuotone />,
+        //     dropdownItems: [
+        //         // {
+        //         //     name: 'لیست',
+        //         //     href: routes.invoice.home,
+        //         // },
+        //
+        //         // {
+        //         //     name: 'ایجاد',
+        //         //     href: routes.invoice.create,
+        //         // },
+        //     ],
+        // },
         {
             name: 'بخش مدیریت (موقت)',
             href: '#',
             icon: <PiCurrencyDollarDuotone />,
             dropdownItems: [
-                {
-                    name: 'داشبورد',
-                    href: routes.management.dashboard,
-                },
+                // {
+                //     name: 'داشبورد',
+                //     href: routes.management.dashboard,
+                // },
                 {
                     name: 'درخواست‌های کاربران',
                     href: routes.management.requestList,

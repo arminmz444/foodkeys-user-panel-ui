@@ -42,7 +42,7 @@ export default function TransactionsTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [inputValue, setInputValue] = useState('');
-  const [billDownloadLoading, setBillDownloadLoading] = useState([])
+  const [billDownloadLoading, setBillDownloadLoading] = useState<Record<string, boolean>>({});
   const searchInput = useRef<HTMLInputElement>(null);
   const _axios = useAxiosPrivate();
   const fetchPayments = async (
@@ -63,7 +63,7 @@ export default function TransactionsTable() {
       throw new Error('Failed to fetch payments');
     }
   };
-  const handleRequestRevision = async (id: number) => {
+  const handleRequestRevision = useCallback(async (id: number) => {
     console.log(id);
     setRevisionRequestLoading(true);
     try {
@@ -78,7 +78,45 @@ export default function TransactionsTable() {
     } finally {
       setRevisionRequestLoading(false);
     }
-  };
+  }, [_axios]);
+
+  const handleDownloadBill = useCallback(async (transactionId: string) => {
+    if (!transactionId) {
+      toast.error('شناسه تراکنش یافت نشد');
+      return;
+    }
+
+    try {
+      setBillDownloadLoading((prev) => ({ ...prev, [transactionId]: true }));
+      const response = await _axios.post(
+        '/billing-info/generate-bill/' + transactionId,
+        { templateId: 1 },
+        { responseType: 'blob' }
+      );
+
+      // Create a blob from the response
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+
+      // Create a download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `bill_${transactionId}_${new Date().getTime()}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success('فاکتور با موفقیت دانلود شد');
+    } catch (error: any) {
+      console.error('Error generating bill:', error);
+      toast.error(error?.response?.data?.message || 'خطا در صدور فاکتور');
+    } finally {
+      setBillDownloadLoading((prev) => ({ ...prev, [transactionId]: false }));
+    }
+  }, [_axios]);
 
   const debounceSearch = useCallback((func: Function, delay: number) => {
     let timer: NodeJS.Timeout;
@@ -137,18 +175,15 @@ export default function TransactionsTable() {
     () =>
       getColumns({
         data: data?.data || [],
-        sortConfig,
+        sortConfig: (sortConfig && 'key' in sortConfig && 'direction' in sortConfig) ? sortConfig as { key: string; direction: 'asc' | 'desc' } : null,
         checkedItems: selectedRowKeys,
         onHeaderCellClick: (value: string) => handleSort(value),
-        onDeleteItem: (id: string) => handleDelete(id),
         onChecked: handleRowSelect,
         handleSelectAll,
-        handleRequestRevision: handleRequestRevision,
-        revisionRequestLoading: revisionRequestLoading,
-        handleDownloadBill: handleRequestRevision,
+        handleDownloadBill: handleDownloadBill,
         billDownloadLoading: billDownloadLoading
       }),
-    [data, selectedRowKeys, sortConfig]
+    [data, selectedRowKeys, sortConfig, billDownloadLoading, handleDownloadBill, handleRowSelect, handleSelectAll, handleSort]
   );
 
   const { visibleColumns, checkedColumns, setCheckedColumns } =
