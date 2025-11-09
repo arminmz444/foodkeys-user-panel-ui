@@ -21,7 +21,7 @@ async function uploadGalleryFile(
   tempUploadFormData.append('fileServiceType', fileServiceType);
 
   const response = await _axios.post(
-    'http://localhost:8080/api/v1/client/panel/company/file/temp',
+    'https://back.agfo.ir/api/v1/client/panel/company/file/temp',
     tempUploadFormData,
     {
       headers: {

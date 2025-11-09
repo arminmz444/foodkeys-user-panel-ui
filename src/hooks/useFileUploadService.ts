@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1/client/panel';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back.agfo.ir/api/v1/client/panel';
 
 export const useFileUploadService = () => {
     const axiosPrivate = useAxiosPrivate();

@@ -499,7 +499,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
         name: res.data.filename || res.data.name,
         filePath: res.data.filePath,
         fileId: res.data.id,
-        url: res.data.url || `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}${res.data.filePath}`
+        url: res.data.url || `${process.env.NEXT_PUBLIC_API_URL || 'https://back.agfo.ir'}${res.data.filePath}`
       }));
     } catch (error) {
       console.error('Error uploading product images:', error);

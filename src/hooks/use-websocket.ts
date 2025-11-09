@@ -51,8 +51,8 @@
 //   const getWebSocketUrl = useCallback(() => {
 //     const isDevelopment = process.env.NODE_ENV === 'development';
 //     return isDevelopment
-//       ? 'http://localhost:8080/ws'
-//       : 'http://localhost:8080/ws';
+//       ? 'https://back.agfo.ir/ws'
+//       : 'https://back.agfo.ir/ws';
 //   }, []);
 //
 //   const connect = useCallback(() => {
@@ -278,8 +278,8 @@ export const useWebSocketConnection = (options = {}) => {
   const getWebSocketUrl = useCallback(() => {
     const isDevelopment = process.env.NODE_ENV === 'development';
     return isDevelopment
-        ? 'http://localhost:8080/ws'
-        : 'http://localhost:8080/ws';
+        ? 'https://back.agfo.ir/ws'
+        : 'https://back.agfo.ir/ws';
   }, []);
 
   const connect = useCallback(() => {

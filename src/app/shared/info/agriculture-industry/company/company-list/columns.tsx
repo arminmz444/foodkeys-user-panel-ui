@@ -13,7 +13,7 @@ import EyeIcon from "@/components/icons/eye";
 import type {Invoice} from "@/data/invoice-data";
 import AvatarCard from "@/components/ui/avatar-card";
 
-const STATIC_FILE_URL = "http://localhost:8080" //process.env.STATIC_FILES_URL;
+const STATIC_FILE_URL = "https://back.agfo.ir" //process.env.STATIC_FILES_URL;
 const companyStatusDict: any = {
     VERIFIED: 'تایید شده',
     PENDING: 'در انتظار',

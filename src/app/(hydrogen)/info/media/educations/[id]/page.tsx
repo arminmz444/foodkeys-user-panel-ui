@@ -28,7 +28,7 @@ export default function CompanyDetailsPage({ params }: any) {
   };
 
   const fetchCompany = async () => {
-    const API_URL = `http://localhost:8080/api/v1/company/${params.id}`
+    const API_URL = `https://back.agfo.ir/api/v1/company/${params.id}`
     const response = await axiosInstance.get(API_URL);
 
     if (response.data.statusCode === 200) {

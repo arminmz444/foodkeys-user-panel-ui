@@ -75,7 +75,7 @@ export default function ProductMedia({ className }) {
     tempUploadFormData.append('fileServiceType', 'PRODUCT_PICTURE');
 
     const response = await _axios.post(
-      'http://localhost:8080/api/v1/client/panel/file/temp',
+      'https://back.agfo.ir/api/v1/client/panel/file/temp',
       tempUploadFormData,
       {
         headers: {

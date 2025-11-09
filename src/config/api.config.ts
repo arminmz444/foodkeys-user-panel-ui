@@ -7,11 +7,11 @@
 // Base API URL for client panel endpoints
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT ||
-  'http://localhost:8080/api/v1/client/panel';
+  'https://back.agfo.ir/api/v1/client/panel';
 
 // Base URL for static files (images, documents, etc.)
 export const STATIC_FILES_URL =
-  process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'http://localhost:8080';
+  process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
 
 // WebSocket URL for real-time communication
 export const WS_URL =
@@ -19,7 +19,7 @@ export const WS_URL =
 
 // Full base URL (without /api/v1/client/panel)
 export const BASE_URL =
-  process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';
+  process.env.NEXT_PUBLIC_BASE_URL || 'https://back.agfo.ir';
 
 // Specific API endpoints that might be used directly
 export const API_ENDPOINTS = {

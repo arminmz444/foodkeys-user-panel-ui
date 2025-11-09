@@ -89,7 +89,7 @@
 // export default function PersonalInfoView({ user }) {
 //   const dispatch = useDispatch();
 //   const _axios = useAxiosPrivate();
-//   const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'http://localhost:8080';
+//   const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
 //   const imageRef = useRef<HTMLInputElement>(null);
 //   const [isLoading, setLoading] = useState(false);
 //   const [images, setImages] = useState<Array<File>>([]);
@@ -785,8 +785,8 @@ type PersonalInfoFormTypes = z.infer<typeof personalInfoFormSchema>;
 export default function PersonalInfoView({ user }) {
   const dispatch = useDispatch();
   const _axios = useAxiosPrivate();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'http://localhost:8080';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://back.agfo.ir';
+  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
   const profileImageRef = useRef<HTMLInputElement>(null);
   const backgroundImageRef = useRef<HTMLInputElement>(null);
   const [isLoading, setLoading] = useState(false);

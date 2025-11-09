@@ -407,7 +407,7 @@ export function ProfileHeader({
                                 description,
                                 children,
                               }: React.PropsWithChildren<{ userInfo: any; description?: string }>) {
-  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'http://localhost:8080';
+  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
   const hasBackgroundImage = !!userInfo?.backgroundAvatar;
 
   return (

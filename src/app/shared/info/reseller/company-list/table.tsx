@@ -29,8 +29,8 @@ const filterState = {
 
 const fetchCompanies = async (searchTerm: string, currentPage: number, pageSize: number) => {
     const API_URL = searchTerm
-        ? `http://localhost:8080/api/v1/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-        : `http://localhost:8080/api/v1/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
+        ? `https://back.agfo.ir/api/v1/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+        : `https://back.agfo.ir/api/v1/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
 
     const response = await axiosInstance.get(API_URL);
 
