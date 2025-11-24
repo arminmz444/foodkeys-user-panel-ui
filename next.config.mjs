@@ -80,7 +80,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.foodkeys-api-dev.liara.run',
+        hostname: 'www.back.agfo.ir',
         port: '80',
         pathname: '/files/**',
       },
@@ -106,7 +106,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'foodkeys-userpanel-dev.liara.run',
+        hostname: 'panel.agfo.ir',
       },
     ],
   },
