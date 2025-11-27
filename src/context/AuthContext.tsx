@@ -306,9 +306,9 @@ export const AuthProvider = ({children}) => {
     const requestOtp = useCallback(async (phoneNumber: any) => {
         try {
             let response = await axiosInstance.post('/auth/send-otp', {phoneNumber});
-            if (response.data?.data?.isBlocked) return SEND_OTP_SCENARIOS.IS_BLOCKED;
+            if (response.data?.data?.blocked) return SEND_OTP_SCENARIOS.IS_BLOCKED;
             toast.success('رمز یکبار مصرف با موفقیت ارسال شد');
-            return response.data?.data?.isRegistered ? SEND_OTP_SCENARIOS.REGISTERED : SEND_OTP_SCENARIOS.NEED_TO_REGISTER
+            return response.data?.data?.registered ? SEND_OTP_SCENARIOS.REGISTERED : SEND_OTP_SCENARIOS.NEED_TO_REGISTER
 
         } catch (error) {
             // toast.error('خطا در ارسال رمز یکبار مصرف');
