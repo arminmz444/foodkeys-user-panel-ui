@@ -221,7 +221,8 @@ export const AuthProvider = ({children}) => {
 
     const signUp = useCallback(async (username: any, email: any, firstName: any, lastName: any, password: any, otp: any, m: any, setError: any) => {
         try {
-            const response = await axiosInstance.post('/auth/register', {
+            console.log('SignUp called with:', { username, email, firstName, lastName, password: '***', otp: '***' });
+            const payload = {
                 username,
                 phone: username,
                 password,
@@ -229,7 +230,9 @@ export const AuthProvider = ({children}) => {
                 firstName,
                 lastName,
                 otp
-            });
+            };
+            console.log('Sending to API:', { ...payload, password: '***', otp: '***' });
+            const response = await axiosInstance.post('/auth/register', payload);
             const data = response.data;
             // const data = await signIn('credentials', {
             //     username: username, password: password,
@@ -250,19 +253,44 @@ export const AuthProvider = ({children}) => {
                 return true;
             } // @ts-ignore
             else throw new Error(data?.message || 'خطا در ثبت‌نام');
-        } catch (error) {
+        } catch (error: any) {
             console.error('Sign up failed:', error);
-            handleFormikError(error, setError, "خطا در ثبت نام");
-            toast.error(
-                // @ts-ignore
-                (error?.response?.data?.message &&
-                    // @ts-ignore
-                    error?.response?.data?.message === 'Unauthorized' &&
-                    'اطلاعات ورودی معتبر نمی‌باشد') ||
-                'خطا در ثبت نام'
-            );
+            
+            // Handle 400 validation errors
+            if (
+                error.response &&
+                error.response.status === 400 &&
+                error.response.data.statusCode === 400 &&
+                error.response.data.error?.length
+            ) {
+                const errors = error.response.data.error;
+                
+                // If only one error, show it in toast
+                if (errors.length === 1) {
+                    toast.error(errors[0].message || error.response.data.message || 'خطا در ثبت نام');
+                } else {
+                    // Multiple errors - show main message in toast
+                    toast.error(error.response.data.message || 'خطا در اعتبارسنجی اطلاعات ارسالی');
+                }
+                
+                // Set field errors for all errors
+                errors.forEach((err: { formikField: string; message: any }) => {
+                    if (err.formikField && err.formikField !== 'GENERAL') {
+                        setError(err.formikField, {
+                            type: 'manual',
+                            message: err.message
+                        });
+                    }
+                });
+            } else {
+                // Handle other errors
+                toast.error(
+                    error?.response?.data?.message ||
+                    'خطا در ثبت نام'
+                );
+            }
+            
             return false;
-            // throw error;
         }
     }, []);
 

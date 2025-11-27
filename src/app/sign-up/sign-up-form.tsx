@@ -9,7 +9,7 @@ import {Text} from '@/components/ui/text';
 import Link from 'next/link';
 import {Form} from '@/components/ui/form';
 import * as z from 'zod';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {PiArrowLeftBold} from 'react-icons/pi';
 import {routes} from '@/config/routes';
 import {PinCode} from "@/components/ui/pin-code";
@@ -94,6 +94,7 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
     const [isResending, setIsResending] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber || '');
     const dispatch = useDispatch();
+    const setErrorRef = useRef<any>(null);
     // @ts-ignore
     const {signUp, requestOtp} = useAuth();
 
@@ -140,41 +141,48 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
         }
     };
 
-    // @ts-ignore
-    const onSubmit: SubmitHandler<any> = async (getValues: {
-        (): { phone: string; email: string; firstName: string; lastName: string; password: string; otp: string; };
-        (): any;
-    }, setError: {
-        (field: string, value: ErrorOption): void;
-        (arg0: string, arg1: { type: any; message: any; }): void;
-    }, reset: { (): void; (): void; }) => {
-        // @ts-ignore
-        const data = getValues()
-        console.log(data);
-        setLoading(true);
-        console.log(data);
-        let m = {token: '', user: ''};
-        let hasSignedUp = await signUp(data.phone, data.email, data.firstName, data.lastName, data.password, data.otp, m, (field: string, value: ErrorOption) => setError(field, value));
-
-        console.log(m);
-        if (hasSignedUp !== false)
-            // @ts-ignore
-            dispatch(reduxLogin(m));
-        setLoading(false);
-        // setReset({...initialValues, isAgreed: false});
-    }
 
     return (
         <>
             <Form<FormValues>
                 validationSchema={signUpFormSchema}
                 resetValues={reset}
-                onSubmit={onSubmit}
+                onSubmit={async (data) => {
+                    console.log('Form data:', { ...data, password: '***', otp: '***' });
+                    console.log('Phone number from state:', phoneNumber);
+                    
+                    // Ensure phone number is set (from initialPhoneNumber or state)
+                    const phone = data.phone || phoneNumber || initialPhoneNumber;
+                    console.log('Using phone number:', phone);
+                    
+                    if (!phone) {
+                        toast.error('شماره همراه یافت نشد');
+                        return;
+                    }
+                    
+                    setLoading(true);
+                    let m = {token: '', user: ''};
+                    
+                    let hasSignedUp = await signUp(phone, data.email, data.firstName, data.lastName, data.password, data.otp, m, setErrorRef.current);
+
+                    console.log('SignUp result:', m);
+                    if (hasSignedUp !== false)
+                        // @ts-ignore
+                        dispatch(reduxLogin(m));
+                    setLoading(false);
+                }}
                 useFormProps={{
                     defaultValues: initialValues,
                 }}
             >
-                {({register, getValues, reset, setValue, setError, formState: {errors}}) => (
+                {({register, getValues, reset, setValue, setError, watch, formState: {errors}}) => {
+                    // Store setError in ref so onSubmit can access it
+                    setErrorRef.current = setError;
+                    
+                    // Watch isAgreed to reactively enable/disable button
+                    const isAgreed = watch('isAgreed');
+                    
+                    return (
                     <div className="flex flex-col gap-x-4 gap-y-5 md:grid md:grid-cols-2 lg:gap-5">
                         <div dir="rtl" className="col-span-2 flex flex-col items-center justify-center mx-auto w-full">
                             <div dir="ltr" className="flex flex-col items-center justify-center w-full max-w-md gap-6">
@@ -273,10 +281,10 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
                         <Input
                             type="number"
                             size="lg"
-                            disabled
+                            readOnly
                             label="شماره همراه*"
                             className="col-span-2 [&>label>span]:font-medium"
-                            inputClassName="text-sm"
+                            inputClassName="text-sm bg-gray-100"
                             color="success"
                             placeholder="مثال: 09123456789"
                             {...register('phone', {
@@ -330,21 +338,20 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
                             />
                         </div>
                         <Button
-                            onClick={(e) => {
-                                // @ts-ignore
-                                onSubmit(() => getValues(), (field: string, value: ErrorOption) => setError(field, value), () => reset())
-                            }}
                             size="lg"
                             color="success"
                             type="submit"
                             className="group/btn col-span-2 mt-2"
+                            isLoading={loading}
+                            disabled={!isAgreed || loading}
                         >
                             <span>ثبت نام</span>{' '}
                             <PiArrowLeftBold
                                 className="ms-2 mt-0.5 h-5 w-5 transition-all group-hover/btn:-translate-x-2"/>
                         </Button>
                     </div>
-                )}
+                    );
+                }}
             </Form>
             {/*<Text className="mt-6 text-center leading-loose text-gray-500 lg:mt-8 lg:text-start">*/}
             {/*    آیا حساب کاربری دارید?{' '}*/}
