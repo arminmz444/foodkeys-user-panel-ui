@@ -1,3 +1,4 @@
+import { CLIENT_WEBSITE_URL } from '@/config/api.config';
 import {HeaderCell} from '@/components/ui/table';
 import {Text} from '@/components/ui/text';
 import {Checkbox} from '@/components/ui/checkbox';
@@ -26,6 +27,7 @@ const companyStatusDict: any = {
     UPDATED: 'بروزرسانی شده',
     PUBLISHED: 'منتشر شده',
     REVISION: 'درخواست بازبینی',
+    REQUIRE_PAYMENT: "در انتظار پرداخت",
     SUBMIT: 'ثبت شده',
 };
 
@@ -38,8 +40,10 @@ function getStatusBadge(status: string) {
                     : status === 'DENIED' || status === 'ARCHIVED'
                         ? 'bg-red-lighter'
                         : status === 'PENDING'
-                            ? 'bg-orange-lighter'
-                            : 'bg-gray-200'
+                            ? 'bg-orange-lighter' 
+                            : status === "REQUIRE_PAYMENT"
+                                ? 'bg-orange'
+                                : 'bg-gray-200'
             }  px-2.5 py-1`}
         >
             <Badge
@@ -225,7 +229,7 @@ export const getColumns = ({
                             tag="span"
                             size="sm"
                             variant="outline"
-                            className="bg-white text-black hover:!bg-black hover:text-white"
+                            className="dark:border-gray-300 dark:text-gray-700 dark:hover:!bg-gray-100 dark:hover:!text-gray-1000"
                         >
                             ویرایش
                             {/* <PencilIcon /> */}
@@ -241,7 +245,7 @@ export const getColumns = ({
                     {row.hasDetailsPage ?
                     <a
                         href={
-                            `${process.env.NEXT_PUBLIC_CLIENT_WEBSITE_URL}/view/${row.subCategoryNameEn}/details?id=` +
+                            `${CLIENT_WEBSITE_URL}/view/${row.subCategoryNameEn}/details?id=` +
                             row.id
                         }
                     >
@@ -250,7 +254,7 @@ export const getColumns = ({
                             size="sm"
                             disabled={false}
                             variant="outline"
-                            className="bg-white text-black hover:!bg-black hover:text-white"
+                            className="dark:border-gray-300 dark:text-gray-700 dark:hover:!bg-gray-100 dark:hover:!text-gray-1000"
                         >
                             مشاهده
                             {/* <EyeIcon className="h-4 w-4" /> */}
@@ -260,7 +264,7 @@ export const getColumns = ({
                             size="sm"
                             disabled={true}
                             variant="outline"
-                            className="bg-white text-black hover:!bg-black hover:text-white"
+                            className="dark:border-gray-300 dark:text-gray-700 dark:hover:!bg-gray-100 dark:hover:!text-gray-1000"
                         >
                             مشاهده
                             {/* <EyeIcon className="h-4 w-4" /> */}

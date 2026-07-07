@@ -123,13 +123,6 @@ export const getColumns = ({
     render: (amount: number) => <Text>{amount}</Text>,
   },
   {
-    title: <HeaderCell title="کد ارجاع" />,
-    dataIndex: 'refId',
-    key: 'refId',
-    width: 60,
-    render: (refId: number) => <Text>{refId || <RxBorderSolid />}</Text>,
-  },
-  {
     title: <HeaderCell title="توضیحات" />,
     dataIndex: 'description',
     key: 'description',
@@ -146,6 +139,13 @@ export const getColumns = ({
     render: (_: string, row: any) => {
       return getStatusBadge(row.paymentStatus, row.paymentStatusColor);
     },
+  },
+  {
+    title: <HeaderCell title="کد ارجاع" />,
+    dataIndex: 'refId',
+    key: 'refId',
+    width: 60,
+    render: (refId: number) => <Text>{refId || <RxBorderSolid />}</Text>,
   },
   // {
   //   title: <></>,

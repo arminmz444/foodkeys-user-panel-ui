@@ -1,5 +1,6 @@
 'use client';
 
+import { API_BASE_URL } from '@/config/api.config';
 import {
   CreateEventInput,
   defaultValues,
@@ -148,7 +149,7 @@ export default function CreateConference({
       console.log('payload: ', JSON.stringify(payload));
 
       const response = await _axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/service`,
+        `${API_BASE_URL}/service`,
         payload,
         {
           headers: {
@@ -178,7 +179,7 @@ export default function CreateConference({
           onSubmit={methods.handleSubmit(onSubmit)}
           className={cn('[&_label.block>span]:font-medium', className)}
         >
-          <div className="mb-10 grid gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
+          <div className="mb-10 grid gap-7 divide-y divide-dashed divide-gray-200 dark:divide-gray-300 @2xl:gap-9 @3xl:gap-11">
             {Object.entries(MAP_STEP_TO_COMPONENT).map(([key, Component]) => (
               <Element
                 key={key}

@@ -1,5 +1,6 @@
 'use client';
 
+import { API_BASE_URL } from '@/config/api.config';
 import React, {
   useState,
   useMemo,
@@ -49,8 +50,8 @@ export default function RequestListTable({
     pageSize: number
   ) => {
     let API_URL = searchTerm
-      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/search/request/${relatedEntity}?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-      : `${process.env.NEXT_PUBLIC_API_BASE_URL}/request/${relatedEntity}?pageNumber=${currentPage}&pageSize=${pageSize}`;
+      ? `${API_BASE_URL}/search/request/${relatedEntity}?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+      : `${API_BASE_URL}/request/${relatedEntity}?pageNumber=${currentPage}&pageSize=${pageSize}`;
 
     const response = await axiosInstance.get(API_URL);
 

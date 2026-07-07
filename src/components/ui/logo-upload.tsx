@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '@/config/api.config';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { ForwardedRef, forwardRef, useRef, useState } from 'react';
 import cn from '@/utils/class-names';
 import Image from 'next/image';
@@ -30,6 +32,7 @@ export interface LogoUploadProps
     success?: boolean;
     onRemove?: () => void;
     onUploadSuccess?: (fileData: SimpleTempFileDTO) => void;
+    fileServiceType?: string;
 }
 
 function LogoUpload(
@@ -44,6 +47,7 @@ function LogoUpload(
         success: externalSuccess,
         onRemove: externalOnRemove,
         onUploadSuccess,
+        fileServiceType = 'COMPANY_LOGO',
         ...props
     }: LogoUploadProps,
     ref: ForwardedRef<HTMLInputElement>
@@ -99,11 +103,11 @@ function LogoUpload(
             // Prepare FormData for API upload
             const formData = new FormData();
             formData.append('files', uploadedFile);
-            formData.append('fileServiceType', 'COMPANY_LOGO');
+            formData.append('fileServiceType', fileServiceType);
 
             // Upload to API
             const response = await _axios.post(
-                `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+                `${API_BASE_URL}/file`,
                 formData,
                 {
                     headers: {
@@ -155,7 +159,7 @@ function LogoUpload(
     const getPreviewUrl = () => {
         if (logoPreview) return logoPreview;
         if (fileData?.filePath) {
-            return `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${fileData.filePath}`;
+            return `${STATIC_FILES_URL}${fileData.filePath}`;
         }
         return null;
     };
@@ -242,7 +246,7 @@ function LogoUpload(
                                     <div className="flex gap-2">
                                         <button
                                             type="button"
-                                            className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-600 hover:bg-blue-100 hover:text-blue-700"
+                                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-0 text-gray-600 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-100 dark:text-gray-600 dark:hover:bg-blue-lighter/30 dark:hover:text-blue-light"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleClick();
@@ -252,7 +256,7 @@ function LogoUpload(
                                         </button>
                                         <button
                                             type="button"
-                                            className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-gray-600 hover:bg-red-100 hover:text-red-700"
+                                            className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-0 text-gray-600 hover:bg-red-100 hover:text-red-700 dark:bg-gray-100 dark:text-gray-600 dark:hover:bg-red-lighter/30 dark:hover:text-red-light"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleLogoRemove();

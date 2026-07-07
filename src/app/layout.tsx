@@ -13,7 +13,6 @@ const NextProgress = dynamic(() => import('@/components/next-progress'), {
 });
 // styles
 import '@/app/globals.css';
-import {WebSocketProvider} from "@/context/WebSocketContext";
 
 export const metadata = {
     title: siteConfig.title,
@@ -46,13 +45,11 @@ export default async function RootLayout({
         >
         <AuthProvider>
             <ThemeProvider>
-                {/*<WebSocketProvider>*/}
                     <NextProgress/>
                     {children}
                     <Toaster position="top-center" reverseOrder={true}/>
                     <GlobalDrawer/>
                     <GlobalModal/>
-                {/*</WebSocketProvider>*/}
             </ThemeProvider>
         </AuthProvider>
         </body>

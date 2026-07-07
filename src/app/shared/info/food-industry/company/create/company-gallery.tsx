@@ -62,7 +62,7 @@
 //       formData.append('fileServiceType', fileServiceType);
 //
 //       const response = await _axios.post(
-//           `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+//           `${API_BASE_URL}/file`,
 //           formData,
 //           {
 //             headers: {
@@ -436,7 +436,7 @@
 //                           item.fileName?.toLowerCase().endsWith('.png')) ? (
 //                           <div className="relative w-24 h-24 overflow-hidden rounded-lg border border-gray-200">
 //                             <Image
-//                                 src={`${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${item.filePath}`}
+//                                 src={`${STATIC_FILES_URL}${item.filePath}`}
 //                                 alt={item.fileName || `فایل ${index + 1}`}
 //                                 width={96}
 //                                 height={96}
@@ -490,266 +490,292 @@
 //       </div>
 //   );
 // }
-import { useFormContext } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
+import {API_BASE_URL} from '@/config/api.config';
+import {STATIC_FILES_URL} from '@/config/api.config';
+import {useFormContext} from 'react-hook-form';
+import {Input} from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
 import SelectLoader from '@/components/loader/select-loader';
 import TrashIcon from '@/components/icons/trash';
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import {useEffect, useRef, useState, useMemo, useCallback} from 'react';
 import Upload from '@/components/ui/upload';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 
 const Select = dynamic(() => import('@/components/ui/select'), {
-  ssr: false,
-  loading: () => <SelectLoader />,
+    ssr: false,
+    loading: () => <SelectLoader/>,
 });
 
 interface UploadedFileDTO {
-  id: string;
-  fileName: string;
-  filePath: string;
+    id: string;
+    fileName: string;
+    filePath: string;
 }
 
 interface GalleryItemData {
-  id?: string;
-  uploadedFileId?: string | string[];
-  filePath?: string;
-  fileName?: string;
-  priority?: number;
-  [key: string]: any;
+    id?: string;
+    uploadedFileId?: string | string[];
+    filePath?: string;
+    fileName?: string;
+    priority?: number;
+
+    [key: string]: any;
 }
 
 export default function CompanyGallery({
-                                         className,
-                                         category,
+                                           className,
+                                           category,
                                        }: {
-  className?: string;
-  category?: number;
+    className?: string;
+    category?: number;
 }) {
-  const {
-    register,
-    formState: { errors },
-    setValue,
-    watch,
-  } = useFormContext();
+    const {
+        register,
+        formState: {errors},
+        setValue,
+        watch,
+    } = useFormContext();
 
-  const galleryData = watch('gallery');
-  const _axios = useAxiosPrivate();
+    const galleryData = watch('gallery');
+    const _axios = useAxiosPrivate();
 
-  // Wrap upload function in useCallback for stable identity
-  const uploadGalleryFile = useCallback(
-      async (files: File[], fileServiceType: string): Promise<UploadedFileDTO[]> => {
-        try {
-          const formData = new FormData();
-          files.forEach((file) => formData.append('files', file));
-          formData.append('fileServiceType', fileServiceType);
+    // Wrap upload function in useCallback for stable identity
+    const uploadGalleryFile = useCallback(
+        async (files: File[], fileServiceType: string): Promise<UploadedFileDTO[]> => {
+            try {
+                const formData = new FormData();
+                files.forEach((file) => formData.append('files', file));
+                formData.append('fileServiceType', fileServiceType);
 
-          const response = await _axios.post(
-              `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
-              formData,
-              { headers: { 'Content-Type': 'multipart/form-data' } }
-          );
+                const response = await _axios.post(
+                    `${API_BASE_URL}/file`,
+                    formData,
+                    {headers: {'Content-Type': 'multipart/form-data'}}
+                );
 
-          if (response.data.status === 'SUCCESS' && response.data.data) {
-            return response.data.data;
-          }
-          throw new Error('Failed to upload files');
-        } catch (err) {
-          console.error('Error uploading files:', err);
-          toast.error('خطا در آپلود فایل‌ها. لطفا دوباره تلاش کنید.');
-          return [];
-        }
-      },
-      [_axios]
-  );
-
-  // Memoize field definitions to avoid re-creation on each render
-  const productFields = useMemo(
-      () => [
-        { name: 'title', label: 'عنوان محصول', type: 'text' },
-        { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-      ],
-      []
-  );
-
-  const certificateFields = useMemo(
-      () => [
-        { name: 'title', label: 'نام گواهینامه', type: 'text' },
-        { name: 'description', label: 'توضیحات گواهینامه', type: 'text' },
-      ],
-      []
-  );
-
-  const contactFields = useMemo(
-      () => [
-        { name: 'firstName', label: 'نام', type: 'text' },
-        { name: 'lastName', label: 'نام خانوادگی', type: 'text' },
-        { name: 'phoneNumbers', label: 'شماره تلفن', type: 'text' },
-        { name: 'emails', label: 'ایمیل', type: 'email' },
-        { name: 'position', label: 'سمت', type: 'text' },
-        { name: 'description', label: 'توضیحات', type: 'text' },
-      ],
-      []
-  );
-
-  const sliderFields = useMemo(
-      () => [
-        { name: 'title', label: 'متن زیرنویس', type: 'text' },
-        { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-      ],
-      []
-  );
-
-  const catalogFields = useMemo(
-      () => [
-        { name: 'title', label: 'عنوان کاتالوگ', type: 'text' },
-        // { name: 'altText', label: 'متن جایگزین', type: 'text' },
-        { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
-      ],
-      []
-  );
-
-  const documentFields = useMemo(
-      () => [
-        { name: 'title', label: 'نام سند', type: 'text' },
-        { name: 'description', label: 'توضیحات سند', type: 'text' },
-      ],
-      []
-  );
-
-  return (
-      <FormGroup
-          title="گالری شرکت"
-          description="عکس‌های شرکت خود را اینجا آپلود کنید"
-          className={cn(className)}
-      >
-        <GallerySection
-            className="col-span-2"
-            label="عکس‌های نمونه محصولات تولیدی"
-            uploadAreaContent={
-              <>
-                عکس‌های محصولات شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
-              </>
+                if (response.data.status === 'SUCCESS' && response.data.data) {
+                    return response.data.data;
+                }
+                throw new Error('Failed to upload files');
+            } catch (err) {
+                console.error('Error uploading files:', err);
+                toast.error('خطا در آپلود فایل‌ها. لطفا دوباره تلاش کنید.');
+                return [];
             }
-            registerName="gallery.products"
-            fields={productFields}
-            uploadFile={uploadGalleryFile}
-            fileServiceType="COMPANY_GALLERY_PRODUCT"
-            initialFiles={galleryData?.products || []}
-        />
+        },
+        [_axios]
+    );
 
-        <GallerySection
-            className="col-span-2"
-            label="عکس‌های افتخارات و گواهینامه‌ها"
-            uploadAreaContent={
-              <>
-                عکس‌های افتخارات و گواهینامه‌های شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
-              </>
-            }
-            registerName="gallery.certificates"
-            fields={certificateFields}
-            uploadFile={uploadGalleryFile}
-            fileServiceType="COMPANY_GALLERY_CERTIFICATE"
-            initialFiles={galleryData?.certificates || []}
-        />
+    // Memoize field definitions to avoid re-creation on each render
+    const productFields = useMemo(
+        () => [
+            {name: 'title', label: 'عنوان محصول', type: 'text'},
+            {name: 'description', label: 'توضیحات بیشتر', type: 'text'},
+        ],
+        []
+    );
 
-        <GallerySection
-            className="col-span-2"
-            label="عکس‌های مدیران و مسئولین"
-            uploadAreaContent={
-              <>
-                عکس‌های مدیران و مسئولین شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
-              </>
-            }
-            registerName="gallery.contacts"
-            fields={contactFields}
-            uploadFile={uploadGalleryFile}
-            fileServiceType="COMPANY_GALLERY_CONTACT"
-            initialFiles={galleryData?.contacts || []}
-        />
+    const certificateFields = useMemo(
+        () => [
+            {name: 'title', label: 'نام گواهینامه', type: 'text'},
+            {name: 'description', label: 'توضیحات گواهینامه', type: 'text'},
+        ],
+        []
+    );
 
-        <GallerySection
-            className="col-span-2"
-            label="اسلایدر شرکت"
-            uploadAreaContent={
-              <>
-                عکس‌های اسلایدر اصلی شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
-              </>
-            }
-            registerName="gallery.sliders"
-            fields={sliderFields}
-            uploadFile={uploadGalleryFile}
-            fileServiceType="COMPANY_GALLERY_SLIDER"
-            initialFiles={galleryData?.sliders || []}
-        />
+    const contactFields = useMemo(
+        () => [
+            {name: 'firstName', label: 'نام', type: 'text'},
+            {name: 'lastName', label: 'نام خانوادگی', type: 'text'},
+            {name: 'phoneNumbers', label: 'شماره تلفن', type: 'text'},
+            {name: 'emails', label: 'ایمیل', type: 'email'},
+            {name: 'position', label: 'سمت', type: 'text'},
+            {name: 'description', label: 'توضیحات', type: 'text'},
+        ],
+        []
+    );
 
-        <GallerySection
-            className="col-span-2"
-            label="کاتالوگ‌ شرکت"
-            uploadAreaContent={
-              <>
-                کاتالوگ‌های شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
-              </>
-            }
-            registerName="gallery.catalogs"
-            fields={catalogFields}
-            uploadFile={uploadGalleryFile}
-            fileServiceType="COMPANY_GALLERY_CATALOG"
-            initialFiles={galleryData?.catalogs || []}
-        />
+    const sliderFields = useMemo(
+        () => [
+            {name: 'title', label: 'متن زیرنویس', type: 'text'},
+            {name: 'description', label: 'توضیحات بیشتر', type: 'text'},
+        ],
+        []
+    );
 
-        <GallerySection
-            className="col-span-2"
-            label="اسناد دیگر شرکت"
-            uploadAreaContent={
-              <>
-                اسناد دیگر شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
-                <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
-              </>
-            }
-            registerName="gallery.documents"
-            fields={documentFields}
-            uploadFile={uploadGalleryFile}
-            fileServiceType="COMPANY_GALLERY_DOCUMENT"
-            initialFiles={galleryData?.documents || []}
-        />
-      </FormGroup>
-  );
+    const catalogFields = useMemo(
+        () => [
+            {name: 'title', label: 'عنوان کاتالوگ', type: 'text'},
+            // { name: 'altText', label: 'متن جایگزین', type: 'text' },
+            {name: 'description', label: 'توضیحات بیشتر', type: 'text'},
+        ],
+        []
+    );
+
+    const videoFields = useMemo(
+        () => [
+            {name: 'title', label: 'عنوان ویدیو', type: 'text'},
+            {name: 'description', label: 'توضیحات ویدیو', type: 'text'}
+        ],
+        []
+    );
+
+    const documentFields = useMemo(
+        () => [
+            {name: 'title', label: 'نام سند', type: 'text'},
+            {name: 'description', label: 'توضیحات سند', type: 'text'},
+        ],
+        []
+    );
+
+    return (
+        <FormGroup
+            title="گالری شرکت"
+            description="عکس‌های شرکت خود را اینجا آپلود کنید"
+            className={cn(className)}
+        >
+            <GallerySection
+                className="col-span-2"
+                label="عکس‌های نمونه محصولات تولیدی"
+                uploadAreaContent={
+                    <>
+                        عکس‌های محصولات شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.products"
+                fields={productFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_PRODUCT"
+                initialFiles={galleryData?.products || []}
+            />
+
+            <GallerySection
+                className="col-span-2"
+                label="عکس‌های افتخارات و گواهینامه‌ها"
+                uploadAreaContent={
+                    <>
+                        عکس‌های افتخارات و گواهینامه‌های شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.certificates"
+                fields={certificateFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_CERTIFICATE"
+                initialFiles={galleryData?.certificates || []}
+            />
+
+            <GallerySection
+                className="col-span-2"
+                label="عکس‌های مدیران و مسئولین"
+                uploadAreaContent={
+                    <>
+                        عکس‌های مدیران و مسئولین شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.contacts"
+                fields={contactFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_CONTACT"
+                initialFiles={galleryData?.contacts || []}
+            />
+
+            <GallerySection
+                className="col-span-2"
+                label="اسلایدر شرکت"
+                uploadAreaContent={
+                    <>
+                        عکس‌های اسلایدر اصلی شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.sliders"
+                fields={sliderFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_SLIDER"
+                initialFiles={galleryData?.sliders || []}
+            />
+
+            <GallerySection
+                className="col-span-2"
+                label="کاتالوگ‌ شرکت"
+                uploadAreaContent={
+                    <>
+                        کاتالوگ‌های شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.catalogs"
+                fields={catalogFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_CATALOG"
+                initialFiles={galleryData?.catalogs || []}
+            />
+            <GallerySection
+                className="col-span-2"
+                label="ویدیو‌های شرکت"
+                uploadAreaContent={
+                    <>
+                        تیزرها و ویدیو‌های شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">۷۵ مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.videos"
+                fields={videoFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_VIDEO"
+                initialFiles={galleryData?.videos || []}
+            />
+
+            <GallerySection
+                className="col-span-2"
+                label="اسناد دیگر شرکت"
+                uploadAreaContent={
+                    <>
+                        اسناد دیگر شرکت خود را اینجا آپلود کنید حجم فایل باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.documents"
+                fields={documentFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_DOCUMENT"
+                initialFiles={galleryData?.documents || []}
+            />
+        </FormGroup>
+    );
 }
 
 function GallerySection({
-                          className,
-                          label,
-                          uploadAreaContent,
-                          registerName,
-                          fields,
-                          uploadFile,
-                          fileServiceType,
-                          initialFiles = [],
+                            className,
+                            label,
+                            uploadAreaContent,
+                            registerName,
+                            fields,
+                            uploadFile,
+                            fileServiceType,
+                            initialFiles = [],
                         }: {
-  className?: string;
-  label?: React.ReactNode;
-  uploadAreaContent?: React.ReactNode;
-  registerName: string;
-  fields: { name: string; label: string; type: string }[];
-  uploadFile: (files: File[], fileServiceType: string) => Promise<UploadedFileDTO[]>;
-  fileServiceType: string;
-  initialFiles?: any[];
+    className?: string;
+    label?: React.ReactNode;
+    uploadAreaContent?: React.ReactNode;
+    registerName: string;
+    fields: { name: string; label: string; type: string }[];
+    uploadFile: (files: File[], fileServiceType: string) => Promise<UploadedFileDTO[]>;
+    fileServiceType: string;
+    initialFiles?: any[];
 }) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { register, setValue, unregister } = useFormContext();
-  const [galleryItems, setGalleryItems] = useState<GalleryItemData[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const {register, setValue, unregister} = useFormContext();
+    const [galleryItems, setGalleryItems] = useState<GalleryItemData[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     const setupFormValues = useCallback(
         (item: GalleryItemData, index: number) => {
@@ -776,146 +802,151 @@ function GallerySection({
         },
         [fields, registerName, setValue]
     );
-  // const setupFormValues = useCallback(
-  //     (item: GalleryItemData, index: number) => {
-  //       fields.forEach((field) => {
-  //         setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
-  //       });
-  //       setValue(`${registerName}[${index}].id`, item.id || '');
-  //       setValue(`${registerName}[${index}].uploadedFileId`, item.id || item.uploadedFileId);
-  //       setValue(`${registerName}[${index}].priority`, index + 1);
-  //     }, [fields, registerName, setValue]
-  // );
+    // const setupFormValues = useCallback(
+    //     (item: GalleryItemData, index: number) => {
+    //       fields.forEach((field) => {
+    //         setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
+    //       });
+    //       setValue(`${registerName}[${index}].id`, item.id || '');
+    //       setValue(`${registerName}[${index}].uploadedFileId`, item.id || item.uploadedFileId);
+    //       setValue(`${registerName}[${index}].priority`, index + 1);
+    //     }, [fields, registerName, setValue]
+    // );
 
-  // Initial load
-  useEffect(() => {
-    if (!isInitialized && initialFiles.length) {
-      const formatted = initialFiles.map((file, idx) => ({
-        ...file,
-        id: file.id || file.uploadedFileId,
-        filePath: file.filePath,
-        fileName: file.fileName,
-        priority: idx + 1,
-      }));
-      setGalleryItems(formatted);
-      setIsInitialized(true);
-    }
-  }, [initialFiles, isInitialized]);
+    // Initial load
+    useEffect(() => {
+        if (!isInitialized && initialFiles.length) {
+            const formatted = initialFiles.map((file, idx) => ({
+                ...file,
+                id: file.id || file.uploadedFileId,
+                filePath: file.filePath,
+                fileName: file.fileName,
+                priority: idx + 1,
+            }));
+            setGalleryItems(formatted);
+            setIsInitialized(true);
+        }
+    }, [initialFiles, isInitialized]);
 
-  // Register items whenever galleryItems changes
-  useEffect(() => {
-    if (galleryItems.length) {
-      galleryItems.forEach((item, idx) => setupFormValues(item, idx));
-    }
-  }, [galleryItems, setupFormValues]);
+    // Register items whenever galleryItems changes
+    useEffect(() => {
+        if (galleryItems.length) {
+            galleryItems.forEach((item, idx) => setupFormValues(item, idx));
+        }
+    }, [galleryItems, setupFormValues]);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
 
-    setIsUploading(true);
-    try {
-      const valid = files.filter(f => ['image/jpeg', 'image/png', 'application/pdf', 'image/webp'].includes(f.type) && f.size <= 20 * 1024 * 1024);
-      if (!valid.length) {
-        toast.error('فرمت یا حجم فایل‌ها اشتباه است.');
-        return;
-      }
-      const uploaded = await uploadFile(valid, fileServiceType);
-      if (uploaded.length) {
-        const newItems = uploaded.map((file, i) => ({
-          id: file.id,
-          uploadedFileId: file.id,
-          filePath: file.filePath,
-          fileName: file.fileName,
-          priority: galleryItems.length + i + 1,
-          ...Object.fromEntries(fields.map(f => [f.name, ''])),
-        }));
-        setGalleryItems(prev => [...prev, ...newItems]);
-        toast.success('فایل‌ها با موفقیت آپلود شدند');
-      }
-    } catch {
-      toast.error('خطا در آپلود فایل‌ها');
-    } finally {
-      setIsUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-  };
+        setIsUploading(true);
+        try {
+            const valid = files.filter(f => ['image/jpeg', 'image/png', 'application/pdf', 'image/webp'].includes(f.type) && f.size <= 20 * 1024 * 1024);
+            if (!valid.length) {
+                toast.error('فرمت یا حجم فایل‌ها اشتباه است.');
+                return;
+            }
+            const uploaded = await uploadFile(valid, fileServiceType);
+            if (uploaded.length) {
+                const newItems = uploaded.map((file, i) => ({
+                    id: file.id,
+                    uploadedFileId: file.id,
+                    filePath: file.filePath,
+                    fileName: file.fileName,
+                    priority: galleryItems.length + i + 1,
+                    ...Object.fromEntries(fields.map(f => [f.name, ''])),
+                }));
+                setGalleryItems(prev => [...prev, ...newItems]);
+                toast.success('فایل‌ها با موفقیت آپلود شدند');
+            }
+        } catch {
+            toast.error('خطا در آپلود فایل‌ها');
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    };
 
-  const handleFieldChange = (index: number, name: string, val: string) => {
-    setGalleryItems(prev => {
-      const copy = [...prev];
-      copy[index] = { ...copy[index], [name]: val };
-      setValue(`${registerName}[${index}].${name}`, val);
-      return copy;
-    });
-  };
+    const handleFieldChange = (index: number, name: string, val: string) => {
+        setGalleryItems(prev => {
+            const copy = [...prev];
+            copy[index] = {...copy[index], [name]: val};
+            setValue(`${registerName}[${index}].${name}`, val);
+            return copy;
+        });
+    };
 
-  const handleItemRemove = (index: number) => {
-    setGalleryItems(prev => prev.filter((_, i) => i !== index));
-    unregister(`${registerName}[${index}]`);
-    toast.success('آیتم با موفقیت حذف شد');
-  };
+    const handleItemRemove = (index: number) => {
+        setGalleryItems(prev => prev.filter((_, i) => i !== index));
+        unregister(`${registerName}[${index}]`);
+        toast.success('آیتم با موفقیت حذف شد');
+    };
 
-  return (
-      <div className={className}>
-        <Upload
-            label={label}
-            ref={fileInputRef}
-            accept="image/jpeg,image/png,application/pdf,image/webp"
-            multiple
-            onChange={handleFileUpload}
-            disabled={isUploading}
-        />
-        <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
+    return (
+        <div className={className}>
+            <Upload
+                label={label}
+                ref={fileInputRef}
+                accept="image/jpeg,image/png,application/pdf,image/webp"
+                multiple
+                onChange={handleFileUpload}
+                disabled={isUploading}
+            />
+            <p className="pt-3 text-sm text-gray-500">{uploadAreaContent}</p>
 
-        {isUploading && <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-md">در حال آپلود فایل‌ها...</div>}
+            {isUploading && <div className="mt-4 p-4 bg-blue-50 text-blue-700 rounded-md">در حال آپلود فایل‌ها...</div>}
 
-        {!!galleryItems.length && (
-            <div className="mt-6 space-y-6">
-              {galleryItems.map((item, idx) => (
-                  <div key={item.id || item.uploadedFileId || idx} className="flex flex-col md:flex-row items-start border rounded-lg p-4 gap-4">
-                    <div className="w-full md:w-1/5 flex justify-center">
-                      {item.filePath && /\.(jpe?g|png)$/i.test(item.fileName || '') ? (
-                          <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
-                            <Image src={`${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${item.filePath}`} alt={item.fileName} width={96} height={96} objectFit="cover" />
-                          </div>
-                      ) : (
-                          <div className="flex items-center justify-center w-24 h-24 bg-gray-100 rounded-lg border">
-                            <span className="text-xs text-gray-500 p-2 break-all">{item.fileName}</span>
-                          </div>
-                      )}
-                    </div>
+            {!!galleryItems.length && (
+                <div className="mt-6 space-y-6">
+                    {galleryItems.map((item, idx) => (
+                        <div key={item.id || item.uploadedFileId || idx}
+                             className="flex flex-col md:flex-row items-start border rounded-lg p-4 gap-4">
+                            <div className="w-full md:w-1/5 flex justify-center">
+                                {item.filePath && /\.(jpe?g|png)$/i.test(item.fileName || '') ? (
+                                    <div className="relative w-24 h-24 overflow-hidden rounded-lg border">
+                                        <Image src={`${STATIC_FILES_URL}${item.filePath}`} alt={item.fileName}
+                                               width={96} height={96} objectFit="cover"/>
+                                    </div>
+                                ) : (
+                                    <div
+                                        className="flex items-center justify-center w-24 h-24 bg-gray-100 rounded-lg border">
+                                        <span className="text-xs text-gray-500 p-2 break-all">{item.fileName}</span>
+                                    </div>
+                                )}
+                            </div>
 
-                    <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {fields.map(f => (
-                          <Input
-                             key={`${idx}-${f.name}`}
-                             label={f.label}
-                             type={f.type}
-                             // register this field with RHF
-                             {...register(`${registerName}[${idx}].${f.name}`)}
-                             // keep it controlled if you like
-                             value={item[f.name] || ''}
-                             onChange={(e) => handleFieldChange(idx, f.name, e.target.value)}
-                           />
-                          // <Input key={`${idx}-${f.name}`} label={f.label} type={f.type} value={item[f.name] || ''} onChange={e => handleFieldChange(idx, f.name, e.target.value)} />
-                      ))}
-                      <div className="flex items-center">
-                        <span className="text-sm text-gray-500">اولویت: {idx + 1}</span>
-                        <input type="hidden" {...register(`${registerName}[${idx}].priority`)} value={idx + 1} />
-                      </div>
-                    </div>
+                            <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {fields.map(f => (
+                                    <Input
+                                        key={`${idx}-${f.name}`}
+                                        label={f.label}
+                                        type={f.type}
+                                        // register this field with RHF
+                                        {...register(`${registerName}[${idx}].${f.name}`)}
+                                        // keep it controlled if you like
+                                        value={item[f.name] || ''}
+                                        onChange={(e) => handleFieldChange(idx, f.name, e.target.value)}
+                                    />
+                                    // <Input key={`${idx}-${f.name}`} label={f.label} type={f.type} value={item[f.name] || ''} onChange={e => handleFieldChange(idx, f.name, e.target.value)} />
+                                ))}
+                                <div className="flex items-center">
+                                    <span className="text-sm text-gray-500">اولویت: {idx + 1}</span>
+                                    <input type="hidden" {...register(`${registerName}[${idx}].priority`)}
+                                           value={idx + 1}/>
+                                </div>
+                            </div>
 
-                    <div className="w-full md:w-1/12 flex justify-center md:justify-end">
-                      <button type="button" onClick={() => handleItemRemove(idx)} className="p-2 bg-red-50 rounded-full text-red-500 hover:bg-red-100 transition">
-                        <TrashIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-              ))}
-            </div>
-        )}
-      </div>
-  );
+                            <div className="w-full md:w-1/12 flex justify-center md:justify-end">
+                                <button type="button" onClick={() => handleItemRemove(idx)}
+                                        className="p-2 bg-red-50 rounded-full text-red-500 hover:bg-red-100 transition">
+                                    <TrashIcon className="h-5 w-5"/>
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }
 

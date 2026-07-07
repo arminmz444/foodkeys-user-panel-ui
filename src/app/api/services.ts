@@ -99,6 +99,10 @@ export interface ServiceDTO {
     elasticFields: string[];
     data: any;
     additionalData?: any;
+    logo?: string;
+    backgroundImage?: string;
+    keywords?: string[];
+    tags?: string[];
     serviceSchemaDTO?: {
         schemaDefinition: any;
         formTitle: string;

@@ -76,7 +76,7 @@ export default function ProductAvailability({ className }: ProductAvailabilityPr
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2">
                             <label
                                 htmlFor="detailed-products"
-                                className={`flex cursor-pointer flex-col justify-between rounded-lg border p-5 hover:border-primary-dark ${value === '2' ? 'border-2 border-primary-dark bg-primary-lighter' : 'border-gray-200 bg-white'}`}
+                                className={`flex cursor-pointer flex-col justify-between rounded-lg border p-5 hover:border-primary-dark ${value === '2' ? 'border-2 border-primary-dark bg-primary-lighter' : 'border-gray-200 bg-gray-0 dark:border-gray-300 dark:bg-gray-50'}`}
                             >
                                 <div className="flex flex-col">
                                     <div className="mb-3 flex items-center">
@@ -105,7 +105,7 @@ export default function ProductAvailability({ className }: ProductAvailabilityPr
 
                             <label
                                 htmlFor="simple-products"
-                                className={`flex cursor-pointer flex-col justify-between rounded-lg border p-5 hover:border-primary-dark ${value === '1' ? 'border-2 border-primary-dark bg-primary-lighter' : 'border-gray-200 bg-white'}`}
+                                className={`flex cursor-pointer flex-col justify-between rounded-lg border p-5 hover:border-primary-dark ${value === '1' ? 'border-2 border-primary-dark bg-primary-lighter' : 'border-gray-200 bg-gray-0 dark:border-gray-300 dark:bg-gray-50'}`}
                             >
                                 <div className="flex flex-col">
                                     <div className="mb-3 flex items-center">
@@ -137,7 +137,7 @@ export default function ProductAvailability({ className }: ProductAvailabilityPr
             />
 
             {showInfoMessage && (
-                <div className={`p-4 rounded-lg ${productAvailability === '2' ? 'bg-blue-50 text-blue-800' : 'bg-amber-50 text-amber-800'}`}>
+                <div className={`rounded-lg p-4 ${productAvailability === '2' ? 'bg-blue-50 text-blue-800 dark:bg-blue-lighter/20 dark:text-blue-light' : 'bg-amber-50 text-amber-800 dark:bg-orange-lighter/20 dark:text-orange-light'}`}>
                     <Text className="text-sm">
                         {productAvailability === '2'
                             ? 'با این انتخاب، می‌توانید محصولات خود را به صورت کامل با جزئیات و تصاویر ثبت کنید.'

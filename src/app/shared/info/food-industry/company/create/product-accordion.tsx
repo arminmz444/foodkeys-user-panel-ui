@@ -59,7 +59,7 @@
 //             formData.append('fileServiceType', 'PRODUCT_PICTURE');
 //
 //             const response = await _axios.post(
-//                 `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+//                 `${API_BASE_URL}/file`,
 //                 formData,
 //                 {
 //                     headers: {
@@ -135,7 +135,7 @@
 //         if (file instanceof File || file instanceof Blob) {
 //             return URL.createObjectURL(file);
 //         } else if (file && file.filePath) {
-//             return `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${file.filePath}`;
+//             return `${STATIC_FILES_URL}${file.filePath}`;
 //         } else if (file && file.url) {
 //             return file.url;
 //         } else if (typeof file === 'string') {
@@ -192,7 +192,7 @@
 //                                     <button
 //                                         onClick={() => handleMultiImageDelete(index)}
 //                                         type="button"
-//                                         className="absolute right-2 top-2 rounded-full bg-white bg-opacity-70 p-1.5 text-gray-700 shadow-sm hover:bg-red-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+//                                         className="absolute right-2 top-2 rounded-full bg-gray-0/70 p-1.5 text-gray-700 shadow-sm transition-colors hover:bg-red-500 hover:text-white opacity-0 group-hover:opacity-100 dark:bg-gray-100/70 dark:text-gray-600"
 //                                         aria-label="حذف تصویر"
 //                                     >
 //                                         <TrashIcon className="h-3.5 w-3.5" />
@@ -233,7 +233,7 @@
 //
 //     return (
 //         <div className="w-full">
-//             <div className="w-full rounded-xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+//             <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-0 shadow-sm dark:border-gray-300 dark:bg-gray-50">
 //                 {products.length === 0 ? (
 //                     <div className="flex flex-col items-center justify-center p-8 text-center">
 //                         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -244,7 +244,7 @@
 //                     </div>
 //                 ) : (
 //                     products.map((field, index) => (
-//                         <div key={field.fieldId || field.id || `product-${index}`} className="border-b border-gray-100 last:border-b-0">
+//                         <div key={field.fieldId || field.id || `product-${index}`} className="border-b border-gray-200 last:border-b-0 dark:border-gray-300">
 //                             {/* Hidden fields for form registration */}
 //                             <input
 //                                 type="hidden"
@@ -309,7 +309,7 @@
 //                                     openIndex === index ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
 //                                 }`}
 //                             >
-//                                 <div className="p-6 bg-white border-t border-gray-100">
+//                                 <div className="border-t border-gray-200 bg-gray-0 p-6 dark:border-gray-300 dark:bg-gray-100">
 //                                     <div className="grid grid-cols-12 gap-x-6 gap-y-6">
 //                                         <Controller
 //                                             name={`${dataObjectName}.${index}.name`}
@@ -368,7 +368,7 @@
 //                                             defaultValue={field.showProduct || false}
 //                                             render={({ field: { onChange, value } }) => (
 //                                                 <div className="col-span-12">
-//                                                     <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+//                                                     <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4 dark:border-gray-300">
 //                                                         <div className="flex flex-row items-center gap-3">
 //                                                             <Text className="font-medium text-gray-800">نمایش محصول</Text>
 //                                                             <Text className="text-sm text-gray-500">
@@ -384,7 +384,7 @@
 //                                                                 checked={value || false}
 //                                                                 onChange={(e) => onChange(e.target.checked)}
 //                                                             />
-//                                                             <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-2 peer-focus:ring-primary-300"></div>
+//                                                             <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-gray-0 after:transition-all after:content-[''] peer-checked:bg-primary-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-2 peer-focus:ring-primary-300 dark:bg-gray-300 dark:after:bg-gray-700"></div>
 //                                                         </label>
 //                                                     </div>
 //                                                 </div>
@@ -423,7 +423,7 @@
 //                                             productIndex={index}
 //                                             dataObjectName={dataObjectName}
 //                                         />
-//                                         <div className="col-span-12 flex flex-wrap justify-end gap-4 mt-4 pt-4 border-t border-gray-100">
+//                                         <div className="col-span-12 mt-4 flex flex-wrap justify-end gap-4 border-t border-gray-200 pt-4 dark:border-gray-300">
 //                                             <Button
 //                                                 size="lg"
 //                                                 variant="outline"
@@ -481,6 +481,8 @@
 //     );
 // }
 
+import { API_BASE_URL } from '@/config/api.config';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
@@ -546,7 +548,7 @@ const MultipleFiles: React.FC<MultipleFilesProps> = ({
             formData.append('fileServiceType', 'PRODUCT_PICTURE');
 
             const response = await _axios.post(
-                `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+                `${API_BASE_URL}/file`,
                 formData,
                 {
                     headers: {
@@ -627,7 +629,7 @@ const MultipleFiles: React.FC<MultipleFilesProps> = ({
         if (file instanceof File || file instanceof Blob) {
             return URL.createObjectURL(file);
         } else if (file && file.filePath) {
-            return `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${file.filePath}`;
+            return `${STATIC_FILES_URL}${file.filePath}`;
         } else if (file && file.url) {
             return file.url;
         } else if (typeof file === 'string') {
@@ -684,7 +686,7 @@ const MultipleFiles: React.FC<MultipleFilesProps> = ({
                                     <button
                                         onClick={() => handleMultiImageDelete(index)}
                                         type="button"
-                                        className="absolute right-2 top-2 rounded-full bg-white bg-opacity-70 p-1.5 text-gray-700 shadow-sm hover:bg-red-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                                        className="absolute right-2 top-2 rounded-full bg-gray-0/70 p-1.5 text-gray-700 shadow-sm transition-colors hover:bg-red-500 hover:text-white opacity-0 group-hover:opacity-100 dark:bg-gray-100/70 dark:text-gray-600"
                                         aria-label="حذف تصویر"
                                     >
                                         <TrashIcon className="h-3.5 w-3.5" />
@@ -725,7 +727,7 @@ export default function ProductAccordion({
 
     return (
         <div className="w-full">
-            <div className="w-full rounded-xl bg-white shadow-sm border border-gray-100 overflow-hidden">
+            <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-0 shadow-sm dark:border-gray-300 dark:bg-gray-50">
                 {products.length === 0 ? (
                     <div className="flex flex-col items-center justify-center p-8 text-center">
                         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -736,7 +738,7 @@ export default function ProductAccordion({
                     </div>
                 ) : (
                     products.map((field, index) => (
-                        <div key={field.fieldId || field.id || `product-${index}`} className="border-b border-gray-100 last:border-b-0">
+                        <div key={field.fieldId || field.id || `product-${index}`} className="border-b border-gray-200 last:border-b-0 dark:border-gray-300">
                             {/* Hidden fields for form registration */}
                             <input
                                 type="hidden"
@@ -746,7 +748,7 @@ export default function ProductAccordion({
 
                             <button
                                 className={`flex w-full items-center justify-between p-5 transition duration-200 ${
-                                    openIndex === index ? 'bg-gray-50' : 'hover:bg-gray-50'
+                                    openIndex === index ? 'bg-gray-50 dark:bg-gray-100' : 'hover:bg-gray-50 dark:hover:bg-gray-100'
                                 } focus:outline-none`}
                                 onClick={() => toggleAccordion(index)}
                                 aria-expanded={openIndex === index}
@@ -801,7 +803,7 @@ export default function ProductAccordion({
                                     openIndex === index ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
                                 }`}
                             >
-                                <div className="p-6 bg-white border-t border-gray-100">
+                                <div className="border-t border-gray-200 bg-gray-0 p-6 dark:border-gray-300 dark:bg-gray-100">
                                     <div className="grid grid-cols-12 gap-x-6 gap-y-6">
                                         <Controller
                                             name={`${dataObjectName}.${index}.name`}
@@ -860,7 +862,7 @@ export default function ProductAccordion({
                                             defaultValue={field.showProduct || false}
                                             render={({ field: { onChange, value } }) => (
                                                 <div className="col-span-12">
-                                                    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                                                    <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4 dark:border-gray-300">
                                                         <div className="flex flex-row items-center gap-3">
                                                             <Text className="font-medium text-gray-800">نمایش محصول</Text>
                                                             <Text className="text-sm text-gray-500">
@@ -876,7 +878,7 @@ export default function ProductAccordion({
                                                                 checked={value || false}
                                                                 onChange={(e) => onChange(e.target.checked)}
                                                             />
-                                                            <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-2 peer-focus:ring-primary-300"></div>
+                                                            <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-gray-0 after:transition-all after:content-[''] peer-checked:bg-primary-500 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-2 peer-focus:ring-primary-300 dark:bg-gray-300 dark:after:bg-gray-700"></div>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -909,7 +911,7 @@ export default function ProductAccordion({
                                             productIndex={index}
                                             dataObjectName={dataObjectName}
                                         />
-                                        <div className="col-span-12 flex flex-wrap justify-end gap-4 mt-4 pt-4 border-t border-gray-100">
+                                        <div className="col-span-12 mt-4 flex flex-wrap justify-end gap-4 border-t border-gray-200 pt-4 dark:border-gray-300">
                                             <Button
                                                 size="lg"
                                                 variant="outline"

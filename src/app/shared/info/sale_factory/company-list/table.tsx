@@ -29,8 +29,8 @@ const filterState = {
 
 const fetchCompanies = async (searchTerm: string, currentPage: number, pageSize: number) => {
     const API_URL = searchTerm
-        ? `https://back.agfo.ir/api/v1/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-        : `https://back.agfo.ir/api/v1/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
+        ? `/search/company?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+        : `/company/?pageNumber=${currentPage}&pageSize=${pageSize}&categoryId=1`;
 
     const response = await axiosInstance.get(API_URL);
 
@@ -189,7 +189,7 @@ export default function CompaniesTable() {
                         }}
                     />
                 }
-                className="overflow-hidden rounded-md border border-gray-200 text-sm shadow-sm"
+                className="overflow-hidden rounded-md border border-gray-200 text-sm shadow-sm dark:border-gray-300"
             />
         </>
     );

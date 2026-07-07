@@ -6,6 +6,7 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
             products: [],
             sliders: [],
             catalogs: [],
+            videos: [],
             documents: []
         };
     }
@@ -17,6 +18,7 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
         products: [],
         sliders: [],
         catalogs: [],
+        videos: [],
         documents: []
     };
 
@@ -66,7 +68,9 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
             case 'COMPANY_GALLERY_CATALOG':
                 result.catalogs.push(baseFileObj);
                 break;
-
+            case 'COMPANY_GALLERY_VIDEO':
+                result.videos.push(baseFileObj);
+                break;
             case 'COMPANY_GALLERY_DOCUMENT':
                 result.documents.push(baseFileObj);
                 break;
@@ -97,7 +101,7 @@ export function prepareGalleryFilesForSubmission(galleryData: any) {
     if (!galleryData) return [];
     console.log(`Gallery Data: ${JSON.stringify(galleryData)}`)
     const galleryFiles: any[] = [];
-    const allSections = ['products', 'certificates', 'contacts', 'sliders', 'catalogs', 'documents'];
+    const allSections = ['products', 'certificates', 'contacts', 'sliders', 'catalogs', 'videos', 'documents'];
 
     allSections.forEach(section => {
         if (galleryData[section] && Array.isArray(galleryData[section])) {
@@ -128,6 +132,9 @@ export function prepareGalleryFilesForSubmission(galleryData: any) {
                         break;
                     case 'catalogs':
                         fileServiceType = 'COMPANY_GALLERY_CATALOG';
+                        break;
+                    case 'videos':
+                        fileServiceType = 'COMPANY_GALLERY_VIDEO';
                         break;
                     case 'documents':
                         fileServiceType = 'COMPANY_GALLERY_DOCUMENT';

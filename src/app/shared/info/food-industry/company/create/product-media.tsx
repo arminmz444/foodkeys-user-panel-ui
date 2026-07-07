@@ -272,7 +272,7 @@
 //         ) : (
 //             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
 //               {/* Main Products Button */}
-//               <div className="flex flex-col items-stretch p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+//               <div className="flex flex-col items-stretch rounded-lg border border-gray-200 bg-gray-0 p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-300 dark:bg-gray-50">
 //                 <Button
 //                     variant="outline"
 //                     color="primary"
@@ -282,7 +282,7 @@
 //                   <span className="block">محصولات و خدمات</span>
 //                   <span className="mt-1 text-sm font-normal text-gray-500">مدیریت محصولات اصلی شرکت</span>
 //                 </Button>
-//                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+//                 <div className="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-100">
 //                   <Text className="text-sm text-gray-600 text-center">
 //                     <span className="font-medium text-gray-800">{products.length}</span> محصول ثبت شده
 //                   </Text>
@@ -304,7 +304,7 @@
 //               </div>
 //
 //               {/* Outsourced Products Button */}
-//               <div className="flex flex-col items-stretch p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+//               <div className="flex flex-col items-stretch rounded-lg border border-gray-200 bg-gray-0 p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-300 dark:bg-gray-50">
 //                 <Button
 //                     variant="outline"
 //                     color="secondary"
@@ -314,7 +314,7 @@
 //                   <span className="block">محصولات برون‌سپاری‌شده</span>
 //                   <span className="mt-1 text-sm font-normal text-gray-500">محصولاتی که توسط دیگران تولید می‌شود</span>
 //                 </Button>
-//                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+//                 <div className="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-100">
 //                   <Text className="text-sm text-gray-600 text-center">
 //                     <span className="font-medium text-gray-800">{outSourcedProducts.length}</span> محصول ثبت شده
 //                   </Text>
@@ -343,7 +343,7 @@
 //             onClose={() => setModalState({ ...modalState, isOpen: false })}
 //             className="flex items-center justify-center p-4"
 //         >
-//           <div className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col">
+//           <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-gray-0 shadow-xl dark:bg-gray-100">
 //             <div className="flex justify-between items-center border-b px-6 py-4">
 //               <Text className="text-lg font-semibold">
 //                 {modalState.type === 1 ? 'محصولات برون‌سپاری‌شده' : 'محصولات و خدمات'}
@@ -420,13 +420,14 @@
 //               className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"
 //               onClick={onClose}
 //           />
-//           <div className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 ${className}`}>
+//           <div className={`relative transform overflow-hidden rounded-lg bg-gray-0 text-left shadow-xl transition-all dark:bg-gray-100 sm:my-8 ${className}`}>
 //             {children}
 //           </div>
 //         </div>
 //       </div>
 //   );
 // };
+import { STATIC_FILES_URL } from '@/config/api.config';
 import dynamic from 'next/dynamic';
 import PencilIcon from '@/components/icons/pencil';
 import { Textarea } from '@/components/ui/textarea';
@@ -499,7 +500,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
         name: res.data.filename || res.data.name,
         filePath: res.data.filePath,
         fileId: res.data.id,
-        url: res.data.url || `${process.env.NEXT_PUBLIC_API_URL || 'https://back.agfo.ir'}${res.data.filePath}`
+        url: res.data.url || `${STATIC_FILES_URL}${res.data.filePath}`
       }));
     } catch (error) {
       console.error('Error uploading product images:', error);
@@ -544,7 +545,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
         ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {/* Main Products Button */}
-              <div className="flex flex-col items-stretch p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+              <div className="flex flex-col items-stretch rounded-lg border border-gray-200 bg-gray-0 p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-300 dark:bg-gray-50">
                 <Button
                     variant="outline"
                     color="primary"
@@ -554,7 +555,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
                   <span className="block">محصولات و خدمات</span>
                   <span className="mt-1 text-sm font-normal text-gray-500">مدیریت محصولات اصلی شرکت</span>
                 </Button>
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <div className="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-100">
                   <Text className="text-sm text-gray-600 text-center">
                     <span className="font-medium text-gray-800">{products.length}</span> محصول ثبت شده
                   </Text>
@@ -576,7 +577,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
               </div>
 
               {/* Outsourced Products Button */}
-              <div className="flex flex-col items-stretch p-6 bg-white rounded-lg shadow-sm border border-gray-100 transition-all hover:shadow-md">
+              <div className="flex flex-col items-stretch rounded-lg border border-gray-200 bg-gray-0 p-6 shadow-sm transition-all hover:shadow-md dark:border-gray-300 dark:bg-gray-50">
                 <Button
                     variant="outline"
                     color="secondary"
@@ -586,7 +587,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
                   <span className="block">محصولات برون‌سپاری‌شده</span>
                   <span className="mt-1 text-sm font-normal text-gray-500">محصولاتی که توسط دیگران تولید می‌شود</span>
                 </Button>
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                <div className="mt-4 rounded-lg bg-gray-50 p-3 dark:bg-gray-100">
                   <Text className="text-sm text-gray-600 text-center">
                     <span className="font-medium text-gray-800">{outSourcedProducts.length}</span> محصول ثبت شده
                   </Text>
@@ -615,7 +616,7 @@ export default function ProductMedia({ className }: ProductMediaProps) {
             onClose={() => setModalState({ ...modalState, isOpen: false })}
             className="flex items-center justify-center p-4"
         >
-          <div className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-gray-0 shadow-xl dark:bg-gray-100">
             <div className="flex justify-between items-center border-b px-6 py-4">
               <Text className="text-lg font-semibold">
                 {modalState.type === 1 ? 'محصولات برون‌سپاری‌شده' : 'محصولات و خدمات'}
@@ -699,7 +700,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className }) =
               className="fixed inset-0 bg-black bg-opacity-30 transition-opacity"
               onClick={onClose}
           />
-          <div className={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 ${className}`}>
+          <div className={`relative transform overflow-hidden rounded-lg bg-gray-0 text-left shadow-xl transition-all dark:bg-gray-100 sm:my-8 ${className}`}>
             {children}
           </div>
         </div>

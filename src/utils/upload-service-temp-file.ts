@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@/config/api.config';
 
 interface FileUploadResponse {
   status: string;
@@ -42,7 +43,7 @@ export async function uploadServiceTempFile(
   try {
     // @ts-ignore
     const response = await _axios.post<FileUploadResponse>(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/service/file/temp`,
+      `${API_BASE_URL}/service/file/temp`,
       formData,
       {
         headers: {

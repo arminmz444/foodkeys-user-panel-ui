@@ -1,8 +1,9 @@
+import { API_BASE_URL } from '@/config/api.config';
 import { useMemo } from 'react';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 import useFileUploadService from './useFileUploadService';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back.agfo.ir/api/v1/client/panel';
+const API_URL = API_BASE_URL;
 
 export const useProductService = () => {
     const axiosPrivate = useAxiosPrivate();

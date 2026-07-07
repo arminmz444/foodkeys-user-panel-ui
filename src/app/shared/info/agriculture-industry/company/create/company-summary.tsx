@@ -1,3 +1,4 @@
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
@@ -108,7 +109,7 @@ export default function CompanySummary({
   const logoPreview = logo
     ? URL.createObjectURL(logo)
     : watchedLogo
-    ? process.env.NEXT_PUBLIC_STATIC_FILES_URL + watchedLogo
+    ? STATIC_FILES_URL + watchedLogo
     : null;
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     handleFileUpload(

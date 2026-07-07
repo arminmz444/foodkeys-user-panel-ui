@@ -1,255 +1,72 @@
 'use client';
 import { numberToWords } from '@persian-tools/persian-tools';
 
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { ActionIcon } from '@/components/ui/action-icon';
 import RingBellSolidIcon from '@/components/icons/ring-bell-solid';
-import ChatSolidIcon from '@/components/icons/chat-solid';
 import SearchWidget from '@/components/search/search';
-import MessagesDropdown from '@/layouts/messages-dropdown';
 import NotificationDropdown from '@/layouts/notification-dropdown';
 import ProfileMenu from '@/layouts/profile-menu';
 import SettingsButton from '@/components/settings/settings-button';
 import { useIsMounted } from '@/hooks/use-is-mounted';
 import { useWindowScroll } from '@/hooks/use-window-scroll';
 import HamburgerButton from '@/layouts/hydrogen/hamburger-button';
-import { siteConfig } from '@/config/site.config';
 import cn from '@/utils/class-names';
 import Logo from '@/components/logo';
-import { BsWalletFill } from 'react-icons/bs';
 import { Button, Modal } from 'rizzui';
-import React, {RefObject, useCallback, useEffect, useState} from 'react';
-import { useMedia } from '@/hooks/use-media';
-import { Popover } from '@/components/ui/popover';
-import { PiArrowLeftBold, PiWalletFill } from 'react-icons/pi';
-import walletImage from '@public/wallet.png';
+import React, { RefObject, useState } from 'react';
+import { PiWalletFill } from 'react-icons/pi';
 import { HiXMark } from 'react-icons/hi2';
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { atom, useAtom } from 'jotai';
-import { updateNotificationsAtom } from '@/store/notificationStore';
-import { useDispatch } from 'react-redux';
-import { addCredit } from '@/store/walletSlice';
-import PaymentSuccess from '../payment-success';
-import PaymentReject from '../payment-reject';
 import toast from 'react-hot-toast';
 import useAxiosPrivate from '@/hooks/use-axios-private';
-import addCreditImg from 'public/addCredit.svg';
 import addCreditImg2 from 'public/addCreditLogo.webp';
-import {dispatch} from "react-hot-toast/src/core/store";
-import {login as reduxLogin} from "@/store/userSlice";
-import {addNotification} from "@/store/notificationSlice";
-import {useWebSocket} from "@/context/WebSocketContext";
-import {useAuth} from "@/context/AuthContext";
-
-// export const notificationsAtom = atom([]);
-const WebSocketStatus = ({ isConnected, connectionStatus, className = '' }) => {
-  const getStatusColor = () => {
-    switch (connectionStatus) {
-      case 'Connected':
-        return 'success';
-      case 'Connecting...':
-        return 'warning';
-      case 'Error':
-      case 'Auth Failed':
-      case 'Connection Failed':
-        return 'danger';
-      default:
-        return 'secondary';
-    }
-  };
-
-  const getStatusText = () => {
-    switch (connectionStatus) {
-      case 'Connected':
-        return 'متصل';
-      case 'Connecting...':
-        return 'در حال اتصال...';
-      case 'Error':
-        return 'خطا';
-      case 'Auth Failed':
-        return 'خطا در احراز هویت';
-      case 'Connection Failed':
-        return 'اتصال ناموفق';
-      case 'No Token':
-        return 'عدم احراز هویت';
-      default:
-        return 'قطع شده';
-    }
-  };
-
-  return (
-      <Badge
-          color={getStatusColor()}
-          className={`text-xs ${className}`}
-          title={`وضعیت WebSocket: ${getStatusText()}`}
-      >
-        {isConnected ? '🟢' : '🔴'} {getStatusText()}
-      </Badge>
-  );
-};
-
+import { useNotifications } from '@/context/NotificationContext';
 
 function HeaderMenuRight() {
   const [isOpen, setIsOpen] = useState(false);
-  // const { isConnected, connectionStatus } = useWebSocket();
-  // const { isConnected, connectionStatus, sendNotification } = useWebSocket();
-  // const { state } = useAuth();
-  //
-  // // Test notification sender (remove in production)
-  // const sendTestNotification = useCallback(() => {
-  //   if (isConnected) {
-  //     sendNotification('این یک پیام تست است', 'info');
-  //     toast.success('پیام تست ارسال شد');
-  //   } else {
-  //     toast.error('WebSocket متصل نیست');
-  //   }
-  // }, [isConnected, sendNotification]);
-  //
-
-
-  // const [messages, setMessages] = useAtom(updateNotificationsAtom);
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   const token = localStorage.getItem('access_token');
-  //
-  //   const client = new Client({
-  //     brokerURL: 'ws://localhost:8080/ws',
-  //     connectHeaders: {
-  //       Authorization: token ? `Bearer ${token}` : '',
-  //     },
-  //     debug: function (str) {
-  //       console.log(str);
-  //     },
-  //     reconnectDelay: 5000,
-  //     heartbeatIncoming: 4000,
-  //     heartbeatOutgoing: 4000,
-  //     webSocketFactory: () =>
-  //       new SockJS('https://back.agfo.ir/ws'),
-  //   });
-  //
-  //   client.onConnect = (frame) => {
-  //     console.log('Connected with headers:', frame.headers);
-  //     client.subscribe('/topic/notifications', (message) => {
-  //       const notification = JSON.parse(message.body);
-  //       // const notification = message.body;
-  //       console.log(notification);
-  //       // @ts-ignore
-  //       dispatch(addNotification(notification))
-  //       // @ts-ignore
-  //       // setMessages((prev) => [...prev, notification]);
-  //       // setNo
-  //     });
-  //   };
-  //
-  //   client.onStompError = frame => {
-  //     console.error('Broker reported error: ' + frame.headers['message']);
-  //     console.error('Additional details: ' + frame.body);
-  //   };
-  //
-  //   client.activate();
-  //
-  //   return () => {
-  //     client.deactivate();
-  //   };
-  // }, []);
+  const { unreadCount } = useNotifications();
 
   return (
-      <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
-      {/* WebSocket Status - Hidden on mobile */}
-        {/*<div className="hidden sm:flex">*/}
-        {/*  <WebSocketStatus*/}
-        {/*      isConnected={isConnected}*/}
-        {/*      connectionStatus={connectionStatus}*/}
-        {/*  />*/}
-        {/*</div>*/}
-
-        {/* Notification Bell with WebSocket Status */}
-        <NotificationDropdown>
-          <ActionIcon
-              aria-label="Notification"
-              variant="text"
-              className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
-              // onClick={sendTestNotification} // Remove in production
-          >
-            <RingBellSolidIcon className="h-[18px] w-auto" />
+    <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
+      {/* Notification Bell with unread badge (polling-driven) */}
+      <NotificationDropdown>
+        <ActionIcon
+          aria-label="Notification"
+          variant="text"
+          className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
+        >
+          <RingBellSolidIcon className="h-[18px] w-auto" />
+          {unreadCount > 0 ? (
             <Badge
-                renderAsDot
-                // color={isConnected ? "success" : "warning"}
-                color={"warning"}
-                enableOutlineRing
-                className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"
-                // title={`WebSocket: ${connectionStatus}`}
-            />
-          </ActionIcon>
-        </NotificationDropdown>
+              size="sm"
+              color="danger"
+              enableOutlineRing
+              className="absolute -right-1 -top-1 min-w-[18px] justify-center px-1 text-[10px] leading-none"
+            >
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </Badge>
+          ) : null}
+        </ActionIcon>
+      </NotificationDropdown>
 
-        {/* Wallet */}
-        <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
-          <ActionIcon
-              aria-label="Wallet"
-              onClick={() => setIsOpen(true)}
-              variant="text"
-              className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
-          >
-            <PiWalletFill className="h-[18px] w-auto" />
-          </ActionIcon>
-        </WalletDropdown>
+      {/* Wallet */}
+      <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
+        <ActionIcon
+          aria-label="Wallet"
+          onClick={() => setIsOpen(true)}
+          variant="text"
+          className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
+        >
+          <PiWalletFill className="h-[18px] w-auto" />
+        </ActionIcon>
+      </WalletDropdown>
 
-        <SettingsButton />
-        <ProfileMenu />
-      </div>
-    // <div className="ms-auto grid shrink-0 grid-cols-4 items-center gap-2 text-gray-700 print:hidden xs:gap-3 xl:gap-4">
-    //   {/*<MessagesDropdown>*/}
-    //   {/*  <ActionIcon*/}
-    //   {/*    aria-label="Messages"*/}
-    //   {/*    variant="text"*/}
-    //   {/*    className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"*/}
-    //   {/*  >*/}
-    //   {/*    <ChatSolidIcon className="h-[18px] w-auto" />*/}
-    //   {/*    <Badge*/}
-    //   {/*      renderAsDot*/}
-    //   {/*      color="success"*/}
-    //   {/*      enableOutlineRing*/}
-    //   {/*      className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"*/}
-    //   {/*    />*/}
-    //   {/*  </ActionIcon>*/}
-    //   {/*</MessagesDropdown>*/}
-    //   {/*// @ts-ignore*/}
-    //   <NotificationDropdown >
-    //     <ActionIcon
-    //       aria-label="Notification"
-    //       variant="text"
-    //       className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
-    //     >
-    //       <RingBellSolidIcon className="h-[18px] w-auto" />
-    //       <Badge
-    //         renderAsDot
-    //         color={isConnected ? "success" : "warning"}
-    //         enableOutlineRing
-    //         className="absolute right-2.5 top-2.5 -translate-y-1/3 translate-x-1/2"
-    //       />
-    //     </ActionIcon>
-    //   </NotificationDropdown>
-    //   {/*// @ts-ignore*/}
-    //   {/* <PaymentSuccess />*/}
-    //   {/*<PaymentReject />*/}
-    //   <WalletDropdown setIsOpen={setIsOpen} isOpen={isOpen}>
-    //     <ActionIcon
-    //       aria-label="Notification"
-    //       onClick={() => setIsOpen(true)}
-    //       variant="text"
-    //       className="relative h-[34px] w-[34px] shadow backdrop-blur-md dark:bg-gray-100 md:h-9 md:w-9"
-    //     >
-    //       <PiWalletFill className="h-[18px] w-auto" />
-    //     </ActionIcon>
-    //   </WalletDropdown>
-    //   <SettingsButton />
-    //   <ProfileMenu />
-    // </div>
+      <SettingsButton />
+      <ProfileMenu />
+    </div>
   );
 }
 
@@ -278,18 +95,15 @@ export default function Header() {
 // @ts-ignore
 function WalletDropdown({
   children,
-  // @ts-ignore
   setIsOpen,
-  // @ts-ignore
   isOpen,
 }: {
   children: JSX.Element & { ref?: RefObject<any> };
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpen: boolean;
 }) {
-  const dispatch = useDispatch();
   const _axios = useAxiosPrivate();
   const [loading, setLoading] = useState(false);
-
-  const isMobile = useMedia('(max-width: 480px)', false);
 
   const [amount, setAmount] = useState<number>(1_000_000);
 
@@ -319,7 +133,6 @@ function WalletDropdown({
           };
         } else {
           toast.error('خطا در افزایش اعتبار');
-          // throw new Error('Failed to start payment');
         }
       } catch (error) {
         toast.error('خطا در افزایش اعتبار');
@@ -331,27 +144,16 @@ function WalletDropdown({
     if (response?.data?.url) window.location.href = response?.data?.url;
     else toast.error('خطا در افزایش اعتبار');
     setLoading(false);
-    // dispatch(addCredit(amount));
-    // alert(`در حال هدایت به درگاه بانکی برای پرداخت مبلغ ${amount} تومان`);
   };
   const defaultAmounts = [1, 5, 10];
 
   return (
     <>
-      <Modal
-        // size="xl"
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        customSize="1080px"
-      >
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} customSize="1080px">
         <div className="m-auto rounded-xl bg-gray-50 px-7 pt-8 dark:bg-gray-100 dark:text-white">
           <div className="flex items-center justify-between">
             <h3>افزایش اعتبار کیف پول</h3>
-            <ActionIcon
-              size="sm"
-              variant="text"
-              onClick={() => setIsOpen(false)}
-            >
+            <ActionIcon size="sm" variant="text" onClick={() => setIsOpen(false)}>
               <HiXMark className="h-auto w-6" strokeWidth={1.8} />
             </ActionIcon>
           </div>
@@ -384,7 +186,7 @@ function WalletDropdown({
                   به حروف
                 </Badge>
                 <p className="font-bold dark:text-white">
-                  {numberToWords(Number(amount))} تومان
+                  {String(numberToWords(Number(amount)))} تومان
                 </p>
               </div>
               <Button
@@ -402,103 +204,10 @@ function WalletDropdown({
                 className="w-64"
               />
             </div>
-
-            {/* <div
-              // style={{ backgroundColor: "#f5deb369" }}
-              className="w-full max-w-lg transform rounded-lg bg-white p-6 text-center shadow-lg transition-all duration-300 hover:scale-105 dark:bg-gray-200 dark:text-white"
-            >
-              <div className="flex flex-col items-center gap-4">
-                <PiWalletFill className="text-indigo-600 animate-pulse text-7xl" />
-                <h1 className="text-2xl font-bold text-gray-800">
-                  اعتبار خود را افزایش دهید
-                </h1>
-                <Image
-                  src={walletImage || null}
-                  alt="Wallet"
-                  width={150}
-                  height={150}
-                  className="transform transition-all duration-500 hover:rotate-6"
-                />
-                <div className="mt-4 flex w-full flex-col items-center">
-                  <label
-                    htmlFor="amount"
-                    className="mb-2 font-medium text-gray-700"
-                  >
-                    مقدار اعتبار مورد نظر (به تومان)
-                  </label>
-                  <input
-                    type="number"
-                    id="amount"
-                    value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
-                    className="focus:ring-indigo-500 text-black-800 mb-4 w-full rounded-md border border-gray-300 px-4 py-2 focus:border-transparent focus:outline-none focus:ring-2 dark:text-black"
-                    placeholder="مبلغ را وارد کنید"
-                  />
-                  <div className="mb-4 flex gap-3">
-                    {defaultAmounts.map((value) => (
-                      <Button
-                        key={value}
-                        onClick={() => handleDefaultAmountClick(value)}
-                        variant="outline"
-                        className="hover:bg-indigo-600 border-gray-300 p-6 transition-all duration-300 hover:text-black"
-                      >
-                        {value.toLocaleString()} تومان
-                      </Button>
-                    ))}
-                  </div>
-                  <Button
-                    onClick={handleSubmit}
-                    size="lg"
-                    className="group/btn hover:bg-indigo-700 w-full transform rounded-lg bg-orange py-3 font-semibold text-black transition-transform duration-300 hover:scale-105 dark:text-white"
-                    isLoading={loading}
-                  >
-                    <span>افزایش اعتبار و رفتن به صفحه پرداخت</span>{' '}
-                    <PiArrowLeftBold className="ms-2 mt-0.5 h-5 w-5" />
-                  </Button>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </Modal>
       {children}
-      {/*<Popover*/}
-      {/*    isOpen={isOpen}*/}
-      {/*    setIsOpen={setIsOpen}*/}
-      {/*    content={() => <NotificationsList setIsOpen={setIsOpen} />}*/}
-      {/*    shadow="sm"*/}
-      {/*    placement={isMobile ? 'bottom' : 'bottom-end'}*/}
-      {/*    className="z-50 px-0 pb-4 pe-6 pt-5 dark:bg-gray-100 [&>svg]:hidden [&>svg]:dark:fill-gray-100 sm:[&>svg]:inline-flex"*/}
-      {/*>*/}
-      {/*  {children}*/}
-      {/*</Popover>*/}
     </>
   );
 }
-
-type ButtonProps = {
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'solid' | 'outline';
-  className?: string;
-};
-
-// const Button: React.FC<ButtonProps> = ({
-//                                            children,
-//                                            onClick,
-//                                            variant = 'solid',
-//                                            className,
-//                                        }) => {
-//     const baseStyle =
-//         'px-6 py-2 rounded-lg font-medium transition duration-200 ease-in-out focus:outline-none';
-//     const styles = {
-//         solid: `bg-indigo-600 text-white hover:bg-indigo-700 ${baseStyle}`,
-//         outline: `border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white ${baseStyle}`,
-//     };
-//
-//     return (
-//         <button onClick={onClick} className={cn(styles[variant], className)}>
-//             {children}
-//         </button>
-//     );
-// };

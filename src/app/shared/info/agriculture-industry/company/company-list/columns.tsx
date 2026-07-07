@@ -1,3 +1,4 @@
+import { STATIC_FILES_URL as STATIC_FILE_URL } from '@/config/api.config';
 import { HeaderCell } from '@/components/ui/table';
 import { Text } from '@/components/ui/text';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -13,7 +14,6 @@ import EyeIcon from "@/components/icons/eye";
 import type {Invoice} from "@/data/invoice-data";
 import AvatarCard from "@/components/ui/avatar-card";
 
-const STATIC_FILE_URL = "https://back.agfo.ir" //process.env.STATIC_FILES_URL;
 const companyStatusDict: any = {
     VERIFIED: 'تایید شده',
     PENDING: 'در انتظار',

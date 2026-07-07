@@ -5,7 +5,6 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import userSlice from './userSlice';
 import walletSlice from './walletSlice';
-import notificationSlice from "@/store/notificationSlice";
 
 const persistConfig = {
     key: 'root',
@@ -15,7 +14,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
     user: userSlice,
     wallet: walletSlice,
-    notifications: notificationSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

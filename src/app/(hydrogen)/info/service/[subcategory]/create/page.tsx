@@ -304,7 +304,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Button, Input, Textarea } from 'rizzui';
+import { Button } from 'rizzui';
 import { ChevronLeft } from 'lucide-react';
 import { useServiceSchema } from '@/hooks/use-service-subcategories';
 import { useServiceApi, ServiceDTO } from '@/app/api/services';
@@ -312,6 +312,9 @@ import DynamicForm from '@/components/ui/dynamic-form';
 import { routes } from '@/config/routes';
 import Spinner from '@/components/ui/spinner';
 import { Card, Title } from '@/components/ui/compatible-components';
+import ServiceDisplaySettings, {
+    ServiceDisplaySettingsValues,
+} from '@/app/shared/info/service/service-display-settings';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 
 // Custom alert component to avoid the rizzui Alert issue
@@ -346,6 +349,10 @@ export default function ServiceCreatePage() {
         nameEn: '',
         description: '',
         subCategoryId: 0,
+        logo: '',
+        backgroundImage: '',
+        keywords: [],
+        tags: [],
         data: {}
     });
     const [subCategoryId, setSubCategoryId] = useState<number | null>(null);
@@ -401,11 +408,13 @@ export default function ServiceCreatePage() {
         }
     }, [subcategory, axiosPrivate]);
 
-    // Handle basic form fields change
-    const handleBasicFieldChange = (field: keyof ServiceDTO, value: any) => {
-        setServiceData(prev => ({
+    const handleDisplaySettingsChange = (
+        field: keyof ServiceDisplaySettingsValues,
+        value: any
+    ) => {
+        setServiceData((prev) => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
     };
 
@@ -453,8 +462,11 @@ export default function ServiceCreatePage() {
                 nameEn: serviceData.nameEn || '',
                 description: serviceData.description || '',
                 subCategoryId: serviceData.subCategoryId || 0,
-                data: dynamicFormData, // Use the dynamic form data directly
-                // These are removed as they're admin-only
+                logo: serviceData.logo || '',
+                backgroundImage: serviceData.backgroundImage || '',
+                keywords: serviceData.keywords || [],
+                tags: serviceData.tags || [],
+                data: dynamicFormData,
                 ranking: 0,
                 rankingAll: 0,
                 elasticFields: [],
@@ -480,8 +492,8 @@ export default function ServiceCreatePage() {
     };
 
     return (
-        <div className="p-4 md:p-6 lg:p-8">
-            <div className="flex items-center justify-between mb-6">
+        <div className="mx-auto max-w-6xl p-4 md:p-6 lg:p-8">
+            <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center">
                     <Button
                         variant="text"
@@ -508,57 +520,42 @@ export default function ServiceCreatePage() {
 
             <Card className="mb-8">
                 <div className="p-6">
-                    <Title className="text-lg mb-4">اطلاعات پایه</Title>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Input
-                            label="نام خدمت"
-                            placeholder="نام خدمت را وارد کنید"
-                            value={serviceData.name}
-                            onChange={(e) => handleBasicFieldChange('name', e.target.value)}
-                            error={!serviceData.name ? 'نام خدمت الزامی است' : ''}
-                            required
-                        />
-
-                        <Input
-                            label="نام انگلیسی خدمت"
-                            placeholder="نام انگلیسی خدمت را وارد کنید"
-                            value={serviceData.nameEn}
-                            onChange={(e) => handleBasicFieldChange('nameEn', e.target.value)}
-                        />
-
-                        <Textarea
-                            label="توضیحات"
-                            placeholder="توضیحات خدمت را وارد کنید"
-                            value={serviceData.description}
-                            onChange={(e) => handleBasicFieldChange('description', e.target.value)}
-                            className="col-span-1 md:col-span-2"
-                            rows={4}
-                        />
-                    </div>
+                    <Title className="mb-4 text-lg">تنظیمات نمایش</Title>
+                    <ServiceDisplaySettings
+                        values={{
+                            name: serviceData.name || '',
+                            nameEn: serviceData.nameEn || '',
+                            description: serviceData.description || '',
+                            logo: serviceData.logo,
+                            backgroundImage: serviceData.backgroundImage,
+                            keywords: serviceData.keywords || [],
+                            tags: serviceData.tags || [],
+                            currentLogo: (serviceData as any).currentLogo,
+                            currentBackgroundImage: (serviceData as any).currentBackgroundImage,
+                        }}
+                        onChange={handleDisplaySettingsChange}
+                        nameError={!serviceData.name ? 'نام خدمت الزامی است' : ''}
+                    />
                 </div>
             </Card>
 
             {schemaLoading ? (
-                <div className="flex justify-center items-center py-10">
+                <div className="flex items-center justify-center py-10">
                     <Spinner size="xl" />
                     <p className="ms-3">در حال بارگذاری فرم...</p>
                 </div>
             ) : schema ? (
-                <Card>
-                    <div className="p-6">
-                        <Title className="text-lg mb-4">اطلاعات تخصصی</Title>
-
-                        <DynamicForm
-                            schema={schema}
-                            initialData={serviceData.data || {}}
-                            onSubmit={handleDynamicFormSubmit}
-                            onChange={handleDynamicDataChange} // Added onChange prop
-                            loading={isLoading}
-                            hideSubmit={true}
-                        />
-                    </div>
-                </Card>
+                <DynamicForm
+                    schema={schema}
+                    initialData={serviceData.data || {}}
+                    onSubmit={handleDynamicFormSubmit}
+                    onChange={handleDynamicDataChange}
+                    loading={isLoading}
+                    hideSubmit={true}
+                    clientPanel={true}
+                    hideFormHeader={true}
+                    className="max-w-none"
+                />
             ) : null}
 
             <div className="mt-6 flex justify-end">

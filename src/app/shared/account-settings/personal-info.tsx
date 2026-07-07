@@ -89,8 +89,7 @@
 // export default function PersonalInfoView({ user }) {
 //   const dispatch = useDispatch();
 //   const _axios = useAxiosPrivate();
-//   const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
-//   const imageRef = useRef<HTMLInputElement>(null);
+//   //   const imageRef = useRef<HTMLInputElement>(null);
 //   const [isLoading, setLoading] = useState(false);
 //   const [images, setImages] = useState<Array<File>>([]);
 //   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -307,7 +306,7 @@
 //                           <Image
 //                               src={
 //                                   (user?.avatar &&
-//                                       STATIC_FILE_PATH + user?.avatar) ||
+//                                       STATIC_FILES_URL + user?.avatar) ||
 //                                   noPic
 //                               }
 //                               className="aspect-square border object-cover shadow-md"
@@ -697,6 +696,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import Image from 'next/image';
 import { Controller, SubmitHandler } from 'react-hook-form';
 import {
@@ -785,9 +785,7 @@ type PersonalInfoFormTypes = z.infer<typeof personalInfoFormSchema>;
 export default function PersonalInfoView({ user }) {
   const dispatch = useDispatch();
   const _axios = useAxiosPrivate();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://back.agfo.ir';
-  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
-  const profileImageRef = useRef<HTMLInputElement>(null);
+      const profileImageRef = useRef<HTMLInputElement>(null);
   const backgroundImageRef = useRef<HTMLInputElement>(null);
   const [isLoading, setLoading] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -795,10 +793,10 @@ export default function PersonalInfoView({ user }) {
   const [avatarFileId, setAvatarFileId] = useState<string | null>(null);
   const [backgroundAvatarFileId, setBackgroundAvatarFileId] = useState<string | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
-      user?.avatar ? STATIC_FILE_PATH + user.avatar : null
+      user?.avatar ? STATIC_FILES_URL + user.avatar : null
   );
   const [backgroundImagePreview, setBackgroundImagePreview] = useState<string | null>(
-      user?.backgroundAvatar ? STATIC_FILE_PATH + user.backgroundAvatar : null
+      user?.backgroundAvatar ? STATIC_FILES_URL + user.backgroundAvatar : null
   );
   const [reset, setReset] = useState({});
   const [provinces, setProvinces] = useState([]);
@@ -882,7 +880,7 @@ export default function PersonalInfoView({ user }) {
         setAvatarFileId(uploadedFile.id);
       } catch (error) {
         // Reset preview if upload fails
-        setProfileImagePreview(user?.avatar ? STATIC_FILE_PATH + user.avatar : null);
+        setProfileImagePreview(user?.avatar ? STATIC_FILES_URL + user.avatar : null);
         setProfileImage(null);
         setAvatarFileId(null);
       }
@@ -905,7 +903,7 @@ export default function PersonalInfoView({ user }) {
         setBackgroundAvatarFileId(uploadedFile.id);
       } catch (error) {
         // Reset preview if upload fails
-        setBackgroundImagePreview(user?.backgroundAvatar ? STATIC_FILE_PATH + user.backgroundAvatar : null);
+        setBackgroundImagePreview(user?.backgroundAvatar ? STATIC_FILES_URL + user.backgroundAvatar : null);
         setBackgroundImage(null);
         setBackgroundAvatarFileId(null);
       }

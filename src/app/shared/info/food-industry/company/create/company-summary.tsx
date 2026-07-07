@@ -114,9 +114,9 @@
 //
 //   // Logo preview URL handling
 //   const logoPreview = logoData
-//       ? `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${logoData.filePath}`
+//       ? `${STATIC_FILES_URL}${logoData.filePath}`
 //       : watchedLogo
-//           ? `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${watchedLogo}`
+//           ? `${STATIC_FILES_URL}${watchedLogo}`
 //           : null;
 //
 //   // Handle logo removal
@@ -394,6 +394,8 @@
 //   );
 // }
 
+import { API_BASE_URL } from '@/config/api.config';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
@@ -522,9 +524,9 @@ export default function CompanySummary({
 
   // Logo preview URL handling
   const logoPreview = logoData
-      ? `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${logoData.filePath}`
+      ? `${STATIC_FILES_URL}${logoData.filePath}`
       : watchedLogo
-          ? `${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${watchedLogo}`
+          ? `${STATIC_FILES_URL}${watchedLogo}`
           : null;
 
   // Handle logo removal
@@ -552,7 +554,7 @@ export default function CompanySummary({
       formData.append('fileServiceType', 'BRAND_IMAGE');
 
       const response = await _axios.post(
-          `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/file`,
+          `${API_BASE_URL}/file`,
           formData,
           {
             headers: {
@@ -816,18 +818,18 @@ export default function CompanySummary({
           const brandImagePath = watch(`brands.${index}.brandImage`);
 
           return (
-              <div key={item.id} className="grid grid-cols-1 gap-4 relative border border-gray-200 rounded-lg p-6 pt-10">
+              <div key={item.id} className="relative grid grid-cols-1 gap-4 rounded-lg border border-gray-200 p-6 pt-10 dark:border-gray-300">
                 {/* Brand Image Upload Section */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-600">
                     تصویر برند
                   </label>
 
                   {brandImagePath ? (
                       <div className="relative inline-block">
-                        <div className="w-32 h-32 relative border border-gray-200 rounded-lg overflow-hidden">
+                        <div className="w-32 h-32 relative border border-gray-200 rounded-lg overflow-hidden dark:border-gray-300">
                           <Image
-                              src={`${process.env.NEXT_PUBLIC_STATIC_FILES_URL}${brandImagePath}`}
+                              src={`${STATIC_FILES_URL}${brandImagePath}`}
                               alt={`Brand ${index + 1}`}
                               width={128}
                               height={128}
@@ -854,7 +856,7 @@ export default function CompanySummary({
                         />
                         <label
                             htmlFor={`brand-image-${index}`}
-                            className={`cursor-pointer px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition ${
+                            className={`cursor-pointer rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 dark:border-gray-300 dark:text-gray-600 dark:hover:bg-gray-100 ${
                                 brandImageUploading[index] ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
                         >

@@ -25,6 +25,78 @@ export type FieldType = {
     enum?: string[];
 };
 
+const USER_PANEL = 'USER_PANEL';
+
+export function getClientDisplay(property: any): string[] | null {
+    const displays =
+        property?.clientDisplay ?? property?.uniforms?.clientDisplay;
+
+    if (!displays || !Array.isArray(displays) || displays.length === 0) {
+        return null;
+    }
+
+    return displays;
+}
+
+export function isPropertyVisibleForUserPanel(property: any): boolean {
+    const displays = getClientDisplay(property);
+    if (displays === null) {
+        return true;
+    }
+
+    return displays.includes(USER_PANEL);
+}
+
+export function filterSchemaDefinitionForUserPanel(schemaDefinition: any): any {
+    if (!schemaDefinition?.properties) {
+        return schemaDefinition;
+    }
+
+    const filteredProperties: Record<string, any> = {};
+
+    Object.entries(schemaDefinition.properties).forEach(
+        ([name, property]: [string, any]) => {
+            if (isPropertyVisibleForUserPanel(property)) {
+                filteredProperties[name] = property;
+            }
+        }
+    );
+
+    const required = (schemaDefinition.required || []).filter(
+        (name: string) => name in filteredProperties
+    );
+
+    return {
+        ...schemaDefinition,
+        properties: filteredProperties,
+        required,
+    };
+}
+
+export function filterFormDataByUserPanelSchema(
+    formData: any,
+    schemaDefinition: any
+): any {
+    if (!schemaDefinition?.properties || !formData) {
+        return formData ?? {};
+    }
+
+    const result: Record<string, any> = {};
+
+    Object.entries(schemaDefinition.properties).forEach(
+        ([name, property]: [string, any]) => {
+            if (
+                isPropertyVisibleForUserPanel(property) &&
+                formData[name] !== undefined
+            ) {
+                result[name] = formData[name];
+            }
+        }
+    );
+
+    return result;
+}
+
 /**
  * Converts a JSON schema into a standardized array of field objects
  * @param schema The JSON schema object

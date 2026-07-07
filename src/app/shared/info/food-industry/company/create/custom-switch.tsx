@@ -15,9 +15,9 @@ export default function CustomSwitch({
   description 
 }: CustomSwitchProps) {
   return (
-    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+    <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4 dark:border-gray-300">
       <div className="flex flex-row items-center gap-3">
-        {label && <span className="font-medium text-gray-800">{label}</span>}
+        {label && <span className="font-medium text-gray-800 dark:text-gray-700">{label}</span>}
         {description && <span className="text-sm text-gray-500">{description}</span>}
       </div>
       <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 bg-gray-200">
@@ -29,7 +29,7 @@ export default function CustomSwitch({
         />
         <span 
           className={`${
-            checked ? 'translate-x-5 bg-primary-500' : 'translate-x-0 bg-white'
+            checked ? 'translate-x-5 bg-primary-500' : 'translate-x-0 bg-gray-0 dark:bg-gray-700'
           } inline-block h-5 w-5 transform rounded-full border border-gray-200 shadow-sm ring-0 transition-transform`}
         />
         <span 

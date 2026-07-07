@@ -1,6 +1,7 @@
+import { API_BASE_URL, STATIC_FILES_URL } from '@/config/api.config';
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back.agfo.ir/api/v1';
+const API_URL = API_BASE_URL;
 
 const fileApi = axios.create({
     baseURL: `${API_URL}/files`,
@@ -74,7 +75,7 @@ export const fileUploadService = {
             return filePath;
         }
 
-        return `${process.env.NEXT_PUBLIC_STATIC_FILES_URL || '/files'}${filePath}`;
+        return `${STATIC_FILES_URL || '/files'}${filePath}`;
     }
 };
 

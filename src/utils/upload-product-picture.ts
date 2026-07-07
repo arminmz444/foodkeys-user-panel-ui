@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@/config/api.config';
 import _axios from "@/utils/axios-instance";
 async function uploadProductPictures(files: File[]): Promise<string[]> {
     const tempUploadFormData = new FormData();
@@ -5,7 +6,7 @@ async function uploadProductPictures(files: File[]): Promise<string[]> {
     tempUploadFormData.append("fileServiceType", "PRODUCT_PICTURE");
 
     const response = await _axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/company/file/temp`,
+        `${API_BASE_URL}/company/file/temp`,
         tempUploadFormData,
         {
             headers: {

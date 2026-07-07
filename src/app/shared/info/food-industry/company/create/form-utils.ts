@@ -310,6 +310,14 @@ const galleryDocumentSchema = z.object({
     priority: z.union([z.number(), z.string()]).optional()
 });
 
+const galleryVideoSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
+    removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
+    priority: z.union([z.number(), z.string()]).optional()
+});
+
 const gallerySchema = z.object({
     // contacts: z.array(galleryContactSchema).superRefine((val, ctx) => {
     //   if (new Set(val).size === val.length)
@@ -323,6 +331,7 @@ const gallerySchema = z.object({
     products: z.array(galleryProductSchema).optional(),
     sliders: z.array(gallerySliderSchema).optional(),
     catalogs: z.array(galleryCatalogSchema).optional(),
+    videos: z.array(galleryVideoSchema).optional(),
     documents: z.array(galleryDocumentSchema).optional(),
 });
 
@@ -540,6 +549,7 @@ export function defaultValues(company?: CreateCompanyInput | null) {
             products: [],
             slider: [],
             catalog: {},
+            videos: [],
             documents: [],
         },
         factoryLongitude: company?.factoryLongitude,

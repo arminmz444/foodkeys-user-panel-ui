@@ -229,7 +229,7 @@
 //                 <Avatar
 //                   name="John Doe"
 //                   src={
-//                     process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+//                     STATIC_FILES_URL +
 //                     message?.senderAvatar
 //                   }
 //                   className="order-1 !h-8 !w-8 bg-[#70C5E0] font-medium text-white lg:order-2 xl:!h-11 xl:!w-11"
@@ -270,7 +270,7 @@
 //                           //   alt={attachment.fileName}
 //                           //   // @ts-ignore
 //                           //   src={
-//                           //     process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+//                           //     STATIC_FILES_URL +
 //                           //     attachment.filePath
 //                           //   }
 //                           //   className="object-contain"

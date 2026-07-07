@@ -1,4 +1,24 @@
 import './src/env.mjs';
+
+function getStaticFilesRemotePattern() {
+  const url = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
+  try {
+    const parsed = new URL(url);
+    return {
+      protocol: parsed.protocol.replace(':', ''),
+      hostname: parsed.hostname,
+      ...(parsed.port ? { port: parsed.port } : {}),
+      pathname: '/files/**',
+    };
+  } catch {
+    return {
+      protocol: 'https',
+      hostname: 'back.agfo.ir',
+      pathname: '/files/**',
+    };
+  }
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // skipTrailingSlashRedirect: true,
@@ -78,12 +98,7 @@ const nextConfig = {
         port: '8080',
         pathname: '/files/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'www.back.agfo.ir',
-        port: '80',
-        pathname: '/files/**',
-      },
+      getStaticFilesRemotePattern(),
       {
         protocol: 'http',
         hostname: 'localhost',

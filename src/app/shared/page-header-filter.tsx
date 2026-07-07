@@ -31,14 +31,14 @@ const sortOptions = [
     value: 'pending',
   },
   {
-    name: 'منقضی شده',
-    value: 'expired',
+    name: 'غیرفعال',
+    value: 'disable',
   },
 ];
 
 interface PageHeaderFilterProps {
   sortValue: string;
-  setSortValue: (val: 'فعال' | 'در انتظار تایید' | 'منقضی شده' | 'همه') => void;
+  setSortValue: (val: 'فعال' | 'در انتظار تایید' | 'غیرفعال' | 'همه') => void;
   value: SelectOption[];
   setValue: (val: SelectOption[]) => void;
   filterValue: string;
@@ -62,7 +62,7 @@ const PageHeaderFilter = ({
             selected.name === 'همه' ||
             selected.name === 'فعال' ||
               selected.name === 'در انتظار تایید' ||
-            selected.name === 'منقضی شده'
+            selected.name === 'غیرفعال'
           ) {
             setSortValue(selected.name);
           }

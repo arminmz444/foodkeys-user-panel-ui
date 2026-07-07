@@ -1,4 +1,5 @@
 'use client';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import PencilIcon from '@/components/icons/pencil';
 import { Textarea } from '@/components/ui/textarea';
 import Image from 'next/image';
@@ -75,7 +76,7 @@ export default function ProductMedia({ className }) {
     tempUploadFormData.append('fileServiceType', 'PRODUCT_PICTURE');
 
     const response = await _axios.post(
-      'https://back.agfo.ir/api/v1/client/panel/file/temp',
+      '/file/temp',
       tempUploadFormData,
       {
         headers: {
@@ -352,7 +353,7 @@ export const MultipleFiles = ({
                         ? URL.createObjectURL(file)
                         : file &&
                           file.filePath &&
-                          process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+                          STATIC_FILES_URL +
                             file.filePath
                     }
                     alt={file?.name || 'عکس محصول'}
@@ -509,7 +510,7 @@ const ProductAccordion = ({
 
   return (
     <>
-      <div className="w-full max-w-full rounded-lg bg-white shadow-md">
+      <div className="w-full max-w-full rounded-lg bg-gray-0 shadow-md dark:bg-gray-50">
         {products.map((field, index) => (
           <div key={field.id}>
             <button

@@ -1,3 +1,4 @@
+import { STATIC_FILES_URL as STATIC_FILE_URL } from '@/config/api.config';
 import {HeaderCell} from '@/components/ui/table';
 import {Text} from '@/components/ui/text';
 import {Checkbox} from '@/components/ui/checkbox';
@@ -15,7 +16,6 @@ import {Button, Popover} from "rizzui";
 import HandWaveIcon from "@/components/icons/hand-wave";
 import {PiHand} from "react-icons/pi";
 
-const STATIC_FILE_URL = "https://back.agfo.ir"
 const companyStatusDict: any = {
     VERIFIED: 'تایید شده',
     PENDING: 'در انتظار تایید',

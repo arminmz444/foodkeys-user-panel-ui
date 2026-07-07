@@ -340,14 +340,17 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Text, Button, Input, Textarea, Alert } from 'rizzui';
-import {ChevronLeft, ChevronRight, Trash2} from 'lucide-react';
+import { Text, Button } from 'rizzui';
+import {ChevronRight, Trash2} from 'lucide-react';
 import { useServiceApi, ServiceDTO } from '@/app/api/services';
 import DynamicForm from '@/components/ui/dynamic-form';
 import { routes } from '@/config/routes';
 import Spinner from '@/components/ui/spinner';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
 import {CustomAlert, Card, Title} from "@/components/ui/compatible-components";
+import ServiceDisplaySettings, {
+    ServiceDisplaySettingsValues,
+} from '@/app/shared/info/service/service-display-settings';
 
 export default function ServiceEditPage() {
     const { subcategory, id } = useParams();
@@ -387,13 +390,15 @@ export default function ServiceEditPage() {
         }
     }, [id, serviceApi]);
 
-    // Handle basic form fields change
-    const handleBasicFieldChange = (field: keyof ServiceDTO, value: any) => {
+    const handleDisplaySettingsChange = (
+        field: keyof ServiceDisplaySettingsValues,
+        value: any
+    ) => {
         if (!serviceData) return;
 
-        setServiceData(prev => ({
-            ...prev,
-            [field]: value
+        setServiceData((prev) => ({
+            ...prev!,
+            [field]: value,
         }));
     };
 
@@ -448,6 +453,10 @@ export default function ServiceEditPage() {
                 rankingAll: serviceData.rankingAll || 0,
                 description: serviceData.description || '',
                 subCategoryId: serviceData.subCategoryId || 0,
+                logo: serviceData.logo || '',
+                backgroundImage: serviceData.backgroundImage || '',
+                keywords: serviceData.keywords || [],
+                tags: serviceData.tags || [],
                 elasticFields: elasticFieldsArray,
                 data: serviceData.data || {},
                 additionalData: serviceData.additionalData || null
@@ -520,8 +529,8 @@ export default function ServiceEditPage() {
     }
 
     return (
-        <div className="p-4 md:p-6 lg:p-8">
-            <div className="flex items-center justify-between mb-6">
+        <div className="mx-auto max-w-6xl p-4 md:p-6 lg:p-8">
+            <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center">
                     <Button
                         variant="text"
@@ -552,89 +561,39 @@ export default function ServiceEditPage() {
 
             <Card className="mb-8">
                 <div className="p-6">
-                    <Title className="text-lg mb-4">اطلاعات پایه</Title>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <Input
-                            label="نام خدمت"
-                            placeholder="نام خدمت را وارد کنید"
-                            value={serviceData.name}
-                            onChange={(e) => handleBasicFieldChange('name', e.target.value)}
-                            error={!serviceData.name ? 'نام خدمت الزامی است' : ''}
-                            required
-                        />
-
-                        <Input
-                            label="نام انگلیسی خدمت"
-                            placeholder="نام انگلیسی خدمت را وارد کنید"
-                            value={serviceData.nameEn}
-                            onChange={(e) => handleBasicFieldChange('nameEn', e.target.value)}
-                        />
-
-                        {/*<Input*/}
-                        {/*    type="number"*/}
-                        {/*    label="رتبه"*/}
-                        {/*    placeholder="رتبه"*/}
-                        {/*    disabled*/}
-                        {/*    value={serviceData.ranking}*/}
-                        {/*    // onChange={(e) => handleBasicFieldChange('ranking', Number(e.target.value))}*/}
-                        {/*/>*/}
-
-                        {/*<Input*/}
-                        {/*    type="number"*/}
-                        {/*    label="رتبه کلی"*/}
-                        {/*    placeholder="رتبه کلی"*/}
-                        {/*    disabled*/}
-                        {/*    value={serviceData.rankingAll}*/}
-                        {/*    // onChange={(e) => handleBasicFieldChange('rankingAll', Number(e.target.value))}*/}
-                        {/*/>*/}
-
-                        {/*<Input*/}
-                        {/*    type="number"*/}
-                        {/*    label="بازدید در سایت"*/}
-                        {/*    placeholder="بازدید در سایت"*/}
-                        {/*    disabled*/}
-                        {/*    value={serviceData.visit}*/}
-                        {/*    className="col-span-1 md:col-span-2"*/}
-                        {/*    // onChange={(e) => handleBasicFieldChange('visit', Number(e.target.value))}*/}
-                        {/*/>*/}
-
-                        {/*<Input*/}
-                        {/*    label="فیلدهای جستجو (با کاما جدا کنید)"*/}
-                        {/*    placeholder="فیلدهای قابل جستجو را وارد کنید"*/}
-                        {/*    value={typeof serviceData.elasticFields === 'string' ? serviceData.elasticFields : serviceData.elasticFields?.join(', ')}*/}
-                        {/*    onChange={(e) => handleBasicFieldChange('elasticFields', e.target.value)}*/}
-                        {/*    className="col-span-1 md:col-span-2"*/}
-                        {/*    helperText="فیلدهایی که در جستجو استفاده می‌شوند را با کاما جدا کنید"*/}
-                        {/*/>*/}
-
-                        <Textarea
-                            label="توضیحات"
-                            placeholder="توضیحات خدمت را وارد کنید"
-                            value={serviceData.description}
-                            onChange={(e) => handleBasicFieldChange('description', e.target.value)}
-                            className="col-span-1 md:col-span-2"
-                            rows={4}
-                        />
-                    </div>
+                    <Title className="mb-4 text-lg">تنظیمات نمایش</Title>
+                    <ServiceDisplaySettings
+                        values={{
+                            name: serviceData.name || '',
+                            nameEn: serviceData.nameEn || '',
+                            description: serviceData.description || '',
+                            logo: serviceData.logo,
+                            backgroundImage: serviceData.backgroundImage,
+                            keywords: serviceData.keywords || [],
+                            tags: serviceData.tags || [],
+                            currentLogo: (serviceData as any).currentLogo || serviceData.logo,
+                            currentBackgroundImage:
+                                (serviceData as any).currentBackgroundImage ||
+                                serviceData.backgroundImage,
+                        }}
+                        onChange={handleDisplaySettingsChange}
+                        nameError={!serviceData.name ? 'نام خدمت الزامی است' : ''}
+                    />
                 </div>
             </Card>
 
             {serviceData.serviceSchemaDTO ? (
-                <Card>
-                    <div className="p-6">
-                        <Title className="text-lg mb-4">اطلاعات تخصصی</Title>
-
-                        <DynamicForm
-                            schema={serviceData.serviceSchemaDTO}
-                            initialData={serviceData.data}
-                            onSubmit={handleDynamicDataChange}
-                            onChange={handleDynamicDataChange}
-                            loading={isSubmitting}
-                            hideSubmit={true}
-                        />
-                    </div>
-                </Card>
+                <DynamicForm
+                    schema={serviceData.serviceSchemaDTO}
+                    initialData={serviceData.data}
+                    onSubmit={handleDynamicDataChange}
+                    onChange={handleDynamicDataChange}
+                    loading={isSubmitting}
+                    hideSubmit={true}
+                    clientPanel={true}
+                    hideFormHeader={true}
+                    className="max-w-none"
+                />
             ) : (
                 <CustomAlert variant="warning" className="mb-6">
                     اطلاعات ساختار فرم موجود نیست

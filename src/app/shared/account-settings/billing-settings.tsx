@@ -588,7 +588,7 @@ import { Input, Loader } from 'rizzui';
 import { BsCreditCard } from 'react-icons/bs';
 import axiosInstance from '@/utils/axios-instance';
 import toast from 'react-hot-toast';
-import { API_ENDPOINTS } from '@/config/api.config';
+import { API_BASE_URL, API_ENDPOINTS } from '@/config/api.config';
 
 interface Bundle {
   id: number;
@@ -651,7 +651,7 @@ export default function BillingSettingsView({ id }) {
     try {
       setLoading(true);
       const response = await axiosInstance.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/bundle/subcategory/${id}`
+          `${API_BASE_URL}/bundle/subcategory/${id}`
       );
 
       if (response.data.statusCode === 200) {
@@ -917,7 +917,7 @@ const ConfirmationCard = ({
   if (!selectedPlan) return null;
 
   return (
-      <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl border bg-white p-2 shadow-xl sm:p-6">
+      <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl border border-gray-200 bg-gray-0 p-2 shadow-xl dark:border-gray-300 dark:bg-gray-50 sm:p-6">
       <span className="flex items-center justify-center">
         <span className="ml-3 h-4 w-4 rounded-full bg-black" />
         <h4>تایید و پرداخت</h4>
@@ -981,6 +981,7 @@ const TotalCard = ({
   id: any;
   plansOptions: any[];
 }) => {
+  const [loadingPayment, setLoadingPayment] = useState(false);
   const [discountCode, setDiscountCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -1002,6 +1003,7 @@ const TotalCard = ({
   const handlePayment = async () => {
     if (!selectedPlan) return;
 
+    setLoadingPayment(true);
     const createSubscription = async () => {
       const API_URL = API_ENDPOINTS.subscription;
       let data = {
@@ -1027,6 +1029,7 @@ const TotalCard = ({
       }
     };
     let response = await createSubscription();
+    setLoadingPayment(false)
     if (response?.data) router.push(`/bundle/subscription-list`);
   };
 
@@ -1060,7 +1063,7 @@ const TotalCard = ({
   const tax = basePrice * 0.1;
 
   return (
-      <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl bg-white p-2 shadow-xl sm:p-6">
+      <div className="mt-5 flex w-full flex-col items-start justify-start rounded-xl bg-gray-0 p-2 shadow-xl dark:bg-gray-50 sm:p-6">
       <span className="flex w-full items-center justify-start">
         <span className="ml-3 h-4 w-4 rounded-full bg-black" />
         <h4>فاکتور نهایی</h4>
@@ -1134,7 +1137,7 @@ const TotalCard = ({
           </div>
         </div>
 
-        <Button onClick={handlePayment} className="mt-5 w-full">
+        <Button isLoading={loadingPayment} disabled={loadingPayment} onClick={handlePayment} className="mt-5 w-full">
           تایید و پرداخت
         </Button>
       </div>

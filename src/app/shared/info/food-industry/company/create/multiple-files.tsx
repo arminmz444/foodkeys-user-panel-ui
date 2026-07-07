@@ -1,3 +1,4 @@
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import Upload from '@/components/ui/upload';
@@ -80,14 +81,14 @@ export default function MultipleFiles({
               <SwiperSlide
                 key={file?.name || file?.id || Math.random().toString()}
               >
-                <div className="relative aspect-square overflow-hidden rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
+                <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-300 dark:bg-gray-100">
                   <Image
                     src={
                       file instanceof File || file instanceof Blob
                         ? URL.createObjectURL(file)
                         : file &&
                           file.filePath &&
-                          process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+                          STATIC_FILES_URL +
                             file.filePath
                     }
                     alt={file?.name || 'عکس محصول'}
@@ -98,7 +99,7 @@ export default function MultipleFiles({
                   <button
                     onClick={() => handleMultiImageDelete(index)}
                     type="button"
-                    className="absolute right-2 top-2 rounded-full bg-white bg-opacity-70 p-1.5 text-gray-700 shadow-sm hover:bg-red-500 hover:text-white transition-colors"
+                    className="absolute right-2 top-2 rounded-full bg-gray-0/70 p-1.5 text-gray-700 shadow-sm transition-colors hover:bg-red-500 hover:text-white dark:bg-gray-100/70 dark:text-gray-600"
                     aria-label="حذف تصویر"
                   >
                     <TrashIcon className="h-4 w-4" />

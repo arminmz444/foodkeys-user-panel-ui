@@ -11,7 +11,7 @@
 // const MiniMap = dynamic(() => import("../../../../mini-map/MiniMap"), {
 //     ssr: false,
 //     loading: () => (
-//         <div className="h-[350px] w-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
+//         <div className="h-[350px] w-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center dark:border-gray-300 dark:bg-gray-100">
 //             <div className="animate-pulse text-gray-400">در حال بارگذاری نقشه...</div>
 //         </div>
 //     ),
@@ -45,7 +45,7 @@
 //                 onValueChange={setActiveTab}
 //                 className="col-span-full mb-8"
 //             >
-//                 <TabList className="gap-x-8 border-b border-gray-200">
+//                 <TabList className="gap-x-8 border-b border-gray-200 dark:border-gray-300">
 //                     <Tab
 //                         value="factory"
 //                         className={cn(
@@ -208,7 +208,7 @@ import dynamic from "next/dynamic";
 const MiniMap = dynamic(() => import("../../../../mini-map/MiniMap"), {
     ssr: false,
     loading: () => (
-        <div className="h-[350px] w-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
+        <div className="h-[350px] w-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center dark:border-gray-300 dark:bg-gray-100">
             <div className="animate-pulse text-gray-400">در حال بارگذاری نقشه...</div>
         </div>
     ),
@@ -242,13 +242,13 @@ export default function CompanyLocation({ className }: { className?: string }) {
                 onValueChange={setActiveTab}
                 className="col-span-full mb-8"
             >
-                <TabList className="gap-x-8 border-b border-gray-200">
+                <TabList className="gap-x-8 border-b border-gray-200 dark:border-gray-300">
                     <Tab
                         value="factory"
                         className={({ selected }) => cn(
                             "capitalize py-2 px-4 -mb-px text-sm font-medium transition-colors relative",
-                            "text-gray-500 hover:text-gray-900",
-                            selected ? "text-black border-b-2 border-black" : ""
+                            "text-gray-500 hover:text-gray-900 dark:hover:text-gray-700",
+                            selected ? "border-b-2 border-black text-black dark:border-gray-1000 dark:text-gray-1000" : ""
                         )}
                     >
                         کارخانه
@@ -257,8 +257,8 @@ export default function CompanyLocation({ className }: { className?: string }) {
                         value="office"
                         className={({ selected }) => cn(
                             "capitalize py-2 px-4 -mb-px text-sm font-medium transition-colors relative",
-                            "text-gray-500 hover:text-gray-900",
-                            selected ? "text-black border-b-2 border-black" : ""
+                            "text-gray-500 hover:text-gray-900 dark:hover:text-gray-700",
+                            selected ? "border-b-2 border-black text-black dark:border-gray-1000 dark:text-gray-1000" : ""
                         )}
                     >
                         دفتر مرکزی

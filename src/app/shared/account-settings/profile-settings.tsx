@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import z from 'zod';
@@ -407,8 +408,7 @@ export function ProfileHeader({
                                 description,
                                 children,
                               }: React.PropsWithChildren<{ userInfo: any; description?: string }>) {
-  const STATIC_FILE_PATH = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
-  const hasBackgroundImage = !!userInfo?.backgroundAvatar;
+    const hasBackgroundImage = !!userInfo?.backgroundAvatar;
 
   return (
       <div className="relative z-0 -mx-4 px-4 pt-28 before:absolute before:left-0 before:top-0 before:h-40 before:w-full before:bg-gradient-to-r before:from-[#F8E1AF] before:to-[#F6CFCF] @3xl:pt-[190px] @3xl:before:h-[calc(100%-120px)] dark:before:from-[#bca981] dark:before:to-[#cbb4b4] md:-mx-5 md:px-5 lg:-mx-8 lg:px-8 xl:-mx-6 xl:px-6 3xl:-mx-[33px] 3xl:px-[33px] 4xl:-mx-10 4xl:px-10">
@@ -416,7 +416,7 @@ export function ProfileHeader({
         {hasBackgroundImage && (
             <div className="absolute left-0 top-0 z-0 h-40 w-full overflow-hidden @3xl:h-[calc(100%-120px)]">
               <Image
-                  src={STATIC_FILE_PATH + userInfo.backgroundAvatar}
+                  src={STATIC_FILES_URL + userInfo.backgroundAvatar}
                   alt="profile-background"
                   fill
                   sizes="100vw"
@@ -433,7 +433,7 @@ export function ProfileHeader({
             <Image
                 src={
                     (userInfo.avatar &&
-                        STATIC_FILE_PATH + userInfo.avatar) ||
+                        STATIC_FILES_URL + userInfo.avatar) ||
                     noPic
                 }
                 alt="profile-pic"

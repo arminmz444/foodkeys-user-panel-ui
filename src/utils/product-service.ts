@@ -1,7 +1,8 @@
+import { API_BASE_URL } from '@/config/api.config';
 import axios from 'axios';
 import { fileUploadService } from './file-upload-service';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://back.agfo.ir/api/v1';
+const API_URL = API_BASE_URL;
 
 const productApi = axios.create({
     baseURL: `${API_URL}/products`,

@@ -21,7 +21,7 @@ const ProductAccordion = () => {
     ];
 
     return (
-        <div className="w-full max-w-full bg-white rounded-lg shadow-md">
+        <div className="w-full max-w-full rounded-lg bg-gray-0 shadow-md dark:bg-gray-50">
             {accordions?.map((item, index) => (
                 <div key={index}>
                     {/* Accordion Header */}

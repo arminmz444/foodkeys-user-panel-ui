@@ -1,3 +1,4 @@
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
@@ -129,7 +130,7 @@ export default function RequestInfo({ className }: { className?: string }) {
   const logoPreview = logo
     ? URL.createObjectURL(logo)
     : watchedLogo
-    ? `https://back.agfo.ir${watchedLogo}`
+    ? `${STATIC_FILES_URL}${watchedLogo}`
     : null;
   // const addCustomField = useCallback(() => {
   //   if (fields.length < 3) append([...brands]);

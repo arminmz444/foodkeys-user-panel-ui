@@ -191,7 +191,7 @@ export default function CompaniesTable() {
                         }}
                     />
                 }
-                className="overflow-hidden rounded-md border border-gray-200 text-sm shadow-sm"
+                className="overflow-hidden rounded-md border border-gray-200 text-sm shadow-sm dark:border-gray-300"
             />
         </>
     );

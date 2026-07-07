@@ -1,4 +1,6 @@
-// // 'use client';
+'use client';
+import { API_BASE_URL } from '@/config/api.config';
+import { STATIC_FILES_URL } from '@/config/api.config';
 // //
 // // import { useState, useEffect } from 'react';
 // // import { useForm, Controller } from 'react-hook-form';
@@ -543,7 +545,7 @@
 //
 // // File preview component
 // const FilePreview = ({ file, onRemove }) => {
-//     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+//     const baseUrl = API_BASE_URL || '';
 //     const fileUrl = file && file.path ? `${baseUrl}${file.path}` : '';
 //     const fileName = file ? (file.name || file.originalName || 'File') : '';
 //
@@ -1266,7 +1268,6 @@
 //     );
 // }
 
-'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -1284,7 +1285,13 @@ import { DatePicker } from '@/components/ui/datepicker';
 import FileUpload from '@/components/ui/file-upload';
 import { Plus, Minus, CheckCircle, XCircle, Image, FileText, X } from 'lucide-react';
 import cn from '@/utils/class-names';
-import { FieldType, convertSchemaToFields, formatFormDataForApi } from '@/utils/schema-converter';
+import {
+    FieldType,
+    convertSchemaToFields,
+    formatFormDataForApi,
+    filterSchemaDefinitionForUserPanel,
+    filterFormDataByUserPanelSchema,
+} from '@/utils/schema-converter';
 import { Select, Title } from '@/components/ui/compatible-components';
 
 // Custom alert component to avoid the rizzui Alert issue
@@ -1308,7 +1315,7 @@ const CustomAlert = ({ children, variant = "default", className = "" }) => {
 // File preview component with proper image handling
 const FilePreview = ({ file, onRemove }) => {
     const getFileUrl = (file) => {
-        const baseUrl = process.env.NEXT_PUBLIC_STATIC_FILES_URL || '';
+        const baseUrl = STATIC_FILES_URL || '';
 
         // If file has filePath property, use it
         if (file && file.filePath) {
@@ -1425,6 +1432,9 @@ interface DynamicFormProps {
     loading?: boolean;
     submitButtonLabel?: string;
     hideSubmit?: boolean;
+    clientPanel?: boolean;
+    hideFormHeader?: boolean;
+    className?: string;
 }
 
 export default function DynamicForm({
@@ -1434,7 +1444,10 @@ export default function DynamicForm({
                                         onChange, // Receive onChange prop
                                         loading = false,
                                         submitButtonLabel = 'ذخیره',
-                                        hideSubmit = false
+                                        hideSubmit = false,
+                                        clientPanel = false,
+                                        hideFormHeader = false,
+                                        className,
                                     }: DynamicFormProps) {
     const [fields, setFields] = useState<FieldType[]>([]);
     const [formTitle, setFormTitle] = useState('');
@@ -1447,6 +1460,16 @@ export default function DynamicForm({
     const isFirstRenderRef = useRef(true);
     const lastFormDataRef = useRef({});
 
+    const effectiveSchemaDefinition = schema?.schemaDefinition
+        ? clientPanel
+            ? filterSchemaDefinitionForUserPanel(schema.schemaDefinition)
+            : schema.schemaDefinition
+        : null;
+
+    const filteredInitialData = effectiveSchemaDefinition
+        ? filterFormDataByUserPanelSchema(initialData, effectiveSchemaDefinition)
+        : initialData;
+
     const {
         control,
         handleSubmit,
@@ -1455,7 +1478,7 @@ export default function DynamicForm({
         watch,
         getValues
     } = useForm({
-        defaultValues: initialData
+        defaultValues: filteredInitialData
     });
 
     // Watch all form values for changes, but debounce updates
@@ -1485,7 +1508,10 @@ export default function DynamicForm({
         // Set new timeout to update parent
         updateTimeoutRef.current = setTimeout(() => {
             if (onChange && Object.keys(formValues).length > 0) {
-                onChange(formValues);
+                const payload = effectiveSchemaDefinition
+                    ? filterFormDataByUserPanelSchema(formValues, effectiveSchemaDefinition)
+                    : formValues;
+                onChange(payload);
             }
         }, 300); // 300ms debounce
 
@@ -1495,13 +1521,13 @@ export default function DynamicForm({
                 clearTimeout(updateTimeoutRef.current);
             }
         };
-    }, [formValues, onChange]);
+    }, [formValues, onChange, effectiveSchemaDefinition]);
 
     useEffect(() => {
         if (schema) {
             try {
-                // Convert schema to fields
-                const fieldsFromSchema = convertSchemaToFields(schema.schemaDefinition);
+                const schemaDefinition = effectiveSchemaDefinition || schema.schemaDefinition;
+                const fieldsFromSchema = convertSchemaToFields(schemaDefinition);
                 setFields(fieldsFromSchema);
                 setFormTitle(schema.formTitle || 'فرم سرویس');
                 setFormDescription(schema.formDescription || '');
@@ -1510,14 +1536,14 @@ export default function DynamicForm({
                 setLocalError('خطا در پردازش اسکیمای فرم');
             }
         }
-    }, [schema]);
+    }, [schema, effectiveSchemaDefinition]);
 
     useEffect(() => {
-        if (initialData && Object.keys(initialData).length > 0) {
-            reset(initialData);
-            lastFormDataRef.current = initialData;
+        if (filteredInitialData && Object.keys(filteredInitialData).length > 0) {
+            reset(filteredInitialData);
+            lastFormDataRef.current = filteredInitialData;
         }
-    }, [initialData, reset]);
+    }, [filteredInitialData, reset]);
 
     const getValidationRules = (field: FieldType) => {
         const rules: any = {};
@@ -2002,9 +2028,13 @@ export default function DynamicForm({
             setLocalError(null);
 
             // Format data according to schema
-            const formattedData = schema.schemaDefinition
-                ? formatFormDataForApi(data, schema.schemaDefinition)
+            const schemaDefinition = effectiveSchemaDefinition || schema.schemaDefinition;
+            const scopedData = schemaDefinition
+                ? filterFormDataByUserPanelSchema(data, schemaDefinition)
                 : data;
+            const formattedData = schemaDefinition
+                ? formatFormDataForApi(scopedData, schemaDefinition)
+                : scopedData;
 
             await onSubmit(formattedData);
 
@@ -2029,7 +2059,7 @@ export default function DynamicForm({
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto">
+        <div className={cn('w-full max-w-5xl mx-auto', className)}>
             {localError && (
                 <CustomAlert variant="danger" className="mb-4">
                     {localError}
@@ -2043,13 +2073,13 @@ export default function DynamicForm({
                 </CustomAlert>
             )}
 
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
-                {formTitle && (
-                    <Title className="text-xl font-bold mb-2">{formTitle}</Title>
+            <div className="rounded-lg bg-gray-0 p-6 shadow-sm dark:bg-gray-50">
+                {!hideFormHeader && formTitle && (
+                    <Title className="mb-2 text-xl font-bold">{formTitle}</Title>
                 )}
 
-                {formDescription && (
-                    <Text className="text-gray-500 mb-6">{formDescription}</Text>
+                {!hideFormHeader && formDescription && (
+                    <Text className="mb-6 text-gray-500">{formDescription}</Text>
                 )}
 
                 <form onSubmit={handleSubmit(handleFormSubmit)}>

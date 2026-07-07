@@ -1,5 +1,6 @@
 'use client';
 
+import { API_BASE_URL } from '@/config/api.config';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Element } from 'react-scroll';
@@ -443,7 +444,7 @@ export default function CreateCompany({
       // console.log('productFileIds: ', formData.get('productFileIds'));
 
       // const response = await _axios.post(
-      //   `${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/company/form`,
+      //   `${API_BASE_URL}/company/form`,
       //   formData,
       //   {
       //     headers: {
@@ -573,7 +574,7 @@ export default function CreateCompany({
   //     console.log(`Company Certificates (length = ${data.companyCertificates?.length || 0}): ` + formData.getAll("COMPANY_CERTIFICATES"));
 
   //     const response = await _axios.post(
-  //         "https://back.agfo.ir/api/v1/client/panel/company/form",
+  //         "/company/form",
   //         formData,
   //         {
   //           headers: {
@@ -608,7 +609,7 @@ export default function CreateCompany({
           onSubmit={methods.handleSubmit(onSubmit)}
           className={cn('[&_label.block>span]:font-medium', className)}
         >
-          <div className="mb-10 grid gap-7 divide-y divide-dashed divide-gray-200 @2xl:gap-9 @3xl:gap-11">
+          <div className="mb-10 grid gap-7 divide-y divide-dashed divide-gray-200 dark:divide-gray-300 @2xl:gap-9 @3xl:gap-11">
             {Object.entries(MAP_STEP_TO_COMPONENT).map(([key, Component]) => (
               <Element
                 key={key}

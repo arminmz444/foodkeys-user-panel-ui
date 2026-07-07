@@ -1,5 +1,6 @@
 'use client';
 
+import { API_BASE_URL } from '@/config/api.config';
 import React, {
   useState,
   useMemo,
@@ -43,8 +44,8 @@ const fetchServices = async (
   category: number
 ) => {
   let API_URL = searchTerm
-    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/search/service?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
-    : `${process.env.NEXT_PUBLIC_API_BASE_URL}/service/?pageNumber=${currentPage}&pageSize=${pageSize}`;
+    ? `${API_BASE_URL}/search/service?query=${searchTerm}&page=${currentPage}&size=${pageSize}`
+    : `${API_BASE_URL}/service/?pageNumber=${currentPage}&pageSize=${pageSize}`;
 
   API_URL += category ? `&categoryId=${category}` : '';
 
@@ -232,7 +233,7 @@ export default function ServicesTable({ category }) {
             }}
           />
         }
-        className="overflow-hidden rounded-md border border-gray-200 text-sm shadow-sm"
+        className="overflow-hidden rounded-md border border-gray-200 text-sm shadow-sm dark:border-gray-300"
       />
     </>
   );

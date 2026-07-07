@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '@/config/api.config';
+import { STATIC_FILES_URL } from '@/config/api.config';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import FormGroup from '@/app/shared/form-group';
@@ -74,7 +76,7 @@ export default function CompanyGallery({
     );
 
     const response = await _axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/file/temp`,
+      `${API_BASE_URL}/file/temp`,
       tempUploadFormData,
       {
         headers: {
@@ -393,7 +395,7 @@ export const MultipleFiles = ({
                             ? URL.createObjectURL(file)
                             : file &&
                               file.filePath &&
-                              process.env.NEXT_PUBLIC_STATIC_FILES_URL +
+                              STATIC_FILES_URL +
                                 file.filePath
                         }
                         alt={file.name}

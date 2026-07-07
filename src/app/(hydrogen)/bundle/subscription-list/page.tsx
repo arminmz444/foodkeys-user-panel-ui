@@ -56,7 +56,7 @@ const items = [
     //   color: "#22a5dc"
     // },
 ];
-type SortOptions = 'فعال' | 'در انتظار تایید' | 'منقضی شده' | 'همه';
+type SortOptions = 'فعال' | 'در انتظار تایید' | 'غیرفعال' | 'همه';
 export default function ProfileSettingsFormPage() {
     const [fetchedValue, setFetchedValue] = useState<string[]>([]);
     const [filterValue, setFilterValue] = useState<string>('');
