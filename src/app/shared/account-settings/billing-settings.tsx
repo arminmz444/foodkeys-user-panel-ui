@@ -385,7 +385,7 @@
 //         break;
 //     }
 //     const createSubscription = async () => {
-//       const API_URL = `https://back.agfo.ir/api/v1/subscription`;
+//       const API_URL = `http://localhost:8080/api/v1/subscription`;
 //       let data = {
 //         bundleId: bundleId,
 //       };
@@ -427,7 +427,7 @@
 //         break;
 //     }
 //     const applyDiscount = async () => {
-//       const API_URL = `https://back.agfo.ir/api/v1/discount/${encodeURIComponent(
+//       const API_URL = `http://localhost:8080/api/v1/discount/${encodeURIComponent(
 //         discountCode
 //       )}/use`;
 //       try {

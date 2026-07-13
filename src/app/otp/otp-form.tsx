@@ -4,14 +4,16 @@ import { PinCode } from '@/components/ui/pin-code';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { SubmitHandler } from 'react-hook-form';
-import { PiArrowLeftBold, PiArrowRightBold } from 'react-icons/pi';
-import Link from 'next/link';
+import { PiArrowLeftBold } from 'react-icons/pi';
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Text } from '@/components/ui/text';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
-import {SEND_OTP_SCENARIOS} from "@/core/dto/enums/send-otp-scenarios";
+import { SEND_OTP_SCENARIOS } from '@/core/dto/enums/send-otp-scenarios';
+import CaptchaField from '@/components/auth/captcha-field';
+import { useCaptcha } from '@/hooks/use-captcha';
+import { CAPTCHA_ERROR } from '@/utils/auth-captcha';
 
 type FormValues = {
   phoneNumber: string;
@@ -29,11 +31,11 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isOtpSent, setOtpSent] = useState<boolean>(false);
-  const [resendTimer, setResendTimer] = useState(120); // 2 minutes in seconds
+  const [resendTimer, setResendTimer] = useState(120);
   const [canResend, setCanResend] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const captcha = useCaptcha({ autoFetch: true });
 
-  // Timer countdown effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (resendTimer > 0 && isOtpSent) {
@@ -52,26 +54,52 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
     };
   }, [resendTimer, isOtpSent]);
 
-  // Format time as MM:SS
+  useEffect(() => {
+    if (canResend && isOtpSent) {
+      void captcha.refresh();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canResend, isOtpSent]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Handle resend OTP
+  const handleCaptchaFailure = async (result?: {
+    errorType?: string;
+    captchaRequired?: boolean;
+  }) => {
+    if (result?.errorType === CAPTCHA_ERROR.INVALID) {
+      captcha.setError('کپچا نامعتبر');
+    } else if (
+      result?.errorType === CAPTCHA_ERROR.REQUIRED ||
+      result?.captchaRequired
+    ) {
+      captcha.setError(undefined);
+    }
+    await captcha.refresh();
+  };
+
   const handleResendOtp = async () => {
     if (!canResend || isResending) return;
-    
+
     setIsResending(true);
     try {
-      await requestOtp(phoneNumber);
-      setResendTimer(120); // Reset timer to 2 minutes
-      setCanResend(false);
-      toast.success('رمز یکبار مصرف مجددا ارسال شد');
+      const result = await requestOtp(phoneNumber, captcha.getPayload());
+      if (result?.success) {
+        setResendTimer(120);
+        setCanResend(false);
+        toast.success('رمز یکبار مصرف مجددا ارسال شد');
+        await captcha.refresh();
+      } else {
+        await handleCaptchaFailure(result || {});
+      }
     } catch (error) {
       console.error('Failed to resend OTP:', error);
       toast.error('خطا در ارسال مجدد رمز یکبار مصرف');
+      await captcha.refresh();
     } finally {
       setIsResending(false);
     }
@@ -93,36 +121,48 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
       }
     }
   };
+
   const onSendOtpSubmit: SubmitHandler<SendOtpFormValues> = async (data) => {
     try {
       console.log(data);
       setLoading(true);
-      // setOtpSent(true);
-      // setOtpValues(['', '', '', '', '', '']);
-      const sendOtpScenario = await requestOtp(data.phoneNumber);
+      if (!captcha.answer.trim()) {
+        captcha.setError('کد کپچا الزامی است');
+        return;
+      }
+      const result = await requestOtp(data.phoneNumber, captcha.getPayload());
+      const sendOtpScenario = result?.scenario;
+
       if (sendOtpScenario === SEND_OTP_SCENARIOS.REGISTERED) {
         setOtpSent(true);
         setPhoneNumber(data.phoneNumber);
-        setResendTimer(120); // Start 2 minute timer
+        setResendTimer(120);
         setCanResend(false);
+        await captcha.refresh();
       } else if (sendOtpScenario === SEND_OTP_SCENARIOS.NEED_TO_REGISTER) {
         if (setParentPhoneNumber) {
           setParentPhoneNumber(data.phoneNumber);
         }
-        setStep("SIGNUP");
-      }
-      else if (sendOtpScenario === SEND_OTP_SCENARIOS.IS_BLOCKED) {
+        setStep('SIGNUP');
+      } else if (sendOtpScenario === SEND_OTP_SCENARIOS.IS_BLOCKED) {
         setOtpSent(true);
         setPhoneNumber(data.phoneNumber);
-        setStep("BLOCKED")
-      } else throw new Error("Failed to send otp");
+        setStep('BLOCKED');
+      } else {
+        await handleCaptchaFailure(result || {});
+        if (!result?.message) {
+          toast.error('خطا در ارسال کد یکبار مصرف\n لطفا از طریق رمزعبور وارد شوید');
+        }
+      }
     } catch (error) {
       console.error(error);
       toast.error('خطا در ارسال کد یکبار مصرف\n لطفا از طریق رمزعبور وارد شوید');
+      await captcha.refresh();
     } finally {
       setLoading(false);
     }
   };
+
   // @ts-ignore
   return isOtpSent ? (
     <>
@@ -130,7 +170,7 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
         کد یکبار مصرف برای شما ارسال شد
       </Text>
       <Form<FormValues> onSubmit={onSubmit}>
-        {({ setValue, register, setError }) => (
+        {({ setValue }) => (
           <div dir="rtl" className="space-y-6">
             <div dir="ltr" className="flex flex-col items-center gap-4">
               <PinCode
@@ -142,10 +182,9 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
                 color="success"
                 className="w-full justify-center"
               />
-              
-              {/* Resend OTP Button */}
-              <div className="flex flex-col items-center gap-2 w-full">
-                <Button 
+
+              <div className="flex w-full flex-col items-center gap-2">
+                <Button
                   type="button"
                   onClick={handleResendOtp}
                   disabled={!canResend || isResending}
@@ -156,17 +195,34 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
                     rounded-lg
                     transition-all duration-300
                     shadow-md hover:shadow-lg
-                    ${canResend 
-                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white' 
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ${
+                      canResend
+                        ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }
                   `}
                 >
                   {isResending ? (
                     <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="h-5 w-5 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       در حال ارسال...
                     </span>
@@ -174,22 +230,37 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
                     'ارسال مجدد رمز یکبار مصرف'
                   ) : (
                     <span className="flex items-center justify-center gap-2">
-                      <span className="font-mono font-bold">{formatTime(resendTimer)}</span>
+                      <span className="font-mono font-bold">
+                        {formatTime(resendTimer)}
+                      </span>
                       ارسال مجدد در
                     </span>
                   )}
                 </Button>
                 {!canResend && resendTimer > 0 && (
-                  <Text className="text-sm text-gray-500 text-center">
+                  <Text className="text-center text-sm text-gray-500">
                     لطفاً تا پایان زمان صبر کنید
                   </Text>
                 )}
               </div>
+
+              {canResend && (
+                <CaptchaField
+                  className="w-full max-w-md"
+                  imageSrc={captcha.imageSrc}
+                  answer={captcha.answer}
+                  onAnswerChange={captcha.setAnswer}
+                  onRefresh={captcha.refresh}
+                  loading={captcha.loading}
+                  error={captcha.error}
+                  color="success"
+                />
+              )}
             </div>
 
             <Button
               isLoading={loading}
-              className="w-full mt-6"
+              className="mt-6 w-full"
               type="submit"
               size="lg"
               color="success"
@@ -203,8 +274,8 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
     </>
   ) : (
     <Form<SendOtpFormValues> onSubmit={onSendOtpSubmit}>
-      {({ setValue, register, setError, formState: { errors } }) => (
-        <div className="space-y-10">
+      {({ register, formState: { errors } }) => (
+        <div className="space-y-6">
           <div className="px-3">
             <Input
               type="number"
@@ -220,6 +291,17 @@ export default function OtpForm({ setStep, setPhoneNumber: setParentPhoneNumber 
               className="lg:justify-end"
               max={11}
               maxLength={11}
+            />
+          </div>
+          <div className="px-3">
+            <CaptchaField
+              imageSrc={captcha.imageSrc}
+              answer={captcha.answer}
+              onAnswerChange={captcha.setAnswer}
+              onRefresh={captcha.refresh}
+              loading={captcha.loading}
+              error={captcha.error}
+              color="success"
             />
           </div>
           <Button

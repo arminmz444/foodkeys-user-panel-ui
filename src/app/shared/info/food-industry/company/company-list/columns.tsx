@@ -29,10 +29,15 @@ const companyStatusDict: any = {
     PUBLISHED: 'منتشر شده',
     REVISION: 'درخواست بازبینی',
     REQUIRE_PAYMENT: "در انتظار پرداخت",
+    PAYMENT_REQUIRED: 'در انتظار پرداخت',
+    SUBSCRIPTION_EXPIRED: 'اشتراک منقضی شده',
     SUBMIT: 'ثبت شده',
 };
 
+const paymentRequiredStatuses = ['PAYMENT_REQUIRED', 'SUBSCRIPTION_EXPIRED', 'REQUIRE_PAYMENT'];
+
 function getStatusBadge(status: string) {
+    const needsPayment = paymentRequiredStatuses.includes(status);
     return (
         <div
             className={`inline-flex animate-pulse items-center justify-center gap-2 rounded-full ${
@@ -42,7 +47,7 @@ function getStatusBadge(status: string) {
                         : status === 'DENIED' || status === 'ARCHIVED' || status === "DELETED"
                             ? 'bg-red-lighter'
                             : status === 'PENDING'
-                                ? 'bg-orange-lighter' : status === "REQUIRE_PAYMENT"
+                                ? 'bg-orange-lighter' : needsPayment
                                     ? 'bg-orange'
                                 : 'bg-gray-200'
             }  px-2.5 py-1`}
@@ -55,7 +60,7 @@ function getStatusBadge(status: string) {
                             ? 'bg-green-dark'
                             : status === 'DENIED' || status === 'ARCHIVED' || status === "DELETED"
                                 ? 'bg-red-dark'
-                                : status === 'PENDING'
+                                : status === 'PENDING' || needsPayment
                                     ? 'bg-orange-dark'
                                     : null
                 }`}
@@ -67,7 +72,7 @@ function getStatusBadge(status: string) {
                             ? 'text-green-dark'
                             : status === 'DENIED' || status === 'ARCHIVED' || status === "DELETED"
                                 ? 'text-red-dark'
-                                : status === 'PENDING'
+                                : status === 'PENDING' || needsPayment
                                     ? 'text-orange-dark'
                                     : null
                 }`}
@@ -217,6 +222,25 @@ export const getColumns = ({
                     {/*    onDelete={() => onDeleteItem(row.id)}*/}
                     {/*/>*/}
                 </Tooltip>
+                {paymentRequiredStatuses.includes(row.companyStatus) && row.subCategoryId && (
+                    <Tooltip
+                        size="sm"
+                        content={() => 'خرید اشتراک'}
+                        placement="top"
+                        color="invert"
+                    >
+                        <Link href={routes.bundle(row.subCategoryId)}>
+                            <Button
+                                tag="span"
+                                size="sm"
+                                color="warning"
+                                className="dark:border-gray-300 dark:text-gray-700 dark:hover:!bg-gray-100 dark:hover:!text-gray-1000"
+                            >
+                                خرید اشتراک
+                            </Button>
+                        </Link>
+                    </Tooltip>
+                )}
                 <Tooltip
                     size="sm"
                     content={() => 'ویرایش اطلاعات'}

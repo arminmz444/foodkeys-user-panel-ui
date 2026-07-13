@@ -38,7 +38,7 @@
 //
 // // @ts-ignore
 // export default function MessageBody({ messages }) {
-//   const STATIC_FILES_URL = 'https://back.agfo.ir';
+//   const STATIC_FILES_URL = 'http://localhost:8080';
 //   const _axios = useAxiosPrivate();
 //   // const data = useAtomValue(dataAtom);
 //   const messageId = useAtomValue(messageIdAtom);
@@ -134,7 +134,7 @@
 //         const downloadFile = async () => {
 //           const fileUrl =
 //             // 'http://192.168.43.57:8080/files/TICKET_ATTACHMENT/6c5f09e1-37a1-49cc-b5dc-f2d775a930a0.jpg';
-//             'https://back.agfo.ir/files/RESELLER_SERVICE_FILE/1733819338012d7948648-8426-4f1f-901e-591f90172b08.pdf';
+//             'http://localhost:8080/files/RESELLER_SERVICE_FILE/1733819338012d7948648-8426-4f1f-901e-591f90172b08.pdf';
 //           const fileName = 'attachment.pdf';
 //
 //           try {

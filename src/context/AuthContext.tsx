@@ -27,6 +27,12 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from '@/store/store';
 import {SEND_OTP_SCENARIOS} from "@/core/dto/enums/send-otp-scenarios";
 import {handleFormikError} from "@/utils/handle-formik-error";
+import {
+    CaptchaPayload,
+    CAPTCHA_ERROR,
+    extractAuthErrorMeta,
+    withCaptchaPayload,
+} from "@/utils/auth-captcha";
 
 const initialState = {
     user: null,
@@ -179,12 +185,12 @@ export const AuthProvider = ({children}) => {
     //     refreshTokens();
     // }, []);
 
-    const login = useCallback(async (username: any, password: any, m: any) => {
+    const login = useCallback(async (username: any, password: any, m: any, captcha?: CaptchaPayload | null) => {
         try {
-            const response = await axiosInstance.post('/auth/login', {
-                username,
-                password,
-            });
+            const response = await axiosInstance.post(
+                '/auth/login',
+                withCaptchaPayload({ username, password }, captcha)
+            );
             const data = response.data;
             // const data = await signIn('credentials', {
             //     username: username, password: password,
@@ -202,27 +208,21 @@ export const AuthProvider = ({children}) => {
                 m.token = data.data?.token;
                 m.user = data.data?.user;
                 router.push('/');
+                return { success: true };
             } // @ts-ignore
             else throw new Error(data?.message || 'خطا در ورود');
         } catch (error) {
             console.error('Login failed:', error);
-            // handleFormikError(error, formik);
-            toast.error(
-                // @ts-ignore
-                (error?.response?.data?.message &&
-                    // @ts-ignore
-                    error?.response?.data?.message === 'Unauthorized' &&
-                    'نام کاربری یا رمزعبور اشتباه است') ||
-                'خطا در ورود'
-            );
-            // throw error;
+            const meta = extractAuthErrorMeta(error);
+            toast.error(meta.message || 'خطا در ورود');
+            return { success: false, ...meta };
         }
     }, []);
 
-    const signUp = useCallback(async (username: any, email: any, firstName: any, lastName: any, password: any, otp: any, m: any, setError: any) => {
+    const signUp = useCallback(async (username: any, email: any, firstName: any, lastName: any, password: any, otp: any, m: any, setError: any, captcha?: CaptchaPayload | null) => {
         try {
             console.log('SignUp called with:', { username, email, firstName, lastName, password: '***', otp: '***' });
-            const payload = {
+            const payload = withCaptchaPayload({
                 username,
                 phone: username,
                 password,
@@ -230,7 +230,7 @@ export const AuthProvider = ({children}) => {
                 firstName,
                 lastName,
                 otp
-            };
+            }, captcha);
             console.log('Sending to API:', { ...payload, password: '***', otp: '***' });
             const response = await axiosInstance.post('/auth/register', payload);
             const data = response.data;
@@ -250,11 +250,31 @@ export const AuthProvider = ({children}) => {
                 m.token = data.data?.token;
                 m.user = data.data?.user;
                 router.push('/');
-                return true;
+                return { success: true };
             } // @ts-ignore
             else throw new Error(data?.message || 'خطا در ثبت‌نام');
         } catch (error: any) {
             console.error('Sign up failed:', error);
+            const meta = extractAuthErrorMeta(error);
+
+            if (
+                meta.errorType === CAPTCHA_ERROR.RATE_LIMIT ||
+                error?.response?.status === 429
+            ) {
+                toast.error(meta.message || 'خطا در ثبت نام');
+                return { success: false, ...meta };
+            }
+
+            if (meta.errorType === CAPTCHA_ERROR.INVALID) {
+                toast.error('کپچا نامعتبر');
+                if (setError) {
+                    setError('captchaAnswer', {
+                        type: 'manual',
+                        message: 'کپچا نامعتبر',
+                    });
+                }
+                return { success: false, captchaRequired: true, ...meta };
+            }
             
             // Handle 400 validation errors
             if (
@@ -274,8 +294,13 @@ export const AuthProvider = ({children}) => {
                 }
                 
                 // Set field errors for all errors
-                errors.forEach((err: { formikField: string; message: any }) => {
-                    if (err.formikField && err.formikField !== 'GENERAL') {
+                errors.forEach((err: { formikField: string; message: any; type?: string }) => {
+                    if (err.type === CAPTCHA_ERROR.INVALID || err.formikField === 'captchaAnswer' || err.formikField === 'captchaToken') {
+                        setError?.('captchaAnswer', {
+                            type: 'manual',
+                            message: 'کپچا نامعتبر',
+                        });
+                    } else if (err.formikField && err.formikField !== 'GENERAL') {
                         setError(err.formikField, {
                             type: 'manual',
                             message: err.message
@@ -285,12 +310,13 @@ export const AuthProvider = ({children}) => {
             } else {
                 // Handle other errors
                 toast.error(
+                    meta.message ||
                     error?.response?.data?.message ||
                     'خطا در ثبت نام'
                 );
             }
             
-            return false;
+            return { success: false, captchaRequired: meta.captchaRequired, ...meta };
         }
     }, []);
 
@@ -331,27 +357,47 @@ export const AuthProvider = ({children}) => {
         }
     }, []);
 
-    const requestOtp = useCallback(async (phoneNumber: any) => {
+    const requestOtp = useCallback(async (phoneNumber: any, captcha?: CaptchaPayload | null) => {
         try {
-            let response = await axiosInstance.post('/auth/send-otp', {phoneNumber});
-            if (response.data?.data?.blocked) return SEND_OTP_SCENARIOS.IS_BLOCKED;
+            let response = await axiosInstance.post(
+                '/auth/send-otp',
+                withCaptchaPayload({ phoneNumber }, captcha)
+            );
+            if (response.data?.data?.blocked) {
+                return { success: true, scenario: SEND_OTP_SCENARIOS.IS_BLOCKED };
+            }
             toast.success('رمز یکبار مصرف با موفقیت ارسال شد');
-            return response.data?.data?.registered ? SEND_OTP_SCENARIOS.REGISTERED : SEND_OTP_SCENARIOS.NEED_TO_REGISTER
-
+            return {
+                success: true,
+                scenario: response.data?.data?.registered
+                    ? SEND_OTP_SCENARIOS.REGISTERED
+                    : SEND_OTP_SCENARIOS.NEED_TO_REGISTER,
+            };
         } catch (error) {
-            // toast.error('خطا در ارسال رمز یکبار مصرف');
-            return SEND_OTP_SCENARIOS.ERROR
+            const meta = extractAuthErrorMeta(error);
+            if (meta.message) {
+                toast.error(meta.message);
+            }
+            return {
+                success: false,
+                scenario: SEND_OTP_SCENARIOS.ERROR,
+                ...meta,
+            };
         }
     }, []);
 
-    const forgotPasswordOtp = useCallback(async (phoneNumber: any) => {
+    const forgotPasswordOtp = useCallback(async (phoneNumber: any, captcha?: CaptchaPayload | null) => {
         try {
-            await axiosInstance.post('/auth/forgot-password/otp', {phoneNumber});
+            await axiosInstance.post(
+                '/auth/forgot-password/otp',
+                withCaptchaPayload({ phoneNumber }, captcha)
+            );
             toast.success('رمز یکبار مصرف با موفقیت ارسال شد');
-            return true;
+            return { success: true };
         } catch (error) {
-            toast.error('خطا در ارسال رمز یکبار مصرف');
-            return false;
+            const meta = extractAuthErrorMeta(error);
+            toast.error(meta.message || 'خطا در ارسال رمز یکبار مصرف');
+            return { success: false, ...meta };
         }
     }, []);
 

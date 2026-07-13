@@ -23,6 +23,9 @@ import {companyFormSchema, defaultValues} from "@/app/shared/info/food-industry/
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Company} from "@/app/shared/info/food-industry/company/create";
 import toast from "react-hot-toast";
+import CaptchaField from "@/components/auth/captcha-field";
+import { useCaptcha } from "@/hooks/use-captcha";
+import { CAPTCHA_ERROR } from "@/utils/auth-captcha";
 
 type FormValues = {
     firstName: string;
@@ -97,6 +100,7 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
     const setErrorRef = useRef<any>(null);
     // @ts-ignore
     const {signUp, requestOtp} = useAuth();
+    const captcha = useCaptcha({ autoFetch: true });
 
     // Timer countdown effect
     useEffect(() => {
@@ -124,18 +128,44 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
+    const handleCaptchaFailure = async (result?: {
+        errorType?: string;
+        captchaRequired?: boolean;
+    }) => {
+        if (result?.errorType === CAPTCHA_ERROR.INVALID) {
+            captcha.setError('کپچا نامعتبر');
+        } else if (
+            result?.errorType === CAPTCHA_ERROR.REQUIRED ||
+            result?.captchaRequired
+        ) {
+            captcha.setError(undefined);
+        }
+        await captcha.refresh();
+    };
+
     // Handle resend OTP
     const handleResendOtp = async (phoneNumber: string) => {
         if (!canResend || isResending) return;
+
+        if (!captcha.answer.trim()) {
+            captcha.setError('کد کپچا الزامی است');
+            return;
+        }
         
         setIsResending(true);
         try {
-            await requestOtp(phoneNumber);
-            setResendTimer(120); // Reset timer to 2 minutes
-            setCanResend(false);
+            const result = await requestOtp(phoneNumber, captcha.getPayload());
+            if (result?.success) {
+                setResendTimer(120);
+                setCanResend(false);
+                await captcha.refresh();
+            } else {
+                await handleCaptchaFailure(result || {});
+            }
         } catch (error) {
             console.error('Failed to resend OTP:', error);
             toast.error('خطا در ارسال مجدد رمز یکبار مصرف');
+            await captcha.refresh();
         } finally {
             setIsResending(false);
         }
@@ -159,23 +189,41 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
                         toast.error('شماره همراه یافت نشد');
                         return;
                     }
+
+                    if (!captcha.answer.trim()) {
+                        captcha.setError('کد کپچا الزامی است');
+                        return;
+                    }
                     
                     setLoading(true);
                     let m = {token: '', user: ''};
                     
-                    let hasSignedUp = await signUp(phone, data.email, data.firstName, data.lastName, data.password, data.otp, m, setErrorRef.current);
+                    const result = await signUp(
+                        phone,
+                        data.email,
+                        data.firstName,
+                        data.lastName,
+                        data.password,
+                        data.otp,
+                        m,
+                        setErrorRef.current,
+                        captcha.getPayload()
+                    );
 
                     console.log('SignUp result:', m);
-                    if (hasSignedUp !== false)
+                    if (result?.success) {
                         // @ts-ignore
                         dispatch(reduxLogin(m));
+                    } else {
+                        await handleCaptchaFailure(result || {});
+                    }
                     setLoading(false);
                 }}
                 useFormProps={{
                     defaultValues: initialValues,
                 }}
             >
-                {({register, getValues, reset, setValue, setError, watch, formState: {errors}}) => {
+                {({register, getValues, setValue, setError, watch, formState: {errors}}) => {
                     // Store setError in ref so onSubmit can access it
                     setErrorRef.current = setError;
                     
@@ -186,7 +234,6 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
                     <div className="flex flex-col gap-x-4 gap-y-5 md:grid md:grid-cols-2 lg:gap-5">
                         <div dir="rtl" className="col-span-2 flex flex-col items-center justify-center mx-auto w-full">
                             <div dir="ltr" className="flex flex-col items-center justify-center w-full max-w-md gap-6">
-                            {/*<label className="mt-1 mb-2 text-sm font-medium text-gray-700">رمز یکبارمصرف</label>*/}
                             <PinCode
                                 dir="ltr"
                                 variant="outline"
@@ -313,6 +360,17 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
                             {...register('confirmPassword')}
                             error={errors.confirmPassword?.message}
                         />
+                        <div className="col-span-2">
+                            <CaptchaField
+                                imageSrc={captcha.imageSrc}
+                                answer={captcha.answer}
+                                onAnswerChange={captcha.setAnswer}
+                                onRefresh={captcha.refresh}
+                                loading={captcha.loading}
+                                error={captcha.error}
+                                color="success"
+                            />
+                        </div>
                         <div className="col-span-2 flex items-start ">
                             <Checkbox
                                 {...register('isAgreed')}
@@ -353,15 +411,6 @@ export default function SignUpForm({ initialPhoneNumber }: { initialPhoneNumber?
                     );
                 }}
             </Form>
-            {/*<Text className="mt-6 text-center leading-loose text-gray-500 lg:mt-8 lg:text-start">*/}
-            {/*    آیا حساب کاربری دارید?{' '}*/}
-            {/*    <Link*/}
-            {/*        href={routes.signIn}*/}
-            {/*        className="font-semibold text-gray-700 transition-colors hover:text-[#129974]"*/}
-            {/*    >*/}
-            {/*        ورود*/}
-            {/*    </Link>*/}
-            {/*</Text>*/}
         </>
     );
 }

@@ -1,7 +1,7 @@
 import './src/env.mjs';
 
 function getStaticFilesRemotePattern() {
-  const url = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'https://back.agfo.ir';
+  const url = process.env.NEXT_PUBLIC_STATIC_FILES_URL || 'http://localhost:8080';
   try {
     const parsed = new URL(url);
     return {

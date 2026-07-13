@@ -6,8 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Password } from '@/components/ui/password';
 import { PinCode } from '@/components/ui/pin-code';
 import { Text } from '@/components/ui/text';
+import CaptchaField from '@/components/auth/captcha-field';
 import { routes } from '@/config/routes';
 import { useAuth } from '@/context/AuthContext';
+import { useCaptcha } from '@/hooks/use-captcha';
+import { CAPTCHA_ERROR } from '@/utils/auth-captcha';
 import Link from 'next/link';
 import { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
@@ -28,8 +31,6 @@ type FormValues = {
 };
 const otpInitialValues = {
   phoneNumber: '',
-  // password: '',
-  // confirmPassword: '',
 };
 const verifyInitialValues = {
   phoneNumber: '',
@@ -98,34 +99,72 @@ export default function ForgetPasswordForm() {
   const [step, setStep] = useState<string>(STEPS.INITIAL);
   // @ts-ignore
   const { forgotPassword, forgotPasswordOtp, forgotPasswordVerify } = useAuth();
+  const captcha = useCaptcha({ autoFetch: true });
+
+  const handleCaptchaFailure = async (result?: {
+    errorType?: string;
+    captchaRequired?: boolean;
+  }) => {
+    if (result?.errorType === CAPTCHA_ERROR.INVALID) {
+      captcha.setError('کپچا نامعتبر');
+    } else if (
+      result?.errorType === CAPTCHA_ERROR.REQUIRED ||
+      result?.captchaRequired
+    ) {
+      captcha.setError(undefined);
+    }
+    await captcha.refresh();
+  };
+
   const onOtpSubmit: SubmitHandler<OtpFormValues> = async (data) => {
     console.log(data);
     setLoading(true);
-    // let m = { token: "", user: "" }
     setPhoneNumber(data.phoneNumber);
-    let isOtpSent = await forgotPasswordOtp(data.phoneNumber);
-    if (isOtpSent) setStep(STEPS.OTP);
-    // @ts-ignore
-    // reduxDispatch(reduxLogin(m))
+
+    if (!captcha.answer.trim()) {
+      captcha.setError('کد کپچا الزامی است');
+      setLoading(false);
+      return;
+    }
+
+    const result = await forgotPasswordOtp(data.phoneNumber, captcha.getPayload());
+    if (result?.success) {
+      setStep(STEPS.OTP);
+      await captcha.refresh();
+    } else {
+      await handleCaptchaFailure(result || {});
+    }
     setLoading(false);
   };
+
   const onVerifySubmit: SubmitHandler<VerifyFormValues> = async (data) => {
     console.log(data);
     setLoading(true);
-    // let m = { token: "", user: "" }
     let isVerified = await forgotPasswordVerify(data.otp, phoneNumber);
     if (isVerified) setStep(STEPS.UPDATE);
-    // @ts-ignore
-    // reduxDispatch(reduxLogin(m))
     setLoading(false);
   };
+
+  const onResendOtp = async () => {
+    if (!phoneNumber) return;
+    if (!captcha.answer.trim()) {
+      captcha.setError('کد کپچا الزامی است');
+      return;
+    }
+    setLoading(true);
+    const result = await forgotPasswordOtp(phoneNumber, captcha.getPayload());
+    if (result?.success) {
+      await captcha.refresh();
+    } else {
+      await handleCaptchaFailure(result || {});
+    }
+    setLoading(false);
+  };
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     console.log(data);
     setLoading(true);
-    // let m = { token: "", user: "" }
     await forgotPassword(data.password, phoneNumber);
-    // @ts-ignore
-    // reduxDispatch(reduxLogin(m))
     setLoading(false);
   };
 
@@ -145,7 +184,7 @@ export default function ForgetPasswordForm() {
               defaultValues: verifyInitialValues,
             }}
           >
-            {({ setValue, register, setError }) => (
+            {({ setValue }) => (
               <div dir="rtl" className="space-y-10">
                 <div dir="ltr">
                   <PinCode
@@ -158,6 +197,15 @@ export default function ForgetPasswordForm() {
                     className="lg:justify-end"
                   />
                 </div>
+                <CaptchaField
+                  imageSrc={captcha.imageSrc}
+                  answer={captcha.answer}
+                  onAnswerChange={captcha.setAnswer}
+                  onRefresh={captcha.refresh}
+                  loading={captcha.loading}
+                  error={captcha.error}
+                  color="success"
+                />
                 <Button
                   isLoading={loading}
                   className="w-full"
@@ -178,8 +226,10 @@ export default function ForgetPasswordForm() {
                 <div className="">
                   <Button
                     className="-mt-4 w-full p-0 text-base font-medium text-primary underline lg:inline-flex lg:w-auto"
-                    type="submit"
+                    type="button"
                     variant="text"
+                    onClick={onResendOtp}
+                    disabled={loading}
                   >
                     ارسال مجدد کد یکبار مصرف
                   </Button>
@@ -226,6 +276,7 @@ export default function ForgetPasswordForm() {
                 type="submit"
                 size="lg"
                 color="success"
+                isLoading={loading}
               >
                 بازنشانی رمز عبور
               </Button>
@@ -255,11 +306,21 @@ export default function ForgetPasswordForm() {
                 {...register('phoneNumber')}
                 error={errors.phoneNumber?.message}
               />
+              <CaptchaField
+                imageSrc={captcha.imageSrc}
+                answer={captcha.answer}
+                onAnswerChange={captcha.setAnswer}
+                onRefresh={captcha.refresh}
+                loading={captcha.loading}
+                error={captcha.error}
+                color="success"
+              />
               <Button
                 className="mt-2 w-full"
                 type="submit"
                 size="lg"
                 color="success"
+                isLoading={loading}
               >
                 بازنشانی رمز عبور
               </Button>

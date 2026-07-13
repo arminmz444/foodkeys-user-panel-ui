@@ -29,7 +29,7 @@ const QuillEditor = dynamic(() => import('@/components/ui/quill-editor'), {
 
 
 // const fetchSubcategories = async () => {
-//   const { data } = await axios.get('https://back.agfo.ir/api/v1/category/1/subcategory');
+//   const { data } = await axios.get('http://localhost:8080/api/v1/category/1/subcategory');
 //   return data;
 // };
 

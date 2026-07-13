@@ -3,7 +3,7 @@
  * All API and external service URLs should be imported from this file.
  */
 
-const DEFAULT_ORIGIN = 'https://back.agfo.ir';
+const DEFAULT_ORIGIN = 'http://localhost:8080';
 const API_PANEL_PATH = '/api/v1/client/panel';
 
 function trimTrailingSlashes(url: string): string {

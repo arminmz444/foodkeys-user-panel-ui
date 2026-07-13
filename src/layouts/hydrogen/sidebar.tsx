@@ -337,10 +337,10 @@ export default function Sidebar({ className }: { className?: string }) {
             name: 'لیست تراکنش‌ها',
             href: routes.finance.transactionList,
           },
-          {
-                name: 'جزییات (تنها برای محیط آزمایشی)',
-                href: routes.invoice.details(DUMMY_ID),
-              },
+          // {
+          //       name: 'جزییات (تنها برای محیط آزمایشی)',
+          //       href: routes.invoice.details(DUMMY_ID),
+          //     },
           // {
           //   name: 'ایجاد',
           //   href: routes.invoice.create,
@@ -366,21 +366,21 @@ export default function Sidebar({ className }: { className?: string }) {
       //     },
       //   ],
       // },
-      {
-        name: 'بخش مدیریت (موقت)',
-        href: '#',
-        icon: <PiTable />,
-        dropdownItems: [
-          // {
-          //   name: 'داشبورد',
-          //   href: routes.management.dashboard,
-          // },
-          {
-            name: 'درخواست‌های کاربران',
-            href: routes.management.requestList,
-          },
-        ],
-      },
+      // {
+      //   name: 'بخش مدیریت (موقت)',
+      //   href: '#',
+      //   icon: <PiTable />,
+      //   dropdownItems: [
+      //     // {
+      //     //   name: 'داشبورد',
+      //     //   href: routes.management.dashboard,
+      //     // },
+      //     {
+      //       name: 'درخواست‌های کاربران',
+      //       href: routes.management.requestList,
+      //     },
+      //   ],
+      // },
     ];
 
     setDynamicMenuItems(generatedMenuItems);
