@@ -161,7 +161,7 @@ export const supportNavItems = [
   },
 ];
 
-export const tabAtom = atom(supportNavItems[0].value);
+export const tabAtom = atom(supportNavItems[1].value);
 
 export default function InboxTabs({ className }: { className?: string }) {
   return <MessageDetails className={cn(className)} />;

@@ -414,7 +414,11 @@ export default function MessageBody({ messages }) {
                     : 'flex-row-reverse';
 
                 return (
-                    <div key={message.id} className="mb-8">
+                    <div
+                        key={message.id}
+                        id={`ticket-message-${message.id}`}
+                        className="mb-8"
+                    >
                         <div
                             className={`flex items-start gap-3 justify-start ${rowClass}`}
                         >

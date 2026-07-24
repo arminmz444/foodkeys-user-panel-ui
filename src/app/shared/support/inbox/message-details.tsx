@@ -625,7 +625,7 @@
 import { useAtomValue, useSetAtom } from 'jotai';
 import { z } from 'zod';
 import { LuReply, LuTicket } from 'react-icons/lu';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   PiCaretDownBold,
   PiCheck,
@@ -791,10 +791,12 @@ const supportOptionTypes = [
 
 export default function MessageDetails({ className }: { className?: string }) {
   const data = useAtomValue(dataAtom);
+  const setData = useSetAtom(dataAtom);
   const [priority, setPriority] = useState('');
   const messageId = useAtomValue(messageIdAtom);
   const setTicketStats = useSetAtom(ticketStatsAtom);
   const router = useRouter();
+  const scrollOnMessagesUpdateRef = useRef(false);
 
   const selectedTicket = data?.find((t) => t.id === messageId);
   const [agent, setAgent] = useState(
@@ -810,13 +812,16 @@ export default function MessageDetails({ className }: { className?: string }) {
       contactStatuses[0].value
   );
 
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [isCopied, setIsCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [attachments, setAttachments] = useState<File[]>([]);
   const [sendBtnLoading, setSendBtnLoading] = useState(false);
   const [closeTicketLoading, setCloseTicketLoading] = useState(false);
   const [changed, setChanged] = useState<boolean>(false);
+  const [formResetValues, setFormResetValues] = useState<FormValues | null>(
+    null
+  );
   const _axios = useAxiosPrivate();
   const [showMessages, setShowMessages] = useState(false);
   const [state, copyToClipboard] = useCopyToClipboard();
@@ -869,6 +874,27 @@ export default function MessageDetails({ className }: { className?: string }) {
       setCloseTicketLoading(false);
     }
   };
+
+  useEffect(() => {
+    scrollOnMessagesUpdateRef.current = true;
+  }, [messageId]);
+
+  useEffect(() => {
+    if (!showMessages || messages.length === 0 || !scrollOnMessagesUpdateRef.current) {
+      return;
+    }
+
+    scrollOnMessagesUpdateRef.current = false;
+
+    requestAnimationFrame(() => {
+      const lastMessage = messages[messages.length - 1];
+      const lastMessageEl = lastMessage
+        ? document.getElementById(`ticket-message-${lastMessage.id}`)
+        : null;
+
+      lastMessageEl?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    });
+  }, [messages, showMessages]);
 
   useEffect(() => {
     const fetchTicketMessages = async () => {
@@ -945,7 +971,20 @@ export default function MessageDetails({ className }: { className?: string }) {
       if (response.data.status === 'SUCCESS') {
         toast.success('پیام با موفقیت ارسال شد');
         setAttachments([]);
-        setChanged(!changed);
+        setFormResetValues({ message: '' });
+        setData((prev: any[]) =>
+          prev.map((ticket: any) =>
+            ticket.id === messageId
+              ? {
+                  ...ticket,
+                  status: 'PENDING',
+                  statusStr: 'در انتظار پاسخ',
+                }
+              : ticket
+          )
+        );
+        scrollOnMessagesUpdateRef.current = true;
+        setChanged((current) => !current);
       } else {
         throw new Error('Failed to send message: ', response?.data?.message);
       }
@@ -1130,6 +1169,7 @@ export default function MessageDetails({ className }: { className?: string }) {
                         <Form<FormValues>
                             onSubmit={onSubmit}
                             validationSchema={FormSchema}
+                            resetValues={formResetValues}
                         >
                           {({ control, watch, formState: { errors } }) => {
                             return (

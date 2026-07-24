@@ -404,7 +404,7 @@ export function MessageItem({ className, message }: MessageItemProps) {
           <span className="text-sm font-semibold dark:text-gray-700">
             {message.subject}
           </span>
-                    {!message.markedAsRead && (
+                    {message.status === "ANSWERED" && (
                         <Badge
                             renderAsDot
                             className="mr-3 h-2.5 w-2.5 flex-shrink-0 flex-grow-0 bg-primary"
