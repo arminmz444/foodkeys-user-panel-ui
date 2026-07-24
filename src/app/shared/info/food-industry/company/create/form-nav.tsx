@@ -15,6 +15,7 @@ export const formParts = {
   media: 'media',
   gallery: 'gallery',
   supplementary: 'supplementary',
+  portalCooperation: 'portalCooperation',
   pricingInventory: 'pricingInventory',
   productIdentifiers: 'productIdentifiers',
   shipping: 'shipping',
@@ -60,6 +61,10 @@ export const menuItems = [
   {
     label: 'اطلاعات تکمیلی',
     value: formParts.supplementary,
+  },
+  {
+    label: 'همکاری با پرتال',
+    value: formParts.portalCooperation,
   },
 ];
 

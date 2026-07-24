@@ -30,6 +30,7 @@ import CompanyFactory from '@/app/shared/info/food-industry/company/create/compa
 import CompanyOffice from '@/app/shared/info/food-industry/company/create/company-office';
 import CompanySocial from '@/app/shared/info/food-industry/company/create/company-social';
 import CompanyComplementary from '@/app/shared/info/food-industry/company/create/company-complementary';
+import CompanyPortalCooperation from '@/app/shared/info/food-industry/company/create/company-portal-cooperation';
 import CompanyHistory from './company-history';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 import { z } from 'zod';
@@ -59,6 +60,7 @@ const MAP_STEP_TO_COMPONENT = {
   [formParts.products]: ProductMedia,
   [formParts.gallery]: CompanyGallery,
   [formParts.supplementary]: CompanyComplementary,
+  [formParts.portalCooperation]: CompanyPortalCooperation,
   // [formParts.pricingInventory]: PricingInventory,
   // [formParts.productIdentifiers]: ProductIdentifiers,
   // [formParts.shipping]: ShippingInfo,
@@ -228,6 +230,10 @@ export interface CompanyCreateDTO {
   commonName?: string
   fullAddress?: string
   status?: number
+  acceptInternViaPortal?: boolean | null
+  timelyInfoUpdate?: boolean | null
+  sendRelatedNewsToPortal?: boolean | null
+  acceptStudentGroupVisit?: boolean | null
 }
 
 // --- your React form input (with File uploads) ---
@@ -416,6 +422,10 @@ export interface Company {
   tags: string;
   companyKeyWords: string[];
   companyTags: string[];
+  acceptInternViaPortal?: boolean | null;
+  timelyInfoUpdate?: boolean | null;
+  sendRelatedNewsToPortal?: boolean | null;
+  acceptStudentGroupVisit?: boolean | null;
   companyBrands: string | null;
   primaryBrand: string | null;
   mainBrandEn: string | null;
@@ -942,6 +952,10 @@ export default function CreateCompany({
         longitude:          data.longitude,
         commonName:         data.commonName,
         fullAddress:        data.fullAddress,
+        acceptInternViaPortal: data.acceptInternViaPortal ?? null,
+        timelyInfoUpdate: data.timelyInfoUpdate ?? null,
+        sendRelatedNewsToPortal: data.sendRelatedNewsToPortal ?? null,
+        acceptStudentGroupVisit: data.acceptStudentGroupVisit ?? null,
         // status:             data.status,
       }
       let response;

@@ -128,6 +128,14 @@ export default function NotificationDetailView({ id }: { id: string }) {
         <div className="prose prose-sm max-w-none text-gray-700 dark:prose-invert">
           <p className="whitespace-pre-wrap leading-relaxed">{data.message}</p>
         </div>
+        {(data.description || data.raw?.description) ? (
+            <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/50 p-4 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/30">
+    <span className="mb-1 block font-semibold text-gray-700 dark:text-gray-300">
+      توضیحات تکمیلی
+    </span>
+              <p className="leading-relaxed whitespace-pre-wrap">{data.description || data.raw?.description}</p>
+            </div>
+        ) : null}
 
         {data.link ? (
           <div className="mt-6">

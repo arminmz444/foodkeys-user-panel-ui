@@ -472,6 +472,10 @@ export const companyFormSchema = z.object({
     factoryLatitude: z.number().optional(),
     officeLongitude: z.number().optional(),
     officeLatitude: z.number().optional(),
+    acceptInternViaPortal: z.boolean().nullable().optional(),
+    timelyInfoUpdate: z.boolean().nullable().optional(),
+    sendRelatedNewsToPortal: z.boolean().nullable().optional(),
+    acceptStudentGroupVisit: z.boolean().nullable().optional(),
 });
 
 export type CreateCompanyInput = z.infer<typeof companyFormSchema>;
@@ -562,6 +566,10 @@ export function defaultValues(company?: CreateCompanyInput | null) {
         factoryCommonName: company?.factoryCommonName ?? '',
         manualLatitude: '',
         manualLongitude: '',
+        acceptInternViaPortal: company?.acceptInternViaPortal ?? null,
+        timelyInfoUpdate: company?.timelyInfoUpdate ?? null,
+        sendRelatedNewsToPortal: company?.sendRelatedNewsToPortal ?? null,
+        acceptStudentGroupVisit: company?.acceptStudentGroupVisit ?? null,
     };
 }
 
