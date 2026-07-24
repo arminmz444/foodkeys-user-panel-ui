@@ -1046,3 +1046,33 @@ div[style='z-index: 1000001;'],
 #nprogress .bar {
   @apply !bg-primary;
 }
+
+/* ................................................... */
+/* Support Ticket Messages Scrollbar (Always Visible) */
+/* ................................................... */
+/* Make scrollbar always visible for ticket messages */
+.simplebar-track.simplebar-vertical {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.simplebar-scrollbar:before {
+  opacity: 1 !important;
+  @apply !bg-gray-400 dark:!bg-gray-500;
+}
+
+/* Ensure the scrollbar track is visible */
+.simplebar-track {
+  @apply bg-gray-100 dark:bg-gray-200;
+}
+
+/* Message bubble styling improvements */
+.message-bubble {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure message content doesn't overflow */
+.message-bubble * {
+  max-width: 100%;
+}

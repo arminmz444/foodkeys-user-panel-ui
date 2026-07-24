@@ -338,13 +338,7 @@
 import Image from 'next/image';
 // @ts-ignore
 import {
-    JSXElementConstructor,
     Key,
-    PromiseLikeOfReactNode,
-    ReactElement,
-    ReactNode,
-    ReactPortal,
-    useEffect,
     useState,
 } from 'react';
 import isEmpty from 'lodash/isEmpty';
@@ -417,7 +411,7 @@ export default function MessageBody({ messages }) {
                     <div
                         key={message.id}
                         id={`ticket-message-${message.id}`}
-                        className="mb-8"
+                        className="mb-6 ms-6"
                     >
                         <div
                             className={`flex items-start gap-3 justify-start ${rowClass}`}
@@ -431,180 +425,195 @@ export default function MessageBody({ messages }) {
                                         STATIC_FILES_URL) +
                                     message.senderAvatar
                                 }
-                                className="!h-8 !w-8 bg-[#70C5E0] font-medium text-white xl:!h-11 xl:!w-11"
+                                className="!h-8 !w-8 flex-shrink-0 bg-[#70C5E0] font-medium text-white xl:!h-10 xl:!w-10"
                             />
 
-                            {/* message info & content */}
+                            {/* message bubble container */}
                             <div
-                                className={`flex flex-col ${
+                                className={`flex max-w-[85%] flex-col ${
                                     !message.fromEmployee
                                         ? 'items-start'
                                         : 'items-end'
                                 }`}
                             >
-                                <Text tag="h3" className="text-sm font-medium">
-                                    {message.senderName}
-                                </Text>
-
-                                <div className="mt-1.5 flex items-center gap-2 text-xs text-gray-500">
-                                    {/*
-                                      inverted: only show username+link for non-employee
-                                    */}
-                                    {!message.fromEmployee && (
-                                        <>
-                                            <span className="flex items-center lowercase">
-                                                {message.senderUsername}{' '}
-                                                <FiExternalLink className="mx-1 h-2.5 w-2.5" />
-                                            </span>
-                                            <DotSeparator className="hidden lg:block" />
-                                        </>
-                                    )}
-                                    <span>
-                                        ارسال شده در {message.createdAtStr}
-                                    </span>
-                                    <DotSeparator className="hidden lg:block" />
-                                    <span className="flex items-center gap-1">
-                                        {message.createdAtTimeStr}
-                                        <TbClockHour8 />
-                                    </span>
+                                {/* Sender info above bubble */}
+                                <div className="mb-1 px-2">
+                                    <Text tag="h3" className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                        {message.senderName}
+                                    </Text>
                                 </div>
 
+                                {/* Message bubble with background */}
                                 <div
-                                    className={`mt-3 max-w-3xl ${
+                                    className={`message-bubble rounded-2xl px-4 py-3 shadow-sm ${
                                         !message.fromEmployee
-                                            ? 'text-left'
-                                            : 'text-right'
+                                            ? 'rounded-tr-sm bg-gray-100 dark:bg-gray-800'
+                                            : 'rounded-tl-sm bg-[#EFF6FF] dark:bg-blue'
                                     }`}
                                 >
+                                    {/* Message content */}
                                     <div
-                                        dangerouslySetInnerHTML={{
-                                            __html: sanitizedContent,
-                                        }}
-                                    />
-                                </div>
-
-                                {!isEmpty(message.attachments) && (
-                                    <div
-                                        className={`mt-2 grid gap-2 md:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-3 ${
+                                        className={`leading-relaxed ${
                                             !message.fromEmployee
-                                                ? 'text-left'
-                                                : 'text-right'
-                                        }`}
+                                                ? 'text-left text-gray-800 dark:text-gray-200'
+                                                : 'text-right text-gray-800 dark:text-gray-200'
+                                        } [&_p]:mb-2 [&_p:last-child]:mb-0`}
                                     >
-                                        {message.attachments.map(
-                                            (attachment: any) => (
-                                                <div
-                                                    key={attachment.id}
-                                                    className="grid grid-cols-[40px_1fr] gap-2.5"
-                                                >
-                                                    <figure className="relative h-10 w-10 overflow-hidden rounded">
-                                                        {attachment.contentType ===
-                                                        'image/jpeg' ? (
-                                                            <Image
-                                                                src={imageIcon}
-                                                                alt="image icon"
-                                                                className="h-full w-full"
-                                                                quality={100}
-                                                            />
-                                                        ) : (
-                                                            <Image
-                                                                src={pdfIcon}
-                                                                alt="pdf icon"
-                                                                className="h-full w-full"
-                                                                quality={100}
-                                                            />
-                                                        )}
-                                                    </figure>
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: sanitizedContent,
+                                            }}
+                                        />
+                                    </div>
 
-                                                    <div className="text-xs">
-                                                        <span className="font-iransans flex items-center gap-2 font-medium text-gray-700">
-                                                            {
-                                                                attachment.fileName
-                                                            }
-                                                            <span className="text-gray-500">
-                                                                (
-                                                                {Math.ceil(
-                                                                        (attachment.fileSize /
-                                                                            1024) *
-                                                                        100
-                                                                    ) /
-                                                                    100}{' '}
-                                                                کیلوبایت)
-                                                            </span>
-                                                        </span>
-                                                        <div className="mt-2 flex items-center gap-2">
-                                                            <span className="flex items-center gap-2 text-gray-500 transition duration-300 hover:text-gray-900">
-                                                                <PiEye className="h-3.5 w-3.5" />
-                                                                <PhotoPreview />
-                                                            </span>
-                                                            <DotSeparator />
-                                                            <div className="flex items-center gap-2 text-gray-500 transition duration-300 hover:text-gray-900">
-                                                                <PiDownloadSimpleBold className="h-3.5 w-3.5" />
-                                                                <button
-                                                                    onClick={() => {
-                                                                        const fileUrl =
-                                                                            attachment.filePath;
-                                                                        const fileName =
-                                                                            attachment.fileName;
+                                    {/* Attachments inside bubble */}
+                                    {!isEmpty(message.attachments) && (
+                                        <div
+                                            className={`mt-3 grid gap-2 border-t pt-3 ${
+                                                !message.fromEmployee
+                                                    ? 'border-gray-200 dark:border-gray-700'
+                                                    : 'border-blue-100 dark:border-blue-800'
+                                            }`}
+                                        >
+                                            {message.attachments.map(
+                                                (attachment: any) => (
+                                                    <div
+                                                        key={attachment.id}
+                                                        className="grid grid-cols-[40px_1fr] gap-2.5"
+                                                    >
+                                                        <figure className="relative h-10 w-10 overflow-hidden rounded">
+                                                            {attachment.contentType ===
+                                                            'image/jpeg' ? (
+                                                                <Image
+                                                                    src={imageIcon}
+                                                                    alt="image icon"
+                                                                    className="h-full w-full"
+                                                                    quality={100}
+                                                                />
+                                                            ) : (
+                                                                <Image
+                                                                    src={pdfIcon}
+                                                                    alt="pdf icon"
+                                                                    className="h-full w-full"
+                                                                    quality={100}
+                                                                />
+                                                            )}
+                                                        </figure>
 
-                                                                        fetch(
-                                                                            STATIC_FILES_URL +
-                                                                            fileUrl
-                                                                        )
-                                                                            .then(
-                                                                                (
-                                                                                    response
-                                                                                ) =>
-                                                                                    response.blob()
+                                                        <div className="text-xs">
+                                                            <span className="font-iransans flex flex-wrap items-center gap-2 font-medium text-gray-700 dark:text-gray-300">
+                                                                <span className="truncate max-w-[150px]">{
+                                                                    attachment.fileName
+                                                                }</span>
+                                                                <span className="text-gray-500 dark:text-gray-400">
+                                                                    (
+                                                                    {Math.ceil(
+                                                                            (attachment.fileSize /
+                                                                                1024) *
+                                                                            100
+                                                                        ) /
+                                                                        100}{' '}
+                                                                    کیلوبایت)
+                                                                </span>
+                                                            </span>
+                                                            <div className="mt-2 flex items-center gap-2">
+                                                                <span className="flex items-center gap-1 text-gray-500 transition duration-300 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+                                                                    <PiEye className="h-3.5 w-3.5" />
+                                                                    <PhotoPreview />
+                                                                </span>
+                                                                <DotSeparator />
+                                                                <div className="flex items-center gap-1 text-gray-500 transition duration-300 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+                                                                    <PiDownloadSimpleBold className="h-3.5 w-3.5" />
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            const fileUrl =
+                                                                                attachment.filePath;
+                                                                            const fileName =
+                                                                                attachment.fileName;
+
+                                                                            fetch(
+                                                                                STATIC_FILES_URL +
+                                                                                fileUrl
                                                                             )
-                                                                            .then(
-                                                                                (
-                                                                                    blob
-                                                                                ) => {
-                                                                                    const link =
-                                                                                        document.createElement(
-                                                                                            'a'
+                                                                                .then(
+                                                                                    (
+                                                                                        response
+                                                                                    ) =>
+                                                                                        response.blob()
+                                                                                )
+                                                                                .then(
+                                                                                    (
+                                                                                        blob
+                                                                                    ) => {
+                                                                                        const link =
+                                                                                            document.createElement(
+                                                                                                'a'
+                                                                                            );
+                                                                                        link.href =
+                                                                                            window.URL.createObjectURL(
+                                                                                                blob
+                                                                                            );
+                                                                                        link.download =
+                                                                                            fileName;
+                                                                                        document.body.appendChild(
+                                                                                            link
                                                                                         );
-                                                                                    link.href =
-                                                                                        window.URL.createObjectURL(
-                                                                                            blob
+                                                                                        link.click();
+                                                                                        document.body.removeChild(
+                                                                                            link
                                                                                         );
-                                                                                    link.download =
-                                                                                        fileName;
-                                                                                    document.body.appendChild(
-                                                                                        link
-                                                                                    );
-                                                                                    link.click();
-                                                                                    document.body.removeChild(
-                                                                                        link
-                                                                                    );
-                                                                                    window.URL.revokeObjectURL(
-                                                                                        link.href
-                                                                                    );
-                                                                                }
-                                                                            )
-                                                                            .catch(
-                                                                                (
-                                                                                    error
-                                                                                ) => {
-                                                                                    console.error(
-                                                                                        'Error downloading the file:',
+                                                                                        window.URL.revokeObjectURL(
+                                                                                            link.href
+                                                                                        );
+                                                                                    }
+                                                                                )
+                                                                                .catch(
+                                                                                    (
                                                                                         error
-                                                                                    );
-                                                                                }
-                                                                            );
-                                                                    }}
-                                                                >
-                                                                    دانلود
-                                                                </button>
+                                                                                    ) => {
+                                                                                        console.error(
+                                                                                            'Error downloading the file:',
+                                                                                            error
+                                                                                        );
+                                                                                    }
+                                                                                );
+                                                                        }}
+                                                                    >
+                                                                        دانلود
+                                                                    </button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )
+                                                )
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Timestamp at bottom of bubble */}
+                                    <div className={`mt-2 flex items-center gap-2 text-[10px] ${
+                                        !message.fromEmployee
+                                            ? 'text-gray-500 dark:text-gray-400'
+                                            : 'text-gray-600 dark:text-gray-400'
+                                    }`}>
+                                        {!message.fromEmployee && (
+                                            <>
+                                                <span className="flex items-center lowercase">
+                                                    {message.senderUsername}
+                                                </span>
+                                                <DotSeparator />
+                                            </>
                                         )}
+                                        <span>
+                                            {message.createdAtStr}
+                                        </span>
+                                        <DotSeparator />
+                                        <span className="flex items-center gap-1">
+                                            {message.createdAtTimeStr}
+                                            <TbClockHour8 className="h-2.5 w-2.5" />
+                                        </span>
                                     </div>
-                                )}
+                                </div>
                             </div>
                         </div>
                     </div>

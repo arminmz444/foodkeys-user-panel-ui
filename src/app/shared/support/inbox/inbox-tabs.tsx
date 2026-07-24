@@ -199,7 +199,7 @@ export function TabList() {
 
   return (
       <SimpleBar>
-        <nav className="flex items-center gap-5 border-b border-gray-300">
+        <nav className="flex items-center gap-5 ps-4 border-b border-gray-300">
           {navItems.map((nav) => (
               <TabButton
                   item={nav}

@@ -798,7 +798,7 @@ export default function MessageDetails({ className }: { className?: string }) {
   const router = useRouter();
   const scrollOnMessagesUpdateRef = useRef(false);
 
-  const selectedTicket = data?.find((t) => t.id === messageId);
+  const selectedTicket = data?.find((t: any) => t.id === messageId);
   const [agent, setAgent] = useState(
       (selectedTicket &&
           selectedTicket.department &&
@@ -1140,9 +1140,16 @@ export default function MessageDetails({ className }: { className?: string }) {
           </header>
           {showMessages ? (
               <>
-                <div className="[&_.simplebar-content]:grid [&_.simplebar-content]:gap-8 [&_.simplebar-content]:py-5">
-                  <SimpleBar className="@3xl:max-h-[calc(100dvh-29rem)] @4xl:max-h-[calc(100dvh-27rem)] @7xl:max-h-[calc(100dvh-26rem)]">
-                    {/* <SimpleBar className="@3xl:max-h-[calc(100dvh-34rem)] @4xl:max-h-[calc(100dvh-32rem)] @7xl:max-h-[calc(100dvh-31rem)]"> */}
+                <div className="[&_.simplebar-content]:grid [&_.simplebar-content]:gap-8 [&_.simplebar-content]:py-5 [&_.simplebar-content]:px-2">
+                  <SimpleBar 
+                    className="@3xl:max-h-[calc(100dvh-20rem)] @4xl:max-h-[calc(100dvh-18rem)] @7xl:max-h-[calc(100dvh-17rem)]"
+                    style={{
+                      '--scrollbar-width': '8px',
+                      '--scrollbar-thumb-bg': '#cbd5e1',
+                      '--scrollbar-thumb-hover-bg': '#94a3b8',
+                      '--scrollbar-track-bg': '#f1f5f9',
+                    } as React.CSSProperties}
+                  >
                     <MessageBody messages={messages} />
                   </SimpleBar>
                 </div>
@@ -1150,18 +1157,17 @@ export default function MessageDetails({ className }: { className?: string }) {
                 {selectedTicket && selectedTicket.status !== "CLOSED" && (
                     <div
                         ref={ref}
-                        className="grid grid-cols-[32px_1fr] items-start gap-3 rounded-b-lg bg-white @3xl:pt-4 dark:bg-transparent lg:gap-4 lg:pl-0 dark:lg:pt-0 xl:grid-cols-[48px_1fr]"
+                        className="grid grid-cols-[32px_1fr] items-start gap-3 rounded-b-lg border-t border-gray-200 bg-white pt-4 @3xl:pt-4 dark:bg-transparent lg:gap-4 lg:pl-0 dark:lg:pt-4 xl:grid-cols-[48px_1fr]"
                     >
-                      <figure className="dark:mt-4">
+                      <figure className="dark:mt-0">
                         <Avatar
                             name="صادق"
-                            // initials={initials}
                             src="https://s3.amazonaws.com/redqteam.com/isomorphic-furyroad/public/avatars-blur/avatar-14.webp"
-                            className="!h-8 !w-8 bg-[#70C5E0] font-medium text-white xl:!h-12 xl:!w-12"
+                            className="!h-8 !w-8 bg-[#70C5E0] font-medium text-white xl:!h-10 xl:!w-10"
                         />
                       </figure>
                       <div
-                          className="relative rounded-lg border border-gray-200 bg-gray-50 p-4 2xl:p-5"
+                          className="relative rounded-lg border border-gray-200 bg-gray-50 p-3 2xl:p-4"
                           style={{
                             maxWidth: formWidth(),
                           }}
@@ -1181,14 +1187,14 @@ export default function MessageDetails({ className }: { className?: string }) {
                                           <QuillEditor
                                               value={value}
                                               onChange={onChange}
-                                              className="rounded-md bg-gray-0 dark:bg-gray-50 [&>.ql-container_.ql-editor]:min-h-[100px] [&>.ql-toolbar]:3xl:overflow-x-auto"
+                                              className="rounded-md bg-gray-0 dark:bg-gray-50 [&>.ql-container_.ql-editor]:min-h-[60px] [&>.ql-container_.ql-editor]:max-h-[120px] [&>.ql-toolbar]:3xl:overflow-x-auto"
                                           />
                                       )}
                                   />
-                                  <div className="mt-4 flex items-center justify-end">
+                                  <div className="mt-3 flex items-center gap-2">
                                     <Button
-                                        variant="solid"
-                                        size="DEFAULT"
+                                        variant="outline"
+                                        size="sm"
                                         className="gap-2"
                                         onClick={() =>
                                             document
@@ -1196,8 +1202,8 @@ export default function MessageDetails({ className }: { className?: string }) {
                                                 ?.click()
                                         }
                                     >
-                                      انتخاب فایل
                                       <MdAttachFile className="h-4 w-4" />
+                                      انتخاب فایل
                                     </Button>
                                     <input
                                         type="file"
@@ -1207,36 +1213,37 @@ export default function MessageDetails({ className }: { className?: string }) {
                                         className="hidden"
                                         id="attachment-upload"
                                     />
-                                  </div>
-                                  <div>
                                     <Button
                                         isLoading={sendBtnLoading}
                                         type="submit"
+                                        size="sm"
                                         disabled={
                                             !watch('message')?.trim() || sendBtnLoading
                                         }
-                                        className="mt-6 dark:bg-gray-200 dark:text-white"
+                                        className="dark:bg-gray-200 dark:text-white"
                                     >
                                       ارسال
                                     </Button>
                                   </div>
-                                  <div className="mt-4 grid grid-cols-1 gap-2">
-                                    {attachments.map((file, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center justify-between gap-2 rounded border border-gray-200 p-2"
-                                        >
-                                          <span className="truncate">{file.name}</span>
-                                          <button
-                                              type="button"
-                                              onClick={() => removeAttachment(index)}
-                                              className="text-red-500"
+                                  {attachments.length > 0 && (
+                                    <div className="mt-3 grid grid-cols-1 gap-2">
+                                      {attachments.map((file, index) => (
+                                          <div
+                                              key={index}
+                                              className="flex items-center justify-between gap-2 rounded border border-gray-200 bg-white p-2"
                                           >
-                                            <PiXCircle className="h-4 w-4" />
-                                          </button>
-                                        </div>
-                                    ))}
-                                  </div>
+                                            <span className="truncate text-xs">{file.name}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeAttachment(index)}
+                                                className="text-red-500"
+                                            >
+                                              <PiXCircle className="h-4 w-4" />
+                                            </button>
+                                          </div>
+                                      ))}
+                                    </div>
+                                  )}
                                 </>
                             );
                           }}
