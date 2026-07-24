@@ -7,7 +7,8 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
             sliders: [],
             catalogs: [],
             videos: [],
-            documents: []
+            documents: [],
+            officeEnvironments: []
         };
     }
 
@@ -19,7 +20,8 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
         sliders: [],
         catalogs: [],
         videos: [],
-        documents: []
+        documents: [],
+        officeEnvironments: []
     };
 
     // Process each gallery file
@@ -74,6 +76,9 @@ export const transformGalleryFiles = (galleryFiles: any[]) => {
             case 'COMPANY_GALLERY_DOCUMENT':
                 result.documents.push(baseFileObj);
                 break;
+            case 'COMPANY_GALLERY_OFFICE_ENVIRONMENT':
+                result.officeEnvironments.push(baseFileObj);
+                break;
         }
     });
 
@@ -101,7 +106,7 @@ export function prepareGalleryFilesForSubmission(galleryData: any) {
     if (!galleryData) return [];
     console.log(`Gallery Data: ${JSON.stringify(galleryData)}`)
     const galleryFiles: any[] = [];
-    const allSections = ['products', 'certificates', 'contacts', 'sliders', 'catalogs', 'videos', 'documents'];
+    const allSections = ['products', 'certificates', 'contacts', 'sliders', 'catalogs', 'videos', 'documents', 'officeEnvironments'];
 
     allSections.forEach(section => {
         if (galleryData[section] && Array.isArray(galleryData[section])) {
@@ -138,6 +143,9 @@ export function prepareGalleryFilesForSubmission(galleryData: any) {
                         break;
                     case 'documents':
                         fileServiceType = 'COMPANY_GALLERY_DOCUMENT';
+                        break;
+                    case 'officeEnvironments':
+                        fileServiceType = 'COMPANY_GALLERY_OFFICE_ENVIRONMENT';
                         break;
                 }
 

@@ -30,6 +30,7 @@ interface ServiceDisplaySettingsProps {
     value: ServiceDisplaySettingsValues[keyof ServiceDisplaySettingsValues]
   ) => void;
   nameError?: string;
+  fieldErrors?: Partial<Record<keyof ServiceDisplaySettingsValues, string>>;
 }
 
 function resolveImagePreview(
@@ -57,6 +58,7 @@ export default function ServiceDisplaySettings({
   values,
   onChange,
   nameError,
+  fieldErrors,
 }: ServiceDisplaySettingsProps) {
   const [tags, setTags] = useState<string[]>(values.tags || []);
   const [keywords, setKeywords] = useState<string[]>(values.keywords || []);
@@ -83,7 +85,7 @@ export default function ServiceDisplaySettings({
           placeholder="نام خدمت را وارد کنید"
           value={values.name}
           onChange={(e) => onChange('name', e.target.value)}
-          error={nameError}
+          error={fieldErrors?.name || nameError}
           required
         />
 
@@ -92,6 +94,7 @@ export default function ServiceDisplaySettings({
           placeholder="نام انگلیسی خدمت را وارد کنید"
           value={values.nameEn}
           onChange={(e) => onChange('nameEn', e.target.value)}
+          error={fieldErrors?.nameEn}
         />
       </div>
 
@@ -100,6 +103,7 @@ export default function ServiceDisplaySettings({
         placeholder="توضیحات خدمت را وارد کنید"
         value={values.description}
         onChange={(e) => onChange('description', e.target.value)}
+        error={fieldErrors?.description}
         rows={4}
       />
 

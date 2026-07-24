@@ -338,12 +338,14 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Text, Button } from 'rizzui';
 import {ChevronRight, Trash2} from 'lucide-react';
 import { useServiceApi, ServiceDTO } from '@/app/api/services';
-import DynamicForm from '@/components/ui/dynamic-form';
+import DynamicForm, {
+    DynamicFormValidateRef,
+} from '@/components/ui/dynamic-form';
 import { routes } from '@/config/routes';
 import Spinner from '@/components/ui/spinner';
 import ConfirmationModal from '@/components/ui/confirmation-modal';
@@ -351,6 +353,7 @@ import {CustomAlert, Card, Title} from "@/components/ui/compatible-components";
 import ServiceDisplaySettings, {
     ServiceDisplaySettingsValues,
 } from '@/app/shared/info/service/service-display-settings';
+import { getServiceDisplaySettingsErrors } from '@/app/shared/info/service/form-utils';
 
 export default function ServiceEditPage() {
     const { subcategory, id } = useParams();
@@ -364,6 +367,10 @@ export default function ServiceEditPage() {
     const [error, setError] = useState<string | null>(null);
     const [serviceData, setServiceData] = useState<Partial<ServiceDTO> | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [displaySettingsErrors, setDisplaySettingsErrors] = useState<
+        Partial<Record<keyof ServiceDisplaySettingsValues, string>>
+    >({});
+    const dynamicFormValidateRef = useRef<DynamicFormValidateRef | null>(null);
 
     // Fetch service data
     useEffect(() => {
@@ -421,8 +428,22 @@ export default function ServiceEditPage() {
             setIsSubmitting(true);
             setError(null);
 
-            if (!serviceData.name) {
-                setError('نام سرویس الزامی است');
+            const displayErrors = getServiceDisplaySettingsErrors({
+                name: serviceData.name || '',
+                nameEn: serviceData.nameEn || '',
+                description: serviceData.description || '',
+                logo: serviceData.logo,
+                backgroundImage: serviceData.backgroundImage,
+                keywords: serviceData.keywords || [],
+                tags: serviceData.tags || [],
+            });
+            setDisplaySettingsErrors(displayErrors);
+
+            const isDynamicFormValid =
+                (await dynamicFormValidateRef.current?.validate()) ?? true;
+
+            if (Object.keys(displayErrors).length > 0 || !isDynamicFormValid) {
+                setError('لطفاً خطاهای فرم را برطرف کنید');
                 setIsSubmitting(false);
                 return;
             }
@@ -577,7 +598,7 @@ export default function ServiceEditPage() {
                                 serviceData.backgroundImage,
                         }}
                         onChange={handleDisplaySettingsChange}
-                        nameError={!serviceData.name ? 'نام خدمت الزامی است' : ''}
+                        fieldErrors={displaySettingsErrors}
                     />
                 </div>
             </Card>
@@ -593,6 +614,7 @@ export default function ServiceEditPage() {
                     clientPanel={true}
                     hideFormHeader={true}
                     className="max-w-none"
+                    validateRef={dynamicFormValidateRef}
                 />
             ) : (
                 <CustomAlert variant="warning" className="mb-6">

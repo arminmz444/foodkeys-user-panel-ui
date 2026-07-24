@@ -302,19 +302,22 @@
 // }
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from 'rizzui';
 import { ChevronLeft } from 'lucide-react';
 import { useServiceSchema } from '@/hooks/use-service-subcategories';
 import { useServiceApi, ServiceDTO } from '@/app/api/services';
-import DynamicForm from '@/components/ui/dynamic-form';
+import DynamicForm, {
+    DynamicFormValidateRef,
+} from '@/components/ui/dynamic-form';
 import { routes } from '@/config/routes';
 import Spinner from '@/components/ui/spinner';
 import { Card, Title } from '@/components/ui/compatible-components';
 import ServiceDisplaySettings, {
     ServiceDisplaySettingsValues,
 } from '@/app/shared/info/service/service-display-settings';
+import { getServiceDisplaySettingsErrors } from '@/app/shared/info/service/form-utils';
 import useAxiosPrivate from '@/hooks/use-axios-private';
 
 // Custom alert component to avoid the rizzui Alert issue
@@ -357,6 +360,10 @@ export default function ServiceCreatePage() {
     });
     const [subCategoryId, setSubCategoryId] = useState<number | null>(null);
     const [dynamicFormData, setDynamicFormData] = useState({});
+    const [displaySettingsErrors, setDisplaySettingsErrors] = useState<
+        Partial<Record<keyof ServiceDisplaySettingsValues, string>>
+    >({});
+    const dynamicFormValidateRef = useRef<DynamicFormValidateRef | null>(null);
 
     // Get schema for the subcategory
     const { schema, loading: schemaLoading, error: schemaError } = useServiceSchema(subCategoryId);
@@ -444,8 +451,22 @@ export default function ServiceCreatePage() {
             setIsLoading(true);
             setError(null);
 
-            if (!serviceData.name) {
-                setError('نام خدمت الزامی است');
+            const displayErrors = getServiceDisplaySettingsErrors({
+                name: serviceData.name || '',
+                nameEn: serviceData.nameEn || '',
+                description: serviceData.description || '',
+                logo: serviceData.logo,
+                backgroundImage: serviceData.backgroundImage,
+                keywords: serviceData.keywords || [],
+                tags: serviceData.tags || [],
+            });
+            setDisplaySettingsErrors(displayErrors);
+
+            const isDynamicFormValid =
+                (await dynamicFormValidateRef.current?.validate()) ?? true;
+
+            if (Object.keys(displayErrors).length > 0 || !isDynamicFormValid) {
+                setError('لطفاً خطاهای فرم را برطرف کنید');
                 setIsLoading(false);
                 return;
             }
@@ -534,7 +555,7 @@ export default function ServiceCreatePage() {
                             currentBackgroundImage: (serviceData as any).currentBackgroundImage,
                         }}
                         onChange={handleDisplaySettingsChange}
-                        nameError={!serviceData.name ? 'نام خدمت الزامی است' : ''}
+                        fieldErrors={displaySettingsErrors}
                     />
                 </div>
             </Card>
@@ -555,6 +576,7 @@ export default function ServiceCreatePage() {
                     clientPanel={true}
                     hideFormHeader={true}
                     className="max-w-none"
+                    validateRef={dynamicFormValidateRef}
                 />
             ) : null}
 

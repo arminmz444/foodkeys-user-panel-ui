@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { validationMessages } from '@/utils/form-validators';
 
 export function jsonSchemaToZod(schema: any): z.ZodTypeAny {
     const { type, properties, items, required, format, enum: enumValues } = schema;
@@ -11,13 +12,16 @@ export function jsonSchemaToZod(schema: any): z.ZodTypeAny {
         case 'string':
             let stringSchema = z.string();
             if (format === 'uri') {
-
-                stringSchema = stringSchema.url();
+                stringSchema = stringSchema.url({
+                    message: validationMessages.website,
+                });
             } else if (format === 'email') {
-                stringSchema = stringSchema.email();
+                stringSchema = stringSchema.email({
+                    message: validationMessages.email,
+                });
             } else if (format === 'date-time') {
                 stringSchema = stringSchema.refine((val) => !isNaN(Date.parse(val)), {
-                    message: 'Invalid date-time format',
+                    message: 'فرمت تاریخ وارد شده صحیح نیست',
                 });
             }
             return stringSchema;

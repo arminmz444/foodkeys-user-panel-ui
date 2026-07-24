@@ -2,6 +2,7 @@ import { API_BASE_URL } from '@/config/api.config';
 import { STATIC_FILES_URL } from '@/config/api.config';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import FormGroup from '@/app/shared/form-group';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
@@ -177,6 +178,8 @@ export default function CompanyGallery({
           { name: 'phone', label: 'شماره تلفن', type: 'text' },
           { name: 'email', label: 'ایمیل', type: 'email' },
           { name: 'position', label: 'سمت', type: 'text' },
+          { name: 'showMobile', label: 'نمایش موبایل', type: 'checkbox' },
+          { name: 'showEmail', label: 'نمایش ایمیل', type: 'checkbox' },
         ]}
         onUpload={handleGalleryFileSelection}
         fileServiceType={'COMPANY_GALLERY_CONTACT'}
@@ -197,6 +200,26 @@ export default function CompanyGallery({
         fields={[{ name: 'caption', label: 'متن زیرنویس ', type: 'text' }]}
         onUpload={handleGalleryFileSelection}
         fileServiceType={'COMPANY_BACKGROUND_IMAGE'}
+      />
+      <MultipleFiles
+        className="col-span-2"
+        label="عکس‌های محیط اداری"
+        uploadAreaContent={
+          <>
+            عکس‌های محیط اداری شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر
+            از{' '}
+            <strong className="font-medium text-gray-900">
+              20 مگابایت باشد
+            </strong>
+          </>
+        }
+        registerName="gallery.officeEnvironments"
+        fields={[
+          { name: 'title', label: 'عنوان', type: 'text' },
+          { name: 'description', label: 'توضیحات بیشتر', type: 'text' },
+        ]}
+        onUpload={handleGalleryFileSelection}
+        fileServiceType={'COMPANY_GALLERY_OFFICE_ENVIRONMENT'}
       />
       <MultipleFiles
         className="col-span-2"
@@ -284,7 +307,9 @@ export const MultipleFiles = ({
 
     const newValues = allowedFiles.map((file) => ({
       file,
-      ...Object.fromEntries(fields.map((f) => [f.name, ''])),
+      ...Object.fromEntries(
+        fields.map((f) => [f.name, f.type === 'checkbox' ? true : ''])
+      ),
       priority: fieldValues.length + 1,
     }));
     setMultiImages((prevFiles) => [...prevFiles, ...allowedFiles]);
@@ -294,7 +319,10 @@ export const MultipleFiles = ({
     for (let i = 0; i < newValues?.length; i++) {
       if (onUpload) fileId = await onUpload(allowedFiles, fileServiceType);
       fields.forEach((f) =>
-        setValue(`${registerName}[${fieldValues.length + i}].${f.name}`, '')
+        setValue(
+          `${registerName}[${fieldValues.length + i}].${f.name}`,
+          f.type === 'checkbox' ? true : ''
+        )
       );
       setValue(
         `${registerName}[${fieldValues.length + i}].uploadedFileId`,
@@ -324,7 +352,7 @@ export const MultipleFiles = ({
   const handleFieldChange = (
     index: number,
     field: string,
-    value: string | number
+    value: string | number | boolean
   ) => {
     const updatedValues = [...fieldValues];
     updatedValues[index][field] = value;
@@ -411,18 +439,31 @@ export const MultipleFiles = ({
                   )}
                 </div>
                 <div className="grid w-[60%] grid-cols-2 gap-2 px-4">
-                  {fields.map((f) => (
-                    <Input
-                      key={f.name}
-                      label={f.label}
-                      type={f.type}
-                      value={fieldValues[index]?.[f.name] || ''}
-                      onChange={(e) =>
-                        handleFieldChange(index, f.name, e.target.value)
-                      }
-                      // {...register(`${registerName}[${index}].${f.name}`)}
-                    />
-                  ))}
+                  {fields.map((f) =>
+                    f.type === 'checkbox' ? (
+                      <Checkbox
+                        key={f.name}
+                        label={f.label}
+                        checked={fieldValues[index]?.[f.name] !== false}
+                        onChange={(e) =>
+                          handleFieldChange(index, f.name, e.target.checked)
+                        }
+                        containerClassName="gap-2.5"
+                        inputClassName="border-2"
+                      />
+                    ) : (
+                      <Input
+                        key={f.name}
+                        label={f.label}
+                        type={f.type}
+                        value={fieldValues[index]?.[f.name] || ''}
+                        onChange={(e) =>
+                          handleFieldChange(index, f.name, e.target.value)
+                        }
+                        // {...register(`${registerName}[${index}].${f.name}`)}
+                      />
+                    )
+                  )}
                   <Input
                     label="اولویت"
                     type="number"

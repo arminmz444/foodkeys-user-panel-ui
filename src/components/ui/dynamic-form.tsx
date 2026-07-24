@@ -1293,6 +1293,16 @@ import {
     filterFormDataByUserPanelSchema,
 } from '@/utils/schema-converter';
 import { Select, Title } from '@/components/ui/compatible-components';
+import {
+    getRhfEmailRules,
+    getRhfMobilePhoneRules,
+    getRhfWebsiteRules,
+    validationMessages,
+} from '@/utils/form-validators';
+
+export type DynamicFormValidateRef = {
+    validate: () => Promise<boolean>;
+};
 
 // Custom alert component to avoid the rizzui Alert issue
 const CustomAlert = ({ children, variant = "default", className = "" }) => {
@@ -1435,6 +1445,7 @@ interface DynamicFormProps {
     clientPanel?: boolean;
     hideFormHeader?: boolean;
     className?: string;
+    validateRef?: React.MutableRefObject<DynamicFormValidateRef | null>;
 }
 
 export default function DynamicForm({
@@ -1448,6 +1459,7 @@ export default function DynamicForm({
                                         clientPanel = false,
                                         hideFormHeader = false,
                                         className,
+                                        validateRef,
                                     }: DynamicFormProps) {
     const [fields, setFields] = useState<FieldType[]>([]);
     const [formTitle, setFormTitle] = useState('');
@@ -1476,10 +1488,19 @@ export default function DynamicForm({
         formState: { errors, isDirty },
         reset,
         watch,
-        getValues
+        getValues,
+        trigger
     } = useForm({
         defaultValues: filteredInitialData
     });
+
+    useEffect(() => {
+        if (validateRef) {
+            validateRef.current = {
+                validate: () => trigger(),
+            };
+        }
+    }, [trigger, validateRef]);
 
     // Watch all form values for changes, but debounce updates
     const formValues = watch();
@@ -1549,14 +1570,19 @@ export default function DynamicForm({
         const rules: any = {};
 
         if (field.required) {
-            rules.required = "این فیلد الزامی است";
+            rules.required = validationMessages.required;
         }
 
         if (field.type === 'email') {
-            rules.pattern = {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "ایمیل معتبر وارد کنید"
-            };
+            Object.assign(rules, getRhfEmailRules(field.required));
+        }
+
+        if (field.type === 'tel') {
+            Object.assign(rules, getRhfMobilePhoneRules(field.required));
+        }
+
+        if (field.type === 'url') {
+            Object.assign(rules, getRhfWebsiteRules(field.required));
         }
 
         if (field.minLength) {
@@ -1590,7 +1616,7 @@ export default function DynamicForm({
         if (field.pattern) {
             rules.pattern = {
                 value: new RegExp(field.pattern),
-                message: "فرمت وارد شده صحیح نیست"
+                message: validationMessages.invalidFormat
             };
         }
 

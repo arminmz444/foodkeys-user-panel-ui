@@ -206,8 +206,18 @@
 //     name: 'چندتایی',
 //   },
 // ];
-import {Certificate} from 'crypto';
-import {z} from 'zod';
+import { z } from 'zod';
+import {
+  optionalEmailArraySchema,
+  optionalEmailSchema,
+  optionalLandlineSchema,
+  optionalMobilePhoneSchema,
+  optionalPostalCodeSchema,
+  optionalWebsiteSchema,
+  requiredMobilePhoneSchema,
+  requiredStringSchema,
+  validationMessages,
+} from '@/utils/form-validators';
 
 const pictureSchema = z.object({
     id: z.string().optional(),
@@ -217,8 +227,8 @@ const pictureSchema = z.object({
 
 const productSchema = z.object({
     id: z.number().nullable().optional(),
-    name: z.string(),
-    categoryType: z.string().optional(),
+    name: z.string().min(1, { message: validationMessages.productName }),
+    categoryType: z.string().min(1, { message: validationMessages.productCategory }),
     otherTypeName: z.string().optional(),
     description: z.string().optional(),
     pictures: z.any().optional().nullable(),
@@ -243,28 +253,30 @@ const locationSchema = z.object({
 });
 
 const telSchema = z.object({
-    telNumber: z.string(),
-    telType: z.string(),
+    telNumber: optionalLandlineSchema(),
+    telType: z.string().optional(),
 });
 
 
 const contactSchema = z.object({
-    name: z.string().optional(),
-    lastName: z.string().optional(),
-    email: z.string().optional(),
-    phone: z.string().optional(),
+    name: requiredStringSchema(),
+    lastName: requiredStringSchema(),
+    email: optionalEmailSchema(),
+    phone: requiredMobilePhoneSchema(),
     // isCEO: z.boolean(),
-    position: z.string().optional(),
+    position: requiredStringSchema(),
 });
 
 const galleryContactSchema = z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
-    emails: z.string().optional(),
-    phoneNumbers: z.string().optional(),
+    emails: optionalEmailSchema(),
+    phoneNumbers: optionalMobilePhoneSchema(),
     description: z.string().optional(),
     // isCEO: z.boolean(),
     position: z.string().optional(),
+    showMobile: z.boolean().optional().default(true),
+    showEmail: z.boolean().optional().default(true),
     uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
     priority: z.union([z.number(), z.string()]).optional()
@@ -318,6 +330,14 @@ const galleryVideoSchema = z.object({
     priority: z.union([z.number(), z.string()]).optional()
 });
 
+const galleryOfficeEnvironmentSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    uploadedFileId: z.union([z.string(), z.array(z.string())]).optional().nullable(),
+    removedFileIds: z.union([z.string(), z.array(z.string())]).optional().nullable(),
+    priority: z.union([z.number(), z.string()]).optional()
+});
+
 const gallerySchema = z.object({
     // contacts: z.array(galleryContactSchema).superRefine((val, ctx) => {
     //   if (new Set(val).size === val.length)
@@ -333,6 +353,7 @@ const gallerySchema = z.object({
     catalogs: z.array(galleryCatalogSchema).optional(),
     videos: z.array(galleryVideoSchema).optional(),
     documents: z.array(galleryDocumentSchema).optional(),
+    officeEnvironments: z.array(galleryOfficeEnvironmentSchema).optional(),
 });
 
 // const certificateSchema = z
@@ -389,16 +410,12 @@ const companyBrandSchema = z.object({
 
 export const companyFormSchema = z.object({
     brands: z.array(companyBrandSchema).optional(),
-    ceo: z.string().optional(),
-    ceoPhoneNumber: z.string().optional(),
-    companyName: z.string().min(1, {message: 'این فیلد اجباری میباشد'}),
-    companyNameEn: z.string(),
+    ceo: requiredStringSchema(),
+    ceoPhoneNumber: optionalMobilePhoneSchema(),
+    companyName: requiredStringSchema(),
+    companyNameEn: requiredStringSchema(),
     companyStakeHolders: z.string().optional(),
-    specialLineNumber: z.string().optional(),
-    // ceo: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-    // ceoPhoneNumber: z.string().min(1, { message: "این فیلد اجباری می‌باشد" }),
-    // owner: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
-    // answerName: z.string().min(1, { message: 'این فیلد اجباری میباشد' }),
+    specialLineNumber: optionalLandlineSchema(),
     owner: z.string().optional(),
     answerName: z.string().optional(),
     history: z.string().optional(),
@@ -425,8 +442,8 @@ export const companyFormSchema = z.object({
     companyTags: z.array(z.string()).optional(),
     products: z.array(productSchema).optional(),
     outSourcedProducts: z.array(productSchema).optional(),
-    primaryBrand: z.string().optional(),
-    mainBrandEn: z.string().optional(),
+    primaryBrand: requiredStringSchema(),
+    mainBrandEn: requiredStringSchema(),
     companyBrands: z.array(z.string()).optional(),
     location: locationSchema.optional(),
     factoryTels: z.array(telSchema).optional(),
@@ -434,19 +451,19 @@ export const companyFormSchema = z.object({
     officeTels: z.array(telSchema).optional(),
     officeFaxes: z.array(telSchema).optional(),
     telegramId: z.string().optional(),
-    telegramPhoneNo: z.string().optional(),
-    smsNumber: z.string().optional(),
-    hotlineNumber: z.string().optional(),
+    telegramPhoneNo: optionalMobilePhoneSchema(),
+    smsNumber: optionalMobilePhoneSchema(),
+    hotlineNumber: optionalLandlineSchema(),
     whatsAppId: z.string().optional(),
-    whatsAppPhoneNo: z.string().optional(),
+    whatsAppPhoneNo: optionalMobilePhoneSchema(),
     instagramId: z.string().optional(),
     linkedInId: z.string().optional(),
-    eitaaPhoneNo: z.string().optional(),
-    rubikaPhoneNo: z.string().optional(),
+    eitaaPhoneNo: optionalMobilePhoneSchema(),
+    rubikaPhoneNo: optionalMobilePhoneSchema(),
     skypeId: z.string().optional(),
-    website: z.string().optional(),
+    website: optionalWebsiteSchema(),
     contacts: z.array(contactSchema).optional(),
-    emails: z.array(z.string()).optional(),
+    emails: optionalEmailArraySchema(),
     productAvailability: z.string().optional(),
     subcategory: subcategorySchema.optional(),
     productTitles: z.string().optional(),
@@ -455,13 +472,13 @@ export const companyFormSchema = z.object({
     outSourcedProductsDescription: z.string().optional(),
     currentLogo: z.string().optional(),
     currentBackgroundImages: z.array(z.string()).optional(),
-    factoryCity: z.string().optional(),
-    factoryState: z.string().optional(),
-    industrialCity: z.string().optional(),
-    factoryPoBox: z.string().optional(),
-    officePoBox: z.string().optional(),
-    factoryLocation: z.string().optional(),
-    officeLocation: z.string().optional(),
+    factoryCity: requiredStringSchema(),
+    factoryState: requiredStringSchema(),
+    industrialCity: requiredStringSchema(),
+    factoryPoBox: optionalPostalCodeSchema(),
+    officePoBox: optionalPostalCodeSchema(),
+    factoryLocation: requiredStringSchema(),
+    officeLocation: requiredStringSchema(),
     officeCity: z.string().optional(),
     officeState: z.string().optional(),
     gallery: gallerySchema.optional(),
@@ -555,6 +572,7 @@ export function defaultValues(company?: CreateCompanyInput | null) {
             catalog: {},
             videos: [],
             documents: [],
+            officeEnvironments: [],
         },
         factoryLongitude: company?.factoryLongitude,
         factoryLatitude: company?.factoryLatitude,

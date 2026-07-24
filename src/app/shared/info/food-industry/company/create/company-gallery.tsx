@@ -494,6 +494,7 @@ import {API_BASE_URL} from '@/config/api.config';
 import {STATIC_FILES_URL} from '@/config/api.config';
 import {useFormContext} from 'react-hook-form';
 import {Input} from '@/components/ui/input';
+import {Checkbox} from '@/components/ui/checkbox';
 import FormGroup from '@/app/shared/form-group';
 import cn from '@/utils/class-names';
 import dynamic from 'next/dynamic';
@@ -595,6 +596,8 @@ export default function CompanyGallery({
             {name: 'emails', label: 'ایمیل', type: 'email'},
             {name: 'position', label: 'سمت', type: 'text'},
             {name: 'description', label: 'توضیحات', type: 'text'},
+            {name: 'showMobile', label: 'نمایش موبایل', type: 'checkbox'},
+            {name: 'showEmail', label: 'نمایش ایمیل', type: 'checkbox'},
         ],
         []
     );
@@ -628,6 +631,14 @@ export default function CompanyGallery({
         () => [
             {name: 'title', label: 'نام سند', type: 'text'},
             {name: 'description', label: 'توضیحات سند', type: 'text'},
+        ],
+        []
+    );
+
+    const officeEnvironmentFields = useMemo(
+        () => [
+            {name: 'title', label: 'عنوان', type: 'text'},
+            {name: 'description', label: 'توضیحات بیشتر', type: 'text'},
         ],
         []
     );
@@ -700,6 +711,22 @@ export default function CompanyGallery({
                 uploadFile={uploadGalleryFile}
                 fileServiceType="COMPANY_GALLERY_SLIDER"
                 initialFiles={galleryData?.sliders || []}
+            />
+
+            <GallerySection
+                className="col-span-2"
+                label="عکس‌های محیط اداری"
+                uploadAreaContent={
+                    <>
+                        عکس‌های محیط اداری شرکت خود را اینجا آپلود کنید حجم عکس باید کمتر از{' '}
+                        <strong className="font-medium text-gray-900">20 مگابایت باشد</strong>
+                    </>
+                }
+                registerName="gallery.officeEnvironments"
+                fields={officeEnvironmentFields}
+                uploadFile={uploadGalleryFile}
+                fileServiceType="COMPANY_GALLERY_OFFICE_ENVIRONMENT"
+                initialFiles={galleryData?.officeEnvironments || []}
             />
 
             <GallerySection
@@ -781,8 +808,13 @@ function GallerySection({
         (item: GalleryItemData, index: number) => {
             // Register all fields for this item
             fields.forEach(field => {
-                // Ensure we're properly setting values for all fields
-                setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
+                if (field.type === 'checkbox') {
+                    // Default checkbox fields to true when missing
+                    const value = item[field.name] === false ? false : true;
+                    setValue(`${registerName}[${index}].${field.name}`, value);
+                } else {
+                    setValue(`${registerName}[${index}].${field.name}`, item[field.name] || '');
+                }
             });
 
             // Register the file ID and priority
@@ -798,6 +830,8 @@ function GallerySection({
                 setValue(`${registerName}[${index}].emails`, item.emails || '');
                 setValue(`${registerName}[${index}].position`, item.position || '');
                 setValue(`${registerName}[${index}].description`, item.description || '');
+                setValue(`${registerName}[${index}].showMobile`, item.showMobile === false ? false : true);
+                setValue(`${registerName}[${index}].showEmail`, item.showEmail === false ? false : true);
             }
         },
         [fields, registerName, setValue]
@@ -816,17 +850,25 @@ function GallerySection({
     // Initial load
     useEffect(() => {
         if (!isInitialized && initialFiles.length) {
-            const formatted = initialFiles.map((file, idx) => ({
-                ...file,
-                id: file.id || file.uploadedFileId,
-                filePath: file.filePath,
-                fileName: file.fileName,
-                priority: idx + 1,
-            }));
+            const formatted = initialFiles.map((file, idx) => {
+                const item: GalleryItemData = {
+                    ...file,
+                    id: file.id || file.uploadedFileId,
+                    filePath: file.filePath,
+                    fileName: file.fileName,
+                    priority: idx + 1,
+                };
+                fields.forEach((f) => {
+                    if (f.type === 'checkbox') {
+                        item[f.name] = file[f.name] === false ? false : true;
+                    }
+                });
+                return item;
+            });
             setGalleryItems(formatted);
             setIsInitialized(true);
         }
-    }, [initialFiles, isInitialized]);
+    }, [initialFiles, isInitialized, fields]);
 
     // Register items whenever galleryItems changes
     useEffect(() => {
@@ -854,7 +896,9 @@ function GallerySection({
                     filePath: file.filePath,
                     fileName: file.fileName,
                     priority: galleryItems.length + i + 1,
-                    ...Object.fromEntries(fields.map(f => [f.name, ''])),
+                    ...Object.fromEntries(
+                        fields.map(f => [f.name, f.type === 'checkbox' ? true : ''])
+                    ),
                 }));
                 setGalleryItems(prev => [...prev, ...newItems]);
                 toast.success('فایل‌ها با موفقیت آپلود شدند');
@@ -867,7 +911,7 @@ function GallerySection({
         }
     };
 
-    const handleFieldChange = (index: number, name: string, val: string) => {
+    const handleFieldChange = (index: number, name: string, val: string | boolean) => {
         setGalleryItems(prev => {
             const copy = [...prev];
             copy[index] = {...copy[index], [name]: val};
@@ -917,17 +961,30 @@ function GallerySection({
 
                             <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {fields.map(f => (
-                                    <Input
-                                        key={`${idx}-${f.name}`}
-                                        label={f.label}
-                                        type={f.type}
-                                        // register this field with RHF
-                                        {...register(`${registerName}[${idx}].${f.name}`)}
-                                        // keep it controlled if you like
-                                        value={item[f.name] || ''}
-                                        onChange={(e) => handleFieldChange(idx, f.name, e.target.value)}
-                                    />
-                                    // <Input key={`${idx}-${f.name}`} label={f.label} type={f.type} value={item[f.name] || ''} onChange={e => handleFieldChange(idx, f.name, e.target.value)} />
+                                    f.type === 'checkbox' ? (
+                                        <Checkbox
+                                            key={`${idx}-${f.name}`}
+                                            label={f.label}
+                                            checked={item[f.name] !== false}
+                                            onChange={(e) =>
+                                                handleFieldChange(idx, f.name, e.target.checked)
+                                            }
+                                            className="col-span-full sm:col-span-1"
+                                            containerClassName="gap-2.5"
+                                            inputClassName="border-2"
+                                        />
+                                    ) : (
+                                        <Input
+                                            key={`${idx}-${f.name}`}
+                                            label={f.label}
+                                            type={f.type}
+                                            // register this field with RHF
+                                            {...register(`${registerName}[${idx}].${f.name}`)}
+                                            // keep it controlled if you like
+                                            value={item[f.name] || ''}
+                                            onChange={(e) => handleFieldChange(idx, f.name, e.target.value)}
+                                        />
+                                    )
                                 ))}
                                 <div className="flex items-center">
                                     <span className="text-sm text-gray-500">اولویت: {idx + 1}</span>
